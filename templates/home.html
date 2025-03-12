@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Smart Home Dashboard{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1 class="text-center">Welcome, {{ username }}!</h1>
+    <p class="text-center">Manage your smart devices below.</p>
+    
+<!--    log out-->
+    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    
+    <form method="POST" action="{{ url_for('add_device') }}" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="device_name" class="form-control" placeholder="Device Name" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="device_ip" class="form-control" placeholder="Device IP" required>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Add Device</button>
+            </div>
+        </div>
+    </form>
+    
+    <div class="row">
+        {% for device in devices %}
+        <div class="col-md-4">
+            <div class="card bg-secondary text-light p-3 mb-3">
+                <h4>{{ device.name }}</h4>
+                <p>IP: {{ device.ip }}</p>
+                <button class="btn btn-primary w-100">Toggle</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
