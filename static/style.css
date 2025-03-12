@@ -34,6 +34,55 @@ a {
     border-radius: 10px;
 }
 
+/* Dark Mode Styles */
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Form Inputs */
+.form-control {
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+}
+
+.form-control::placeholder {
+    color: #b0b0b0;
+}
+
+/* Select dropdown */
+select.form-control {
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+}
+
+/* Form Groups */
+.col-12 {
+    margin-bottom: 1rem;
+}
+
+/* Focus State for Input Fields */
+.form-control:focus {
+    border-color: #52887AFF;
+    background-color: #444444;
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
+}
+
+/* Input borders */
+input[type="text"], select {
+    border-radius: 5px;
+}
+
+/* Custom styling for the labels if you have them */
+label {
+    color: #ffffff;
+    font-size: 1rem;
+}
+
 #login-page, #register-page {
     background: #1e1e1e;
 }
@@ -59,12 +108,12 @@ a {
     -ms-overflow-style: none; /* Internet Explorer and Edge */
 }
 
-#device-input1, #device-input2 {
+#device-input1, #device-input2, #device-type {
     padding: 10px;
     border-radius: 15px;
 }
 
-#btn-add-device {
+#btn-add-device, #btn-login-submit, #btn-register-submit {
     background: #52887AFF;
     border-radius: 15px;
     padding: 10px;
@@ -102,21 +151,10 @@ a {
     max-width: 400px;
 }
 
-#theme-select {
-    background: #212529;
-    scale: 0.80;
-    color: white;
-    border-color: #52887AFF;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-}
-
 #navbar-bg {
-/*    make a blurred background*/
+    /*    make a blurred background*/
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-
 }

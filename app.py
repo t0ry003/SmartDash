@@ -27,10 +27,11 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)  # Store hashed passwords
     devices = db.Column(db.Text, default='[]')
+    settings = db.Column(db.Text, default='{}')
 
-    def add_device(self, name, ip):
+    def add_device(self, name, ip, type):
         device_list = json.loads(self.devices)
-        device_list.append({'name': name, 'ip': ip})
+        device_list.append({'name': name, 'ip': ip, 'type': type})
         self.devices = json.dumps(device_list)
         db.session.commit()
 
@@ -39,6 +40,14 @@ class User(UserMixin, db.Model):
         device_list = [device for device in device_list if device['name'] != name]
         self.devices = json.dumps(device_list)
         db.session.commit()
+
+    #     save user settings: theme, show ip address
+    def save_settings(self, user_settings):
+        self.settings = json.dumps(user_settings)
+        db.session.commit()
+
+    def get_settings(self):
+        return json.loads(self.settings)
 
 
 # Load user function
@@ -53,7 +62,7 @@ def load_user(user_id):
 def home():
     user = current_user
     devices = json.loads(user.devices)
-    return render_template('home.html', username=user.username, devices=devices)
+    return render_template('home.html', username=user.username, devices=devices, get_device_icon=get_device_icon)
 
 
 # Route: Register
@@ -115,7 +124,8 @@ def add_device():
 
     device_name = request.form['device_name']
     device_ip = request.form['device_ip']
-    current_user.add_device(device_name, device_ip)
+    device_type = request.form['device_type']
+    current_user.add_device(device_name, device_ip, device_type)
 
     return redirect(url_for('home'))  # Redirect to home after adding device
 
@@ -143,6 +153,34 @@ def toggle_device():
     print(f"Turning {state} the device: {device_name}, IP: {device_ip}")
 
     return jsonify({'message': f'Toggling device: {device_name}, IP: {device_ip}, State: {state}'}), 200
+
+
+@app.route('/save_settings', methods=['POST'])
+@login_required
+def save_settings():
+    data = request.get_json()
+    if not data:
+        return jsonify({'status': 'error', 'message': 'Invalid data'}), 400
+
+    current_user.save_settings(data)
+    return jsonify({'status': 'success', 'message': 'Settings saved successfully'})
+
+
+@app.route('/get_settings', methods=['GET'])
+@login_required
+def get_settings():
+    return jsonify(current_user.get_settings())
+
+
+def get_device_icon(device_type):
+    icons = {
+        "light": "fa-lightbulb",
+        "fan": "fa-fan",
+        "thermostat": "fa-thermometer-half",
+        "plug": "fa-plug",
+        "sensor": "fa-rss",
+    }
+    return icons.get(device_type, "fa-question-circle")  # Default icon if type not found
 
 
 # Main

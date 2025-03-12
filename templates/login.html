@@ -2,7 +2,7 @@
 {% block title %}Login - Smart Home{% endblock %}
 {% block content %}
 <div id="login-page" class="card text-light p-4 mx-auto" style="max-width: 400px;">
-    <h2 class="text-center">Login</h2>
+    <h2 class="text-center mb-4">Login</h2>
     <form method="POST">
         <div class="mb-3">
             <input type="text" name="username" class="form-control" placeholder="Username" required>
@@ -10,9 +10,10 @@
         <div class="mb-3">
             <input type="password" name="password" class="form-control" placeholder="Password" required>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <button id="btn-login-submit" type="submit" class="btn btn-primary w-100">Login</button>
     </form>
-    <p class="mt-3 text-center">Don't have an account? <a href="{{ url_for('register') }}" class="text-warning">Register here</a></p>
+    <p class="mt-3 text-center">Don't have an account? <a href="{{ url_for('register') }}" class="text-warning">Register
+        here</a></p>
     
     {% for message in get_flashed_messages() %}
     <div class="alert alert-danger mt-2">{{ message }}</div>
