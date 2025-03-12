@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
@@ -131,6 +131,18 @@ def remove_device():
     current_user.remove_device(device_name)
 
     return redirect(url_for('home'))  # Redirect to home after removing device
+
+
+@app.route('/toggle_device', methods=['POST'])
+def toggle_device():
+    data = request.get_json()
+    device_name = data.get('device_name')
+    device_ip = data.get('device_ip')
+    state = data.get('state')
+
+    print(f"Turning {state} the device: {device_name}, IP: {device_ip}")
+
+    return jsonify({'message': f'Toggling device: {device_name}, IP: {device_ip}, State: {state}'}), 200
 
 
 # Main

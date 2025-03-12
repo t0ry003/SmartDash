@@ -28,14 +28,18 @@
     
     <div class="row">
         {% for device in devices %}
-        <div class="col-md-4">
+        <div class="col-md-4 device-card" onclick="toggleBulb('{{ device.name }}', '{{ device.ip }}')">
             <div class="card bg-secondary text-light p-3 mb-3">
-                <h4>{{ device.name }}</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="m-0">{{ device.name }}</h4>
+                    
+                    <i id="bulb-icon-{{ device.name }}" class="fa fa-lightbulb"
+                       style="font-size: 3rem; color: gray; transition: color 0.3s;"></i>
+                </div>
                 <p>IP: {{ device.ip }}</p>
+                
                 <div class="row">
                     <div style="text-align: center;">
-                        <button class="btn btn-primary w-25">Toggle</button>
-                        
                         <form method="POST" action="{{ url_for('remove_device') }}" style="display: inline;">
                             <input type="hidden" name="device_name" value="{{ device.name }}">
                             <button type="submit" class="btn btn-danger w-25">Delete</button>
@@ -47,5 +51,36 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+    function toggleBulb(deviceName, deviceIp) {
+        var bulbIcon = document.getElementById('bulb-icon-' + deviceName);
+        var state = 'off';
+
+        if (bulbIcon.style.color === 'yellow') {
+            bulbIcon.style.color = 'gray';
+        } else {
+            bulbIcon.style.color = 'yellow';
+            state = 'on';
+        }
+
+        fetch('/toggle_device', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                device_name: deviceName,
+                device_ip: deviceIp,
+                state: state,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
 
 {% endblock %}
