@@ -4,10 +4,13 @@
 
 <div class="container">
     <h1 class="text-center">Welcome, {{ username }}!</h1>
-    <p class="text-center">Manage your smart devices below.</p>
+    <p class="text-center">Manage your smart devices</p>
     
-<!--    log out-->
-    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    <div class="mb-4">
+        <div style="text-align: center;">
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
     
     <form method="POST" action="{{ url_for('add_device') }}" class="mb-4">
         <div class="row">
@@ -29,7 +32,16 @@
             <div class="card bg-secondary text-light p-3 mb-3">
                 <h4>{{ device.name }}</h4>
                 <p>IP: {{ device.ip }}</p>
-                <button class="btn btn-primary w-100">Toggle</button>
+                <div class="row">
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary w-25">Toggle</button>
+                        
+                        <form method="POST" action="{{ url_for('remove_device') }}" style="display: inline;">
+                            <input type="hidden" name="device_name" value="{{ device.name }}">
+                            <button type="submit" class="btn btn-danger w-25">Delete</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         {% endfor %}
