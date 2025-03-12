@@ -1,22 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Register - Smart Home{% endblock %}
+{% block title %}Register - Smart Dash{% endblock %}
 {% block content %}
-<div id="register-page" class="card text-light p-4 mx-auto" style="max-width: 400px;">
-    <h2 class="text-center mb-4">Register</h2>
-    <form method="POST">
-        <div class="mb-3">
-            <input type="text" name="username" class="form-control" placeholder="Username" required>
-        </div>
-        <div class="mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
-        </div>
-        <button id="btn-register-submit" type="submit" class="btn btn-primary w-100">Register</button>
-    </form>
-    <p class="mt-3 text-center">Already have an account? <a href="{{ url_for('login') }}" class="text-warning">Login
-        here</a></p>
-    
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-danger mt-2">{{ message }}</div>
-    {% endfor %}
+<div class="container" id="main-content"
+     style="overflow-y: auto; max-height: calc(100vh - 80px); padding-bottom: 80px;">
+    <h1 class="text-center text-light">Welcome to Smart Dash</h1>
+    <p class="text-center text-light">Register to manage your smart devices</p>
+    <div id="register-page" class="card text-light p-4 mx-auto" style="max-width: 400px;">
+        <h2 class="text-center mb-4">Register</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <input type="text" name="username" class="form-control" placeholder="Username" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+            <button id="btn-register-submit" type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
+        <p class="mt-3 text-center">Already have an account? <a id="link" href="{{ url_for('login') }}">Login
+            here</a></p>
+        
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-danger mt-2">{{ message }}</div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

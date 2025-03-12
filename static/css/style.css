@@ -34,13 +34,11 @@ a {
     border-radius: 10px;
 }
 
-/* Dark Mode Styles */
 body {
     background-color: #121212;
     color: #e0e0e0;
 }
 
-/* Form Inputs */
 .form-control {
     background-color: #333333;
     color: #ffffff;
@@ -51,19 +49,16 @@ body {
     color: #b0b0b0;
 }
 
-/* Select dropdown */
 select.form-control {
     background-color: #333333;
     color: #ffffff;
     border: none;
 }
 
-/* Form Groups */
 .col-12 {
     margin-bottom: 1rem;
 }
 
-/* Focus State for Input Fields */
 .form-control:focus {
     border-color: #52887AFF;
     background-color: #444444;
@@ -72,15 +67,40 @@ select.form-control {
     box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
 }
 
-/* Input borders */
 input[type="text"], select {
     border-radius: 5px;
 }
 
-/* Custom styling for the labels if you have them */
 label {
     color: #ffffff;
     font-size: 1rem;
+}
+
+.context-menu {
+    position: absolute;
+    display: none;
+    background: #444444;
+    color: white;
+    border-radius: 20px;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    z-index: 1000;
+    min-width: 100px;
+}
+
+.context-menu button {
+    background: #de1111;
+    border-radius: 15px;
+    padding: 10px;
+    color: white;
+    text-align: center;
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.context-menu button:hover {
+    background: #b00;
+    box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
 }
 
 #login-page, #register-page {
@@ -100,12 +120,12 @@ label {
 
 /* Hide scrollbar for Firefox */
 #main-content {
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
 }
 
 /* Hide scrollbar for IE/Edge */
 #main-content {
-    -ms-overflow-style: none; /* Internet Explorer and Edge */
+    -ms-overflow-style: none;
 }
 
 #device-input1, #device-input2, #device-type {
@@ -119,9 +139,31 @@ label {
     padding: 10px;
     color: white;
     text-align: center;
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#btn-add-device:hover, #btn-login-submit:hover, #btn-register-submit:hover {
+    background: #3f6f64;
+    box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
+}
+
+#btn-log-out {
+    background: #de1111;
+    border-radius: 15px;
+    padding: 10px;
+    color: white;
+    text-align: center;
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#btn-log-out:hover {
+    background: #b00;
+    box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
 }
 
 #device-card {
+    box-shadow: none;
+    border: none;
     transition: box-shadow 0.3s ease-in-out;
     background: #1e1e1e;
     cursor: pointer;
@@ -135,7 +177,7 @@ label {
     text-align: center;
 }
 
-#appearance-menu {
+#appearance-menu, #account-menu, #about-menu {
     background: #121212;
     padding: 20px;
     border-radius: 10px;
@@ -143,18 +185,35 @@ label {
     max-width: 400px;
 }
 
-#account-menu {
-    background: #121212;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 400px;
+#link {
+    color: #2fffc4;
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+}
+
+#link:hover {
+    color: #41ad98;
+    text-shadow: 0 0 0.25rem rgba(82, 136, 122, 0.6);
+}
+
+#show-ip-checkbox {
+    scale: 1.4;
 }
 
 #navbar-bg {
     /*    make a blurred background*/
+    z-index: 999;
     background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
+}
+
+
+#menu-item-1, #menu-item-2, #menu-item-3, #menu-item-4 {
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+}
+
+#menu-item-1:hover, #menu-item-2:hover, #menu-item-3:hover, #menu-item-4:hover {
+    color: #2fffc4;
+    text-shadow: 0 0 15px rgba(0, 255, 188, 0.83);
 }
