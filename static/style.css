@@ -34,10 +34,89 @@ a {
     border-radius: 10px;
 }
 
-.card {
-    transition: box-shadow 0.3s ease-in-out;
+#login-page, #register-page {
+    background: #1e1e1e;
 }
 
-.card:hover {
-    box-shadow: 0 0 15px rgb(137, 255, 0), 0 0 5px rgba(20, 143, 0, 0.76);
+#main-content {
+    overflow-y: scroll; /* Enable scrolling */
+    max-height: calc(100vh - 80px);
+    padding-bottom: 80px;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+#main-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for Firefox */
+#main-content {
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for IE/Edge */
+#main-content {
+    -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+#device-input1, #device-input2 {
+    padding: 10px;
+    border-radius: 15px;
+}
+
+#btn-add-device {
+    background: #52887AFF;
+    border-radius: 15px;
+    padding: 10px;
+    color: white;
+    text-align: center;
+}
+
+#device-card {
+    transition: box-shadow 0.3s ease-in-out;
+    background: #1e1e1e;
+    cursor: pointer;
+}
+
+#device-card:hover {
+    box-shadow: 0 0 15px rgb(82, 136, 122), 0 0 0 rgba(20, 143, 0, 0);
+}
+
+#card-title {
+    text-align: center;
+}
+
+#appearance-menu {
+    background: #121212;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+}
+
+#account-menu {
+    background: #121212;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+}
+
+#theme-select {
+    background: #212529;
+    scale: 0.80;
+    color: white;
+    border-color: #52887AFF;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+}
+
+#navbar-bg {
+/*    make a blurred background*/
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
 }
