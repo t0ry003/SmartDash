@@ -30,17 +30,12 @@ function toggleOn(deviceName, deviceIp) {
         .catch(error => console.error('Error:', error));
 }
 
-function showMenu(menuName, isHome, isSettings = false) {
+function showMenu(menuName, isHome, isSettings = false, isSolar = false) {
     document.getElementById('main-content').classList.toggle('d-none', !isHome);
-    document.getElementById('menu-screen').classList.toggle('d-none', isHome || isSettings);
+    document.getElementById('solar-panel-data').classList.toggle('d-none', !isSolar);
     document.getElementById('appearance-menu').classList.toggle('d-none', !isSettings);
     document.getElementById('account-menu').classList.toggle('d-none', !isSettings);
     document.getElementById('about-menu').classList.toggle('d-none', !isSettings);
-
-
-    if (!isHome && !isSettings) {
-        document.getElementById('menu-message').innerText = menuName + ' Screen';
-    }
 }
 
 function changeTheme(theme) {
@@ -52,6 +47,23 @@ function changeTheme(theme) {
         document.body.style.color = 'white';
     }
 }
+
+function fetchSolarData() {
+    fetch('/solar-data')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('solar-power').textContent = `Current Power: ${data.power} W`;
+            document.getElementById('solar-energy').textContent = `Today's Energy: ${data.energy} kWh`;
+            document.getElementById('solar-voltage').textContent = `Current Voltage: ${data.voltage} V`;
+        })
+        .catch(error => {
+            console.error('Error fetching solar data:', error);
+            document.getElementById('solar-power').textContent = 'Error fetching data ${error}';
+        });
+}
+
+setInterval(fetchSolarData, 10000);
+fetchSolarData();
 
 document.addEventListener("DOMContentLoaded", function () {
     // Load user settings from backend when the page loads

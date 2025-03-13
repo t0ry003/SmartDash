@@ -24,6 +24,8 @@
                     <option value="sensor">Sensor</option>
                     <option value="fan">Fan</option>
                     <option value="thermostat">Thermostat</option>
+                    <option value="fronius">Fronius</option>
+                    s
                 </select>
             </div>
             <div class="col-12 col-md-2">
@@ -41,7 +43,9 @@
              oncontextmenu="showContextMenu(event, '{{ device.name }}')">
             <div id="device-card" class="card text-light p-3 mb-4 mx-auto">
                 <div class="d-flex flex-column justify-content-center align-items-center text-center">
-                    <h4 class="m-0 w-100 mb-4" style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">{{ device.name }}</h4>
+                    <h4 class="m-0 w-100 mb-4"
+                        style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">
+                        {{ device.name }}</h4>
                     <i id="bulb-icon-{{ device.name }}" class="fa {{ get_device_icon(device.type) }} mb-4"
                        style="font-size: 3rem; color: gray; transition: color 0.3s;"></i>
                 </div>
@@ -65,6 +69,14 @@
 <div id="menu-screen" class="d-none"
      style="background: black; color: white; height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
     <span id="menu-message"></span>
+</div>
+
+<!-- Solar Panel Data Section -->
+<div id="solar-panel-data" class="d-none row text-center text-light">
+    <h2>Solar Panel Real-Time Data</h2>
+    <p id="solar-power">Fetching data...</p>
+    <p id="solar-energy">Fetching data...</p>
+    <p id="solar-voltage">Fetching data...</p>
 </div>
 
 <div id="appearance-menu" class="d-none container text-light mb-4">
@@ -107,20 +119,25 @@
 
 <footer id="navbar-bg" class="bottom-menu text-center p-3 fixed-bottom">
     <div id="navbar" class="d-flex justify-content-around align-items-center">
-        <a id="menu-item-1" href="#" class="text-light d-flex flex-column align-items-center" onclick="showMenu('Home', true)">
+        <a id="menu-item-1" href="#" class="text-light d-flex flex-column align-items-center"
+           onclick="showMenu('Home', true, false, false)">
             <i class="fa fa-home" style="font-size: 1.4rem;"></i>
         </a>
-        <a id="menu-item-2" href="#" class="text-light d-flex flex-column align-items-center">
-            <i class="fa fa-heart" style="font-size: 1.4rem;"></i>
+        <a id="menu-item-2" href="#" class="text-light d-flex flex-column align-items-center"
+           onclick="showMenu('Solar', false, false, true)">
+            <i class="fa fa-solar-panel" style="font-size: 1.4rem;"></i>
         </a>
         <a id="menu-item-3" href="#" class="text-light d-flex flex-column align-items-center">
             <i class="fa fa-bell" style="font-size: 1.4rem;"></i>
         </a>
         <a id="menu-item-4" href="#" class="text-light d-flex flex-column align-items-center"
-           onclick="showMenu('Settings', false, true)">
+           onclick="showMenu('Settings', false, true, false)">
             <i class="fa fa-cog" style="font-size: 1.4rem;"></i>
         </a>
     </div>
 </footer>
+
+<script>
+</script>
 
 {% endblock %}

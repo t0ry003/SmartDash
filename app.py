@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_bcrypt import Bcrypt
 import json
 import os
+
+import requests
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -40,6 +42,9 @@ class User(UserMixin, db.Model):
         device_list = [device for device in device_list if device['name'] != name]
         self.devices = json.dumps(device_list)
         db.session.commit()
+
+    def get_devices(self):
+        return json.loads(self.devices)
 
     #     save user settings: theme, show ip address
     def save_settings(self, user_settings):
@@ -179,8 +184,51 @@ def get_device_icon(device_type):
         "thermostat": "fa-thermometer-half",
         "plug": "fa-plug",
         "sensor": "fa-rss",
+        "fronius": "fa-solar-panel"
     }
     return icons.get(device_type, "fa-question-circle")  # Default icon if type not found
+
+
+@app.route('/solar-data')
+def solar_data():
+    devices = fetch_device_data()  # Get solar devices data
+    if devices:
+        # Assuming 'data' contains the parsed JSON data, not a Response object
+        data = devices[0]['data']
+        if isinstance(data, dict):  # Ensure data is a dictionary (parsed JSON)
+            power = data.get('Body', {}).get('Data', {}).get('PowerReal_P_Sum', 'N/A')
+            energy = data.get('Body', {}).get('Data', {}).get('EnergyReal_WAC_Sum_Produced', 'N/A')
+            voltage = data.get('Body', {}).get('Data', {}).get('Voltage_AC_Phase_1', 'N/A')
+        else:
+            power = 'Invalid data format'
+            energy = 'Invalid data format'
+            voltage = 'Invalid data format'
+        return jsonify({'power': power, 'energy': energy, 'voltage': voltage})
+    return jsonify({'power': 'No data available', 'energy': 'No data available', 'voltage': 'No data available'})
+
+
+def fetch_device_data():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))  # Ensure the user is logged in
+
+    device_data = []
+    for device in current_user.get_devices():
+        if device['type'].lower() == 'fronius':
+            data = fetch_fronius_data(device['ip'])
+            if data:
+                device_data.append({'name': device['name'], 'data': data})
+    return device_data
+
+
+def fetch_fronius_data(ip_address):
+    url = f'http://{ip_address}/solar_api/v1/GetMeterRealtimeData.cgi?Scope=Device&DeviceId=0&DataCollection=CommonInverterData'
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return response.json()  # Ensure we're returning the parsed JSON data
+    except requests.RequestException as e:
+        print(f"Error fetching data from {ip_address}: {e}")
+        return None
 
 
 # Main
