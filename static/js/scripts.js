@@ -30,9 +30,10 @@ function toggleOn(deviceName, deviceIp) {
         .catch(error => console.error('Error:', error));
 }
 
-function showMenu(menuName, isHome, isSettings = false, isSolar = false) {
+function showMenu(menuName, isHome, isSettings = false, isSolar = false, isTemp = false) {
     document.getElementById('main-content').classList.toggle('d-none', !isHome);
     document.getElementById('solar-panel-data').classList.toggle('d-none', !isSolar);
+    document.getElementById('temperature-data').classList.toggle('d-none', !isTemp);
     document.getElementById('appearance-menu').classList.toggle('d-none', !isSettings);
     document.getElementById('account-menu').classList.toggle('d-none', !isSettings);
     document.getElementById('about-menu').classList.toggle('d-none', !isSettings);
@@ -64,6 +65,53 @@ function fetchSolarData() {
 
 setInterval(fetchSolarData, 10000);
 fetchSolarData();
+
+function fetchTemperatureData() {
+    fetch('/temperature-data')
+        .then(response => response.json())
+        .then(data => {
+            const temperatureElement = document.getElementById('temperature');
+            const humidityElement = document.getElementById('humidity');
+            const thermometerFill = document.getElementById('thermometer-fill');
+
+            const temperature = data.temperature;
+            const humidity = data.humidity;
+
+            temperatureElement.textContent = `Temperature: ${temperature}°C`;
+            humidityElement.textContent = `Humidity: ${humidity}%`;
+
+            // Calculate the fill height based on temperature
+            const minTemp = 0; // Minimum temperature expected
+            const maxTemp = 50; // Maximum temperature expected
+            const fillHeight = ((temperature - minTemp) / (maxTemp - minTemp)) * 100;
+
+            // Set the fill height and color
+            thermometerFill.style.height = `${fillHeight}%`;
+            thermometerFill.style.backgroundColor = getTemperatureColor(temperature);
+        })
+        .catch(error => {
+            console.error('Error fetching temperature data:', error);
+            document.getElementById('temperature').textContent = `Error fetching data: ${error}`;
+            document.getElementById('humidity').textContent = `Error fetching data: ${error}`;
+        });
+}
+
+function getTemperatureColor(temperature) {
+    // Define color thresholds
+    if (temperature <= 10) {
+        return 'blue';
+    } else if (temperature <= 20) {
+        return 'green';
+    } else if (temperature <= 30) {
+        return 'orange';
+    } else {
+        return 'red';
+    }
+}
+
+setInterval(fetchTemperatureData, 1000);
+fetchTemperatureData();
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Load user settings from backend when the page loads

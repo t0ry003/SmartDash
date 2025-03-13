@@ -1,8 +1,9 @@
 import json
 import os
+import random
 
 import requests
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -191,10 +192,10 @@ def get_device_icon(device_type):
 
 @app.route('/solar-data')
 def solar_data():
-    devices = fetch_device_data()  # Get solar devices data
-    if devices:
-        # Assuming 'data' contains the parsed JSON data, not a Response object
-        data = devices[0]['data']
+    devices = fetch_fronius_device_data()  # Get solar devices data
+    if isinstance(devices, list) and devices:
+        device = devices[0]
+        data = device.get('data', {})
         if isinstance(data, dict):  # Ensure data is a dictionary (parsed JSON)
             power = data.get('Body', {}).get('Data', {}).get('PowerReal_P_Sum', 'N/A')
             energy = data.get('Body', {}).get('Data', {}).get('EnergyReal_WAC_Sum_Produced', 'N/A')
@@ -204,10 +205,13 @@ def solar_data():
             energy = 'Invalid data format'
             voltage = 'Invalid data format'
         return jsonify({'power': power, 'energy': energy, 'voltage': voltage})
-    return jsonify({'power': 'No data available', 'energy': 'No data available', 'voltage': 'No data available'})
+    elif isinstance(devices, Response):  # Check if the response is a redirect
+        return devices  # Return the redirect response
+    else:
+        return jsonify({'power': 'No data available', 'energy': 'No data available', 'voltage': 'No data available'})
 
 
-def fetch_device_data():
+def fetch_fronius_device_data():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))  # Ensure the user is logged in
 
@@ -225,10 +229,21 @@ def fetch_fronius_data(ip_address):
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        return response.json()  # Ensure we're returning the parsed JSON data
+        return response.json()  # Return the parsed JSON data
     except requests.RequestException as e:
         print(f"Error fetching data from {ip_address}: {e}")
         return None
+
+
+@app.route('/temperature-data', methods=['GET'])
+def get_temperature_data():
+    temperature = round(random.uniform(5, 40.0), 2)  # Simulated temperature in °C
+    humidity = round(random.uniform(0, 70.0), 2)  # Simulated humidity in %
+    data = {
+        'temperature': temperature,
+        'humidity': humidity
+    }
+    return jsonify(data)
 
 
 # Main

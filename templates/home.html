@@ -79,6 +79,15 @@
     <p id="solar-voltage">Fetching data...</p>
 </div>
 
+<div id="temperature-data" class="row text-center text-light">
+    <h2>Temperature Data</h2>
+    <div id="thermometer-container">
+        <div id="thermometer-fill"></div>
+    </div>
+    <p id="temperature">Fetching data...</p>
+    <p id="humidity">Fetching data...</p>
+</div>
+
 <div id="appearance-menu" class="d-none container text-light mb-4">
     <h2 class="mb-3">Appearance Settings</h2>
     
@@ -93,7 +102,8 @@
     
     <!-- IP visibility toggle checkbox -->
     <div class="d-flex justify-content-center align-items-center mb-3">
-        <input type="checkbox" id="show-ip-checkbox" class="form-check-input me-3" onchange="toggleIPVisibility(this)">
+        <input type="checkbox" id="show-ip-checkbox" class="form-check-input me-3"
+               onchange="toggleIPVisibility(this)">
         <label for="show-ip-checkbox" class="form-check-label">Show IP addresses</label>
     </div>
 </div>
@@ -109,10 +119,12 @@
 <!--about Smart Dash-->
 <div id="about-menu" class="d-none container text-light mb-4">
     <h2 class="mb-3">About Smart Dash</h2>
-    <p>Smart Dash is a simple web application that allows you to manage your smart devices from a single dashboard.</p>
+    <p>Smart Dash is a simple web application that allows you to manage your smart devices from a single
+        dashboard.</p>
     <p>Developed with&nbsp;&nbsp;<i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;at&nbsp;&nbsp;<i
         class="fa-brands fa-github"></i> <a id="link"
-                                            href="https://github.com/t0ry003/SmartDash" target="_blank">SmartDash</a>
+                                            href="https://github.com/t0ry003/SmartDash"
+                                            target="_blank">SmartDash</a>
     </p>
 </div>
 
@@ -120,18 +132,19 @@
 <footer id="navbar-bg" class="bottom-menu text-center p-3 fixed-bottom">
     <div id="navbar" class="d-flex justify-content-around align-items-center">
         <a id="menu-item-1" href="#" class="text-light d-flex flex-column align-items-center"
-           onclick="showMenu('Home', true, false, false)">
+           onclick="showMenu('Home', true, false, false, false)">
             <i class="fa fa-home" style="font-size: 1.4rem;"></i>
         </a>
         <a id="menu-item-2" href="#" class="text-light d-flex flex-column align-items-center"
-           onclick="showMenu('Solar', false, false, true)">
+           onclick="showMenu('Solar', false, false, true, false)">
             <i class="fa fa-solar-panel" style="font-size: 1.4rem;"></i>
         </a>
-        <a id="menu-item-3" href="#" class="text-light d-flex flex-column align-items-center">
-            <i class="fa fa-bell" style="font-size: 1.4rem;"></i>
+        <a id="menu-item-3" href="#" class="text-light d-flex flex-column align-items-center"
+           onclick="showMenu('Temp', false, false, false, true)">
+            <i class="fa fa-temperature-three-quarters" style="font-size: 1.4rem;"></i>
         </a>
         <a id="menu-item-4" href="#" class="text-light d-flex flex-column align-items-center"
-           onclick="showMenu('Settings', false, true, false)">
+           onclick="showMenu('Settings', false, true, false, false)">
             <i class="fa fa-cog" style="font-size: 1.4rem;"></i>
         </a>
     </div>
