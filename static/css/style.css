@@ -178,7 +178,7 @@ label {
 }
 
 #appearance-menu, #account-menu, #about-menu {
-    background: #121212;
+    background: #1e1e1e;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -186,7 +186,7 @@ label {
 }
 
 #solar-1, #solar-2, #solar-3 {
-    background: #121212;
+    background: #1e1e1e;
     border-radius: 20px;
     text-align: center;
 }
@@ -224,51 +224,66 @@ label {
     text-shadow: 0 0 15px rgba(0, 255, 188, 0.83);
 }
 
-#thermometer-container {
-    position: relative;
-    font-size: 100px; /* Adjust size as needed */
-    width: 1em;
-    height: 3em;
-    margin: 0 auto;
+#block-thermometer, #block-humidity {
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 300px;
 }
 
-#temperature-icon {
-    transition: color 0.2s ease-in-out; /* Tranziție lină pe culoare */
-    animation: bounce 1.5s infinite;
-
-    font-size: 80px; /* Ajustează dimensiunea iconiței */
-    color: green; /* Culoarea se schimbă în funcție de temperatură */
-}
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-#droplet-humidity {
-    position: relative;
-    width: 80px;
-    height: 100px;
+#thermometer-container, #droplet-humidity {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    flex-direction: column; /* Align items vertically */
-
+    flex-direction: column;
 }
+
+#temperature-icon {
+    transition: color 0.2s ease-in-out;
+    animation: bounce 1.5s infinite;
+    font-size: 8rem;
+    color: green;
+}
+
+/* Humidity Icon */
+#droplet-humidity {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #humidity-icon {
     transition: color 0.2s ease-in-out;
-    font-size: 80px;
+    font-size: 8rem;
     color: lightblue;
-    position: absolute;
-    margin-left:-30px ;
     animation: bounce 1.5s infinite;
 }
+
 #humidity-fill {
     position: absolute;
-    bottom: 5px;
     width: 50px;
     height: 0%;
     border-radius: 50%;
     transition: height 0.5s ease-in-out, background 0.5s ease-in-out;
-    background: linear-gradient(to top, #007bff, #00c6ff); /* Gradient */
+    background: linear-gradient(to top, #007bff, #00c6ff);
+}
+
+/* Bounce animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        align-items: center;
+    }
 }

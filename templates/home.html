@@ -5,8 +5,8 @@
 <div class="container" id="main-content">
     <h1 class="text-center text-light">Welcome, {{ username }}!</h1>
     <p class="text-center text-light">Manage your smart devices with Smart Dash</p>
-
-
+    
+    
     <form method="POST" action="{{ url_for('add_device') }}" class="mb-4">
         <div class="row g-3 justify-content-center text-center">
             <div class="col-12 col-md-3">
@@ -33,8 +33,8 @@
             </div>
         </div>
     </form>
-
-
+    
+    
     <div class="row">
         {% for device in devices %}
         <div class="col-md-4 device-card"
@@ -53,7 +53,7 @@
                     <p class="device-ip" style="display: block;">IP: {{ device.ip }}</p>
                 </div>
             </div>
-
+            
             <!-- Context Menu -->
             <div class="context-menu" id="context-menu-{{ device.name }}">
                 <form method="POST" action="{{ url_for('remove_device') }}">
@@ -74,7 +74,7 @@
 <div id="solar-panel-data" class="d-none container-fluid text-center text-light mb-4" style="padding-bottom: 60px;">
     <h2 class="mb-3">Solar Panel Real-Time Data</h2>
     
-    <div class="row">
+    <div class="row justify-content-center gap-4">
         <!-- Column 1: Power & Energy Data -->
         <div id="solar-1" class="col-md-4 text-light p-3 mb-3">
             <h4 class="mb-4">Power & Energy</h4>
@@ -111,40 +111,31 @@
 </div>
 
 
-<div id="temperature-data" class="d-none row text-center text-light">
+<div id="temperature-data" class="d-none text-center text-light">
     <h2>Temperature Data</h2>
-
+    
     <div class="container mt-5">
-        <div class="row">
-<!--            Thermometer icon-->
-           <div class="col-md-4 text-start d-flex flex-column align-items-start">
-
-                <i id="temperature-icon" class="fa-solid fa-thermometer-half"></i>
-
-
-                <div id="droplet-humidity" class="droplet-container mt-3">
-                    <i id="humidity-icon" class="fa-solid fa-droplet"></i>
-
+        <div class="row justify-content-center gap-4">
+            <div id="block-thermometer" class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
+                <div id="thermometer-container" class="mb-3">
+                    <i id="temperature-icon" class="fa-solid fa-thermometer-half"></i>
                 </div>
-
-
-            </div>
-
-            <!-- Right Column (Empty for spacing, optional) -->
-            <div class="col-md-4">
                 <p id="temperature">Fetching data...</p>
+            </div>
+            <div id="block-humidity" class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
+                <div id="droplet-humidity" class="mb-3">
+                    <i id="humidity-icon" class="fa-solid fa-droplet"></i>
+                    <div id="humidity-fill"></div>
+                </div>
                 <p id="humidity">Fetching data...</p>
             </div>
-            <div class="col-md-4"></div>
-
         </div>
     </div>
-
 </div>
 
 <div id="appearance-menu" class="d-none container text-light mb-4">
     <h2 class="mb-3">Appearance Settings</h2>
-
+    
     <!-- Theme selection dropdown -->
     <div class="d-flex justify-content-center align-items-center mb-3">
         <label for="theme-select" class="me-3">Choose Theme:</label>
@@ -153,7 +144,7 @@
             <option value="light">Light</option>
         </select>
     </div>
-
+    
     <!-- IP visibility toggle checkbox -->
     <div class="d-flex justify-content-center align-items-center mb-3">
         <input type="checkbox" id="show-ip-checkbox" class="form-check-input me-3"
@@ -176,9 +167,9 @@
     <p>Smart Dash is a simple web application that allows you to manage your smart devices from a single
         dashboard.</p>
     <p>Developed with&nbsp;&nbsp;<i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;at&nbsp;&nbsp;<i
-            class="fa-brands fa-github"></i> <a id="link"
-                                                href="https://github.com/t0ry003/SmartDash"
-                                                target="_blank">SmartDash</a>
+        class="fa-brands fa-github"></i> <a id="link"
+                                            href="https://github.com/t0ry003/SmartDash"
+                                            target="_blank">SmartDash</a>
     </p>
 </div>
 
