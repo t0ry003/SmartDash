@@ -95,6 +95,8 @@ function fetchTemperatureData() {
             const humidityElement = document.getElementById('humidity');
             const thermometerFill = document.getElementById('thermometer-fill');
             const temperatureIcon = document.querySelector("#temperature-icon");
+            const humidityIcon = document.querySelector("#humidity-icon");
+            const humidityFill = document.getElementById("humidity-fill");
 
 
             const temperature = data.temperature;
@@ -109,17 +111,19 @@ function fetchTemperatureData() {
             if (temperature > 30) iconClass = "fa-thermometer-three-quarters";
             if (temperature > 40) iconClass = "fa-thermometer-full";
 
-             temperatureIcon.className = `fa-solid ${iconClass}`;
+
+            humidityIcon.style.color = getHumidityColor(humidity);
+
+
+            temperatureIcon.className = `fa-solid ${iconClass}`;
 
             // Calculate the fill height based on temperature
             const minTemp = 0; // Minimum temperature expected
             const maxTemp = 50; // Maximum temperature expected
 
 
-            // Set the fill height and color
-            // thermometerFill.style.height = `${fillHeight}%`;
-
             temperatureIcon.style.color = getTemperatureColor(temperature)
+
         })
         .catch(error => {
             console.error('Error fetching temperature data:', error);
@@ -136,11 +140,19 @@ function getTemperatureColor(temperature) {
         return '#2a9d8f';
     } else if (temperature <= 20) {
         return '#e9c46a';
-    }  else if (temperature <= 25) {
+    } else if (temperature <= 25) {
         return '#f4a261';
-    }else {
+    } else {
         return '#e76f51';
     }
+}
+
+function getHumidityColor(humidity) {
+    if (humidity < 30) return "#caf0f8"; // Dry air
+    else if (humidity < 50) return "#00b4d8";
+    else if (humidity < 70) return "#0077b6";
+    else return "#023e8a"// Normal air
+        return "blue"; // Very humid
 }
 
 setInterval(fetchTemperatureData, 1000);

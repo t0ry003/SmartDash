@@ -114,9 +114,31 @@
 <div id="temperature-data" class="d-none row text-center text-light">
     <h2>Temperature Data</h2>
 
-    <i id="temperature-icon" class="fa-solid fa-thermometer-empty">
-    <p id="temperature"> </i>Fetching data...</p>
-    <p id="humidity">Fetching data...</p>
+    <div class="container mt-5">
+        <div class="row">
+<!--            Thermometer icon-->
+           <div class="col-md-4 text-start d-flex flex-column align-items-start">
+
+                <i id="temperature-icon" class="fa-solid fa-thermometer-half"></i>
+
+
+                <div id="droplet-humidity" class="droplet-container mt-3">
+                    <i id="humidity-icon" class="fa-solid fa-droplet"></i>
+
+                </div>
+
+
+            </div>
+
+            <!-- Right Column (Empty for spacing, optional) -->
+            <div class="col-md-4">
+                <p id="temperature">Fetching data...</p>
+                <p id="humidity">Fetching data...</p>
+            </div>
+            <div class="col-md-4"></div>
+
+        </div>
+    </div>
 
 </div>
 

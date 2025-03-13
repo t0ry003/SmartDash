@@ -232,22 +232,43 @@ label {
     margin: 0 auto;
 }
 
-#thermometer-icon {
-    position: absolute;
-    /*top: 0;*/
-    /*left: 0;*/
-    color: #ccc; /* Base color of the thermometer */
-}
-
-#thermometer-fill {
-    width: auto;
-    height: auto;
-    background-color: transparent; /* Elimină fundalul */
-}
-
 #temperature-icon {
     transition: color 0.2s ease-in-out; /* Tranziție lină pe culoare */
+    animation: bounce 1.5s infinite;
 
-    font-size: 100px; /* Ajustează dimensiunea iconiței */
+    font-size: 80px; /* Ajustează dimensiunea iconiței */
     color: green; /* Culoarea se schimbă în funcție de temperatură */
+}
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+#droplet-humidity {
+    position: relative;
+    width: 80px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column; /* Align items vertically */
+
+}
+#humidity-icon {
+    transition: color 0.2s ease-in-out;
+    font-size: 80px;
+    color: lightblue;
+    position: absolute;
+    margin-left:-30px ;
+    animation: bounce 1.5s infinite;
+}
+#humidity-fill {
+    position: absolute;
+    bottom: 5px;
+    width: 50px;
+    height: 0%;
+    border-radius: 50%;
+    transition: height 0.5s ease-in-out, background 0.5s ease-in-out;
+    background: linear-gradient(to top, #007bff, #00c6ff); /* Gradient */
 }
