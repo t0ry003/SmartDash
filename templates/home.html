@@ -25,7 +25,7 @@
                     <option value="fan">Fan</option>
                     <option value="thermostat">Thermostat</option>
                     <option value="fronius">Fronius</option>
-
+                
                 </select>
             </div>
             <div class="col-12 col-md-2">
@@ -71,13 +71,45 @@
     <span id="menu-message"></span>
 </div>
 
-<!-- Solar Panel Data Section -->
-<div id="solar-panel-data" class="d-none row text-center text-light">
-    <h2>Solar Panel Real-Time Data</h2>
-    <p id="solar-power">Fetching data...</p>
-    <p id="solar-energy">Fetching data...</p>
-    <p id="solar-voltage">Fetching data...</p>
+<div id="solar-panel-data" class="d-none container-fluid text-center text-light mb-4" style="padding-bottom: 60px;">
+    <h2 class="mb-3">Solar Panel Real-Time Data</h2>
+    
+    <div class="row">
+        <!-- Column 1: Power & Energy Data -->
+        <div id="solar-1" class="col-md-4 text-light p-3 mb-3">
+            <h4 class="mb-4">Power & Energy</h4>
+            <p><strong>Power Output:</strong> <span id="solar-power">Fetching data...</span> W</p>
+            <p><strong>Energy Produced:</strong> <span id="solar-energy">Fetching data...</span> kWh</p>
+            <p><strong>Energy Consumed:</strong> <span id="solar-energy-consumed">Fetching data...</span> kWh</p>
+            <p><strong>Net Balance:</strong> <span id="solar-net-balance">Fetching data...</span> kWh</p>
+            <p><strong>Self-Sufficiency:</strong> <span id="solar-self-sufficiency">Fetching data...</span> %</p>
+        </div>
+        
+        <!-- Column 2: Grid & Voltage Data -->
+        <div id="solar-2" class="col-md-4 text-light p-3 mb-3">
+            <h4 class="mb-4">Grid & Voltage</h4>
+            <p><strong>Grid Import:</strong> <span id="solar-grid-import">Fetching data...</span> kWh</p>
+            <p><strong>Grid Export:</strong> <span id="solar-grid-export">Fetching data...</span> kWh</p>
+            <p><strong>Voltage:</strong></p>
+            <p>Phase 1: <span id="solar-voltage-1">Fetching data...</span> V</p>
+            <p>Phase 2: <span id="solar-voltage-2">Fetching data...</span> V</p>
+            <p>Phase 3: <span id="solar-voltage-3">Fetching data...</span> V</p>
+        </div>
+        
+        <!-- Column 3: Current & Other Metrics -->
+        <div id="solar-3" class="col-md-4 text-light p-3 mb-3">
+            <h4 class="mb-4">Current & Other Metrics</h4>
+            <p><strong>Current:</strong></p>
+            <p>Phase 1: <span id="solar-current-1">Fetching data...</span> A</p>
+            <p>Phase 2: <span id="solar-current-2">Fetching data...</span> A</p>
+            <p>Phase 3: <span id="solar-current-3">Fetching data...</span> A</p>
+            <p><strong>Power Factor:</strong> <span id="solar-power-factor">Fetching data...</span></p>
+            <p><strong>Reactive Power:</strong> <span id="solar-reactive-power">Fetching data...</span> kVAr</p>
+            <p><strong>CO₂ Savings:</strong> <span id="solar-co2">10.82</span> t</p>
+        </div>
+    </div>
 </div>
+
 
 <div id="temperature-data" class="d-none row text-center text-light">
     <h2>Temperature Data</h2>

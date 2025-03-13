@@ -53,13 +53,34 @@ function fetchSolarData() {
     fetch('/solar-data')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('solar-power').textContent = `Current Power: ${data.power} W`;
-            document.getElementById('solar-energy').textContent = `Today's Energy: ${data.energy} kWh`;
-            document.getElementById('solar-voltage').textContent = `Current Voltage: ${data.voltage} V`;
+            document.getElementById('solar-power').textContent = `${data.power}`;
+            document.getElementById('solar-energy').textContent = `${data.energy_produced}`;
+            document.getElementById('solar-energy-consumed').textContent = `${data.energy_consumed}`;
+            document.getElementById('solar-net-balance').textContent = `${data.net_energy_balance}`;
+            document.getElementById('solar-self-sufficiency').textContent = `${data.self_sufficiency}`;
+
+            document.getElementById('solar-grid-import').textContent = `${data.grid_import}`;
+            document.getElementById('solar-grid-export').textContent = `${data.grid_export}`;
+
+            document.getElementById('solar-voltage-1').textContent = `${data.voltage_phase_1}`;
+            document.getElementById('solar-voltage-2').textContent = `${data.voltage_phase_2}`;
+            document.getElementById('solar-voltage-3').textContent = `${data.voltage_phase_3}`;
+
+            document.getElementById('solar-current-1').textContent = `${data.current_phase_1}`;
+            document.getElementById('solar-current-2').textContent = `${data.current_phase_2}`;
+            document.getElementById('solar-current-3').textContent = `${data.current_phase_3}`;
+
+            document.getElementById('solar-power-factor').textContent = data.power_factor;
+            document.getElementById('solar-reactive-power').textContent = `${data.reactive_power}`;
+
+            document.getElementById('solar-co2').textContent = `${data.co2_savings}`;
         })
         .catch(error => {
             console.error('Error fetching solar data:', error);
-            document.getElementById('solar-power').textContent = 'Error fetching data ${error}';
+            const errorMessage = 'Error fetching data';
+            document.getElementById('solar-power').textContent = errorMessage;
+            document.getElementById('solar-energy').textContent = errorMessage;
+            document.getElementById('solar-voltage-1').textContent = errorMessage;
         });
 }
 
