@@ -63,7 +63,7 @@ function fetchSolarData() {
         });
 }
 
-setInterval(fetchSolarData, 10000);
+setInterval(fetchSolarData, 20000);
 fetchSolarData();
 
 function fetchTemperatureData() {
