@@ -185,6 +185,12 @@ label {
     max-width: 400px;
 }
 
+#solar-1, #solar-2, #solar-3 {
+    background: #121212;
+    border-radius: 20px;
+    text-align: center;
+}
+
 #link {
     color: #2fffc4;
     transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;

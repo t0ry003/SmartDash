@@ -192,23 +192,53 @@ def get_device_icon(device_type):
 
 @app.route('/solar-data')
 def solar_data():
-    devices = fetch_fronius_device_data()  # Get solar devices data
+    devices = fetch_fronius_device_data()
     if isinstance(devices, list) and devices:
         device = devices[0]
         data = device.get('data', {})
-        if isinstance(data, dict):  # Ensure data is a dictionary (parsed JSON)
-            power = data.get('Body', {}).get('Data', {}).get('PowerReal_P_Sum', 'N/A')
-            energy = data.get('Body', {}).get('Data', {}).get('EnergyReal_WAC_Sum_Produced', 'N/A')
-            voltage = data.get('Body', {}).get('Data', {}).get('Voltage_AC_Phase_1', 'N/A')
-        else:
-            power = 'Invalid data format'
-            energy = 'Invalid data format'
-            voltage = 'Invalid data format'
-        return jsonify({'power': power, 'energy': energy, 'voltage': voltage})
-    elif isinstance(devices, Response):  # Check if the response is a redirect
-        return devices  # Return the redirect response
-    else:
-        return jsonify({'power': 'No data available', 'energy': 'No data available', 'voltage': 'No data available'})
+
+        if isinstance(data, dict):
+            power = data.get('Body', {}).get('Data', {}).get('PowerReal_P_Sum', 0)
+            energy_produced = data.get('Body', {}).get('Data', {}).get('EnergyReal_WAC_Sum_Produced', 0)
+            energy_consumed = data.get('Body', {}).get('Data', {}).get('EnergyReal_WAC_Sum_Consumed', 0)
+            net_energy_balance = energy_produced - energy_consumed
+            self_sufficiency = round((energy_produced / max(energy_consumed, 1)) * 100, 2)
+
+            grid_import = data.get('Body', {}).get('Data', {}).get('EnergyReal_WAC_Plus_Absolute', 0)
+            grid_export = data.get('Body', {}).get('Data', {}).get('EnergyReal_WAC_Minus_Absolute', 0)
+
+            voltage_phase_1 = data.get('Body', {}).get('Data', {}).get('Voltage_AC_Phase_1', 0)
+            voltage_phase_2 = data.get('Body', {}).get('Data', {}).get('Voltage_AC_Phase_2', 0)
+            voltage_phase_3 = data.get('Body', {}).get('Data', {}).get('Voltage_AC_Phase_3', 0)
+
+            current_phase_1 = data.get('Body', {}).get('Data', {}).get('Current_AC_Phase_1', 0)
+            current_phase_2 = data.get('Body', {}).get('Data', {}).get('Current_AC_Phase_2', 0)
+            current_phase_3 = data.get('Body', {}).get('Data', {}).get('Current_AC_Phase_3', 0)
+
+            power_factor = data.get('Body', {}).get('Data', {}).get('PowerFactor_Sum', 0)
+            reactive_power = data.get('Body', {}).get('Data', {}).get('PowerReactive_Q_Sum', 0)
+
+            co2_savings = 10.82  # You might want to calculate this dynamically
+
+            return jsonify({
+                'power': power,
+                'energy_produced': energy_produced,
+                'energy_consumed': energy_consumed,
+                'net_energy_balance': net_energy_balance,
+                'self_sufficiency': self_sufficiency,
+                'grid_import': grid_import,
+                'grid_export': grid_export,
+                'voltage_phase_1': voltage_phase_1,
+                'voltage_phase_2': voltage_phase_2,
+                'voltage_phase_3': voltage_phase_3,
+                'current_phase_1': current_phase_1,
+                'current_phase_2': current_phase_2,
+                'current_phase_3': current_phase_3,
+                'power_factor': power_factor,
+                'reactive_power': reactive_power,
+                'co2_savings': co2_savings
+            })
+    return jsonify({'error': 'No data available'})
 
 
 def fetch_fronius_device_data():
@@ -229,7 +259,7 @@ def fetch_fronius_data(ip_address):
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        return response.json()  # Return the parsed JSON data
+        return response.json()  # Return parsed JSON data
     except requests.RequestException as e:
         print(f"Error fetching data from {ip_address}: {e}")
         return None
