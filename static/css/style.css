@@ -228,18 +228,20 @@ label {
 
 #thermometer-icon {
     position: absolute;
-    top: 0;
-    left: 0;
+    /*top: 0;*/
+    /*left: 0;*/
     color: #ccc; /* Base color of the thermometer */
 }
 
 #thermometer-fill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0;
-    background-color: red; /* Color representing temperature */
-    z-index: -1; /* Ensure the fill is behind the icon */
-    border-radius: 0.15em; /* Rounded corners for the fill */
+    width: auto;
+    height: auto;
+    background-color: transparent; /* Elimină fundalul */
+}
+
+#temperature-icon {
+    transition: color 0.2s ease-in-out; /* Tranziție lină pe culoare */
+
+    font-size: 100px; /* Ajustează dimensiunea iconiței */
+    color: green; /* Culoarea se schimbă în funcție de temperatură */
 }

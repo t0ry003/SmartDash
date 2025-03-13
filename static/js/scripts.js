@@ -73,6 +73,8 @@ function fetchTemperatureData() {
             const temperatureElement = document.getElementById('temperature');
             const humidityElement = document.getElementById('humidity');
             const thermometerFill = document.getElementById('thermometer-fill');
+            const temperatureIcon = document.querySelector("#temperature-icon");
+
 
             const temperature = data.temperature;
             const humidity = data.humidity;
@@ -80,14 +82,23 @@ function fetchTemperatureData() {
             temperatureElement.textContent = `Temperature: ${temperature}°C`;
             humidityElement.textContent = `Humidity: ${humidity}%`;
 
+            let iconClass = "fa-thermometer-empty";
+            if (temperature > 10) iconClass = "fa-thermometer-quarter";
+            if (temperature > 20) iconClass = "fa-thermometer-half";
+            if (temperature > 30) iconClass = "fa-thermometer-three-quarters";
+            if (temperature > 40) iconClass = "fa-thermometer-full";
+
+             temperatureIcon.className = `fa-solid ${iconClass}`;
+
             // Calculate the fill height based on temperature
             const minTemp = 0; // Minimum temperature expected
             const maxTemp = 50; // Maximum temperature expected
-            const fillHeight = ((temperature - minTemp) / (maxTemp - minTemp)) * 100;
+
 
             // Set the fill height and color
-            thermometerFill.style.height = `${fillHeight}%`;
-            thermometerFill.style.backgroundColor = getTemperatureColor(temperature);
+            // thermometerFill.style.height = `${fillHeight}%`;
+
+            temperatureIcon.style.color = getTemperatureColor(temperature)
         })
         .catch(error => {
             console.error('Error fetching temperature data:', error);
@@ -98,14 +109,16 @@ function fetchTemperatureData() {
 
 function getTemperatureColor(temperature) {
     // Define color thresholds
-    if (temperature <= 10) {
-        return 'blue';
+    if (temperature <= 5) {
+        return '#264653';
+    } else if (temperature <= 10) {
+        return '#2a9d8f';
     } else if (temperature <= 20) {
-        return 'green';
-    } else if (temperature <= 30) {
-        return 'orange';
-    } else {
-        return 'red';
+        return '#e9c46a';
+    }  else if (temperature <= 25) {
+        return '#f4a261';
+    }else {
+        return '#e76f51';
     }
 }
 
