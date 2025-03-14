@@ -1,14 +1,28 @@
+function hexToRgb(hex) {
+    hex = hex.replace(/^#/, ""); // Remove "#" if present
+
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+
+    return `rgb(${r}, ${g}, ${b})`; // Remove alpha because getComputedStyle() does not use it
+}
+
+
 function toggleOn(deviceName, deviceIp) {
     var bulbIcon = document.getElementById('bulb-icon-' + deviceName);
     var state = 'off';
 
-    if (bulbIcon.style.color === 'yellow') {
+    const newColor = hexToRgb("#52887A3F")
+    const color = window.getComputedStyle(bulbIcon).color;
+
+
+    if (color === newColor) {
         bulbIcon.style.color = 'gray';
         bulbIcon.style.textShadow = 'none';
     } else {
-        bulbIcon.style.color = 'yellow';
-        bulbIcon.style.textShadow = '0 0 10px yellow';
-
+        bulbIcon.style.color = newColor;
+        bulbIcon.style.textShadow = `0 0 10px ${newColor}`;
         state = 'on';
     }
 
@@ -152,7 +166,7 @@ function getHumidityColor(humidity) {
     else if (humidity < 50) return "#00b4d8";
     else if (humidity < 70) return "#0077b6";
     else return "#023e8a"// Normal air
-        return "blue"; // Very humid
+
 }
 
 setInterval(fetchTemperatureData, 1000);
