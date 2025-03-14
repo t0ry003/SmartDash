@@ -108,6 +108,119 @@
             <p><strong>CO₂ Savings:</strong> <span id="solar-co2">10.82</span> t</p>
         </div>
     </div>
+    <!-- Add Charts to Solar Panel Real-Time Data Section -->
+<div id="solar-charts" class="container-fluid text-center text-light mt-4">
+    <h2 class="mb-3">Solar Energy Graphs</h2>
+
+    <div class="row justify-content-center">
+        <!-- Line Chart for Power and Energy -->
+        <div class="col-md-6 mb-4">
+            <canvas id="powerChart"></canvas>
+        </div>
+
+        <!-- Bar Chart for Grid Import/Export -->
+        <div class="col-md-6 mb-4">
+            <canvas id="gridChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let powerChart, gridChart;
+
+    function updateCharts(data) {
+        const powerLabels = [...Array(10).keys()].map(i => `-${10 - i}s`);
+        const energyProduced = Array(10).fill(data.energy_produced);
+        const energyConsumed = Array(10).fill(data.energy_consumed);
+        const powerOutput = Array(10).fill(data.power);
+
+        // Update Power Chart
+        if (!powerChart) {
+            const ctx = document.getElementById("powerChart").getContext("2d");
+            powerChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: powerLabels,
+                    datasets: [
+                        { label: "Power Output (W)", data: powerOutput, borderColor: "#FFA500", fill: false },
+                        { label: "Energy Produced (kWh)", data: energyProduced, borderColor: "#00FF00", fill: false },
+                        { label: "Energy Consumed (kWh)", data: energyConsumed, borderColor: "#FF0000", fill: false }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Time (seconds)"
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Energy (W or kWh)"
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            powerChart.data.datasets[0].data = powerOutput;
+            powerChart.data.datasets[1].data = energyProduced;
+            powerChart.data.datasets[2].data = energyConsumed;
+            powerChart.update();
+        }
+
+        // Update Grid Chart
+        if (!gridChart) {
+            const ctx2 = document.getElementById("gridChart").getContext("2d");
+            gridChart = new Chart(ctx2, {
+                type: "bar",
+                data: {
+                    labels: ["Grid Import", "Grid Export"],
+                    datasets: [{
+                        label: "Energy (kWh)",
+                        data: [data.grid_import, data.grid_export],
+                        backgroundColor: ["#3498db", "#2ecc71"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Energy Source"
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Energy (kWh)"
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            gridChart.data.datasets[0].data = [data.grid_import, data.grid_export];
+            gridChart.update();
+        }
+    }
+
+    function fetchSolarData() {
+        fetch("/solar-data")
+            .then(response => response.json())
+            .then(data => updateCharts(data))
+            .catch(error => console.error("Error fetching solar data:", error));
+    }
+
+    setInterval(fetchSolarData, 5000); // Refresh every 5 seconds
+</script>
 </div>
 
 
