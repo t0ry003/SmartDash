@@ -5,8 +5,8 @@
 <div class="container" id="main-content">
     <h1 class="text-center text-light">Welcome, {{ username }}!</h1>
     <p class="text-center text-light">Manage your smart devices with Smart Dash</p>
-    
-    
+
+
     <form method="POST" action="{{ url_for('add_device') }}" class="mb-4">
         <div class="row g-3 justify-content-center text-center">
             <div class="col-12 col-md-3">
@@ -25,7 +25,7 @@
                     <option value="fan">Fan</option>
                     <option value="thermostat">Thermostat</option>
                     <option value="fronius">Fronius</option>
-                
+
                 </select>
             </div>
             <div class="col-12 col-md-2">
@@ -33,8 +33,8 @@
             </div>
         </div>
     </form>
-    
-    
+
+
     <div class="row">
         {% for device in devices %}
         <div class="col-md-4 device-card"
@@ -53,7 +53,7 @@
                     <p class="device-ip" style="display: block;">IP: {{ device.ip }}</p>
                 </div>
             </div>
-            
+
             <!-- Context Menu -->
             <div class="context-menu" id="context-menu-{{ device.name }}">
                 <form method="POST" action="{{ url_for('remove_device') }}">
@@ -73,7 +73,7 @@
 
 <div id="solar-panel-data" class="d-none container-fluid text-center text-light mb-4" style="padding-bottom: 60px;">
     <h2 class="mb-3">Solar Panel Real-Time Data</h2>
-    
+
     <div class="row justify-content-center gap-4">
         <!-- Column 1: Power & Energy Data -->
         <div id="solar-1" class="col-md-4 text-light p-3 mb-3">
@@ -84,7 +84,7 @@
             <p><strong>Net Balance:</strong> <span id="solar-net-balance">Fetching data...</span> kWh</p>
             <p><strong>Self-Sufficiency:</strong> <span id="solar-self-sufficiency">Fetching data...</span> %</p>
         </div>
-        
+
         <!-- Column 2: Grid & Voltage Data -->
         <div id="solar-2" class="col-md-4 text-light p-3 mb-3">
             <h4 class="mb-4">Grid & Voltage</h4>
@@ -95,7 +95,7 @@
             <p>Phase 2: <span id="solar-voltage-2">Fetching data...</span> V</p>
             <p>Phase 3: <span id="solar-voltage-3">Fetching data...</span> V</p>
         </div>
-        
+
         <!-- Column 3: Current & Other Metrics -->
         <div id="solar-3" class="col-md-4 text-light p-3 mb-3">
             <h4 class="mb-4">Current & Other Metrics</h4>
@@ -119,10 +119,16 @@
             <canvas id="powerEnergyChart" style="max-width: 400px; max-height: 400px;"></canvas>
         </div>
 
-        <!-- Grid & Voltage Chart -->
+         <!-- Grid Import/Export Chart -->
         <div class="col-md-4 mb-4">
-            <h4>Grid & Voltage</h4>
-            <canvas id="gridVoltageChart" style="max-width: 400px; max-height: 400px;"></canvas>
+            <h4>Grid Import/Export</h4>
+            <canvas id="gridImportExportChart" style="max-width: 400px; max-height: 400px;"></canvas>
+        </div>
+
+        <!-- Voltage Phase Chart -->
+        <div class="col-md-4 mb-4">
+            <h4>Voltage Phase</h4>
+            <canvas id="voltagePhaseChart" style="max-width: 400px; max-height: 400px;"></canvas>
         </div>
 
         <!-- Current & Other Metrics Chart -->
@@ -135,12 +141,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    let powerEnergyChart, gridVoltageChart, currentMetricsChart;
+    let powerEnergyChart, gridImportExportChart, voltagePhaseChart, currentMetricsChart;
 
     function updateCharts(data) {
-        // Data for Power & Energy Chart
-        const powerEnergyData = [data.power, data.energy_produced, data.energy_consumed, data.net_energy_balance, data.self_sufficiency];
-        const powerEnergyLabels = ["Power Output (W)", "Energy Produced (kWh)", "Energy Consumed (kWh)", "Net Balance (kWh)", "Self-Sufficiency (%)"];
+        // Power & Energy Chart Data
+        const powerEnergyData = [data.energy_produced, data.energy_consumed, data.net_energy_balance];
+        const powerEnergyLabels = ["Energy Produced (kWh)", "Energy Consumed (kWh)", "Net Balance (kWh)"];
+        const powerEnergyColors = ["#28a745", "#f39c12", "#8e44ad"];
 
         if (!powerEnergyChart) {
             const ctx = document.getElementById("powerEnergyChart").getContext("2d");
@@ -151,45 +158,124 @@
                     datasets: [{
                         label: "Power & Energy",
                         data: powerEnergyData,
-                        backgroundColor: ["#007bff", "#28a745", "#dc3545", "#f39c12", "#8e44ad"]
+                        backgroundColor: powerEnergyColors
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "kWh"
+                            }
+                        },
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: Math.max(...powerEnergyData) + 100,
+                            title: {display: true}
+                        }
+                    },
+                    plugins: {
+                        legend: {display: false}
+                    }
+                }
             });
         } else {
             powerEnergyChart.data.datasets[0].data = powerEnergyData;
             powerEnergyChart.update();
         }
+        // Grid Import/Export Chart
+        const gridData = [data.grid_import, data.grid_export];
+        const gridLabels = ["Grid Import (kWh)", "Grid Export (kWh)"];
 
-        // Data for Grid & Voltage Chart
-        const gridVoltageData = [data.grid_import, data.grid_export, data.voltage_phase_1, data.voltage_phase_2, data.voltage_phase_3];
-        const gridVoltageLabels = ["Grid Import (kWh)", "Grid Export (kWh)", "Voltage Phase 1 (V)", "Voltage Phase 2 (V)", "Voltage Phase 3 (V)"];
+        if (!gridImportExportChart) {
+            const ctx2 = document.getElementById("gridImportExportChart").getContext("2d");
+            gridImportExportChart = new Chart(ctx2, {
+                type: "bar",
+                data: {
+                    labels: gridLabels,
+                    datasets: [{
+                        label: "Grid Import/Export",
+                        data: gridData,
+                        backgroundColor: ["#ff5733", "#f2079c"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                   scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "kWh"
+                            }
+                        },
+                        y: {
+                            title: {display: true}
+                        }
+                    },
+                    plugins: {
+                        legend: {display: false}
+                    }
+                }
+            });
+        } else {
+            gridImportExportChart.data.datasets[0].data = gridData;
+            gridImportExportChart.update();
+        }
 
-        if (!gridVoltageChart) {
-            const ctx2 = document.getElementById("gridVoltageChart").getContext("2d");
-            gridVoltageChart = new Chart(ctx2, {
+         const voltageData = [data.voltage_phase_1, data.voltage_phase_2, data.voltage_phase_3];
+        const voltageLabels = ["Phase 1 (V)", "Phase 2 (V)", "Phase 3 (V)"];
+
+        if (!voltagePhaseChart) {
+            const ctx3 = document.getElementById("voltagePhaseChart").getContext("2d");
+            voltagePhaseChart = new Chart(ctx3, {
                 type: "line",
                 data: {
-                    labels: gridVoltageLabels,
+                    labels: voltageLabels,
                     datasets: [{
-                        label: "Grid & Voltage",
-                        data: gridVoltageData,
-                        borderColor: "#e67e22",
-                        backgroundColor: "rgba(230, 126, 34, 0.2)",
-                        borderWidth: 2,
+                        label: "Voltage Phase",
+                        data: voltageData,
+                        borderColor: "#ff9900",
+                        backgroundColor: "rgba(255, 153, 0, 0.2)",
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: "#ff6600",
                         fill: true
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                borderDash: [5, 5]
+                            }
+                        }
+                    }
+                }
             });
         } else {
-            gridVoltageChart.data.datasets[0].data = gridVoltageData;
-            gridVoltageChart.update();
+            voltagePhaseChart.data.datasets[0].data = voltageData;
+            voltagePhaseChart.update();
         }
-
-        // Data for Current & Other Metrics Chart
-        const currentMetricsData = [data.current_phase_1, data.current_phase_2, data.current_phase_3, data.power_factor, data.reactive_power, data.co2_savings];
-        const currentMetricsLabels = ["Current Phase 1 (A)", "Current Phase 2 (A)", "Current Phase 3 (A)", "Power Factor", "Reactive Power (kVAr)", "CO₂ Savings (t)"];
+        // Current & Other Metrics Chart Data
+        const currentMetricsData = [data.current_phase_1, data.current_phase_2, data.current_phase_3];
+        const currentMetricsLabels = ["Current Phase 1 (A)", "Current Phase 2 (A)", "Current Phase 3 (A)"];
 
         if (!currentMetricsChart) {
             const ctx3 = document.getElementById("currentMetricsChart").getContext("2d");
@@ -200,18 +286,30 @@
                     datasets: [{
                         label: "Current & Other Metrics",
                         data: currentMetricsData,
-                        backgroundColor: ["#1abc9c", "#3498db", "#9b59b6", "#f1c40f", "#e74c3c", "#2ecc71"],
+                        backgroundColor: ["#1abc9c", "#3498db", "#f1c40f"],
                         hoverOffset: 4
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                boxWidth: 20,
+                                padding: 10
+                            }
+                        }
+                    }
+                }
             });
         } else {
             currentMetricsChart.data.datasets[0].data = currentMetricsData;
             currentMetricsChart.update();
         }
     }
-
     function fetchSolarData() {
         fetch("/solar-data")
             .then(response => response.json())
@@ -219,15 +317,13 @@
             .catch(error => console.error("Error fetching solar data:", error));
     }
 
-    setInterval(fetchSolarData, 5000); // Refresh every 5 seconds
+    setInterval(fetchSolarData, 5000);
 </script>
-
 </div>
-
 
 <div id="temperature-data" class="d-none text-center text-light">
     <h2>Temperature Data</h2>
-    
+
     <div class="container mt-5">
         <div class="row justify-content-center gap-4">
             <div id="block-thermometer" class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
@@ -249,7 +345,7 @@
 
 <div id="appearance-menu" class="d-none container text-light mb-4">
     <h2 class="mb-3">Appearance Settings</h2>
-    
+
     <!-- Theme selection dropdown -->
     <div class="d-flex justify-content-center align-items-center mb-3">
         <label for="theme-select" class="me-3">Choose Theme:</label>
@@ -258,7 +354,7 @@
             <option value="light">Light</option>
         </select>
     </div>
-    
+
     <!-- IP visibility toggle checkbox -->
     <div class="d-flex justify-content-center align-items-center mb-3">
         <input type="checkbox" id="show-ip-checkbox" class="form-check-input me-3"
