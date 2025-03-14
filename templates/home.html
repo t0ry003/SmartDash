@@ -113,102 +113,102 @@
     <h2 class="mb-3">Solar Energy Graphs</h2>
 
     <div class="row justify-content-center">
-        <!-- Line Chart for Power and Energy -->
-        <div class="col-md-6 mb-4">
-            <canvas id="powerChart"></canvas>
+        <!-- Power & Energy Chart -->
+        <div class="col-md-4 mb-4">
+            <h4>Power & Energy</h4>
+            <canvas id="powerEnergyChart" style="max-width: 400px; max-height: 400px;"></canvas>
         </div>
 
-        <!-- Bar Chart for Grid Import/Export -->
-        <div class="col-md-6 mb-4">
-            <canvas id="gridChart"></canvas>
+        <!-- Grid & Voltage Chart -->
+        <div class="col-md-4 mb-4">
+            <h4>Grid & Voltage</h4>
+            <canvas id="gridVoltageChart" style="max-width: 400px; max-height: 400px;"></canvas>
+        </div>
+
+        <!-- Current & Other Metrics Chart -->
+        <div class="col-md-4 mb-4">
+            <h4>Current & Other Metrics</h4>
+            <canvas id="currentMetricsChart" style="max-width: 400px; max-height: 400px;"></canvas>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    let powerChart, gridChart;
+    let powerEnergyChart, gridVoltageChart, currentMetricsChart;
 
     function updateCharts(data) {
-        const powerLabels = [...Array(10).keys()].map(i => `-${10 - i}s`);
-        const energyProduced = Array(10).fill(data.energy_produced);
-        const energyConsumed = Array(10).fill(data.energy_consumed);
-        const powerOutput = Array(10).fill(data.power);
+        // Data for Power & Energy Chart
+        const powerEnergyData = [data.power, data.energy_produced, data.energy_consumed, data.net_energy_balance, data.self_sufficiency];
+        const powerEnergyLabels = ["Power Output (W)", "Energy Produced (kWh)", "Energy Consumed (kWh)", "Net Balance (kWh)", "Self-Sufficiency (%)"];
 
-        // Update Power Chart
-        if (!powerChart) {
-            const ctx = document.getElementById("powerChart").getContext("2d");
-            powerChart = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: powerLabels,
-                    datasets: [
-                        { label: "Power Output (W)", data: powerOutput, borderColor: "#FFA500", fill: false },
-                        { label: "Energy Produced (kWh)", data: energyProduced, borderColor: "#00FF00", fill: false },
-                        { label: "Energy Consumed (kWh)", data: energyConsumed, borderColor: "#FF0000", fill: false }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: "Time (seconds)"
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: "Energy (W or kWh)"
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            powerChart.data.datasets[0].data = powerOutput;
-            powerChart.data.datasets[1].data = energyProduced;
-            powerChart.data.datasets[2].data = energyConsumed;
-            powerChart.update();
-        }
-
-        // Update Grid Chart
-        if (!gridChart) {
-            const ctx2 = document.getElementById("gridChart").getContext("2d");
-            gridChart = new Chart(ctx2, {
+        if (!powerEnergyChart) {
+            const ctx = document.getElementById("powerEnergyChart").getContext("2d");
+            powerEnergyChart = new Chart(ctx, {
                 type: "bar",
                 data: {
-                    labels: ["Grid Import", "Grid Export"],
+                    labels: powerEnergyLabels,
                     datasets: [{
-                        label: "Energy (kWh)",
-                        data: [data.grid_import, data.grid_export],
-                        backgroundColor: ["#3498db", "#2ecc71"]
+                        label: "Power & Energy",
+                        data: powerEnergyData,
+                        backgroundColor: ["#007bff", "#28a745", "#dc3545", "#f39c12", "#8e44ad"]
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: "Energy Source"
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: "Energy (kWh)"
-                            }
-                        }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         } else {
-            gridChart.data.datasets[0].data = [data.grid_import, data.grid_export];
-            gridChart.update();
+            powerEnergyChart.data.datasets[0].data = powerEnergyData;
+            powerEnergyChart.update();
+        }
+
+        // Data for Grid & Voltage Chart
+        const gridVoltageData = [data.grid_import, data.grid_export, data.voltage_phase_1, data.voltage_phase_2, data.voltage_phase_3];
+        const gridVoltageLabels = ["Grid Import (kWh)", "Grid Export (kWh)", "Voltage Phase 1 (V)", "Voltage Phase 2 (V)", "Voltage Phase 3 (V)"];
+
+        if (!gridVoltageChart) {
+            const ctx2 = document.getElementById("gridVoltageChart").getContext("2d");
+            gridVoltageChart = new Chart(ctx2, {
+                type: "line",
+                data: {
+                    labels: gridVoltageLabels,
+                    datasets: [{
+                        label: "Grid & Voltage",
+                        data: gridVoltageData,
+                        borderColor: "#e67e22",
+                        backgroundColor: "rgba(230, 126, 34, 0.2)",
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        } else {
+            gridVoltageChart.data.datasets[0].data = gridVoltageData;
+            gridVoltageChart.update();
+        }
+
+        // Data for Current & Other Metrics Chart
+        const currentMetricsData = [data.current_phase_1, data.current_phase_2, data.current_phase_3, data.power_factor, data.reactive_power, data.co2_savings];
+        const currentMetricsLabels = ["Current Phase 1 (A)", "Current Phase 2 (A)", "Current Phase 3 (A)", "Power Factor", "Reactive Power (kVAr)", "CO₂ Savings (t)"];
+
+        if (!currentMetricsChart) {
+            const ctx3 = document.getElementById("currentMetricsChart").getContext("2d");
+            currentMetricsChart = new Chart(ctx3, {
+                type: "doughnut",
+                data: {
+                    labels: currentMetricsLabels,
+                    datasets: [{
+                        label: "Current & Other Metrics",
+                        data: currentMetricsData,
+                        backgroundColor: ["#1abc9c", "#3498db", "#9b59b6", "#f1c40f", "#e74c3c", "#2ecc71"],
+                        hoverOffset: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        } else {
+            currentMetricsChart.data.datasets[0].data = currentMetricsData;
+            currentMetricsChart.update();
         }
     }
 
@@ -221,6 +221,7 @@
 
     setInterval(fetchSolarData, 5000); // Refresh every 5 seconds
 </script>
+
 </div>
 
 
