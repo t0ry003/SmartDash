@@ -287,3 +287,10 @@ label {
         align-items: center;
     }
 }
+:root {
+    --favicon-color: red; /* Default color */
+}
+
+link[rel="icon"] {
+    filter: invert(33%) sepia(95%) saturate(749%) hue-rotate(357deg); /* Adjust color */
+}
