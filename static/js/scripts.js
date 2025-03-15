@@ -44,14 +44,27 @@ function toggleOn(deviceName, deviceIp) {
         .catch(error => console.error('Error:', error));
 }
 
-function showMenu(menuName, isHome, isSettings = false, isSolar = false, isTemp = false) {
-    document.getElementById('main-content').classList.toggle('d-none', !isHome);
-    document.getElementById('solar-panel-data').classList.toggle('d-none', !isSolar);
-    document.getElementById('temperature-data').classList.toggle('d-none', !isTemp);
-    document.getElementById('appearance-menu').classList.toggle('d-none', !isSettings);
-    document.getElementById('account-menu').classList.toggle('d-none', !isSettings);
-    document.getElementById('about-menu').classList.toggle('d-none', !isSettings);
+function showMenu(menuName) {
+    const menuMap = {
+        home: ['main-content'],
+        solar: ['solar-panel-data'],
+        temp: ['temperature-data'],
+        settings: ['appearance-menu', 'account-menu', 'about-menu']
+    };
+
+    // Hide all menus first
+    Object.values(menuMap).flat().forEach(id => {
+        document.getElementById(id).classList.add('d-none');
+    });
+
+    // Show selected menu
+    if (menuMap[menuName]) {
+        menuMap[menuName].forEach(id => {
+            document.getElementById(id).classList.remove('d-none');
+        });
+    }
 }
+
 
 function changeTheme(theme) {
     if (theme === 'light') {
@@ -142,7 +155,6 @@ function fetchTemperatureData() {
             temperatureIcon.style.color = getTemperatureColor(temperature)
 
 
-
         })
         .catch(error => {
             console.error('Error fetching temperature data:', error);
@@ -174,15 +186,16 @@ function getHumidityColor(humidity) {
     else return "#023e8a"// Normal air
 
 }
+
 function getPressureColor(pressure) {
     if (pressure >= 1020) return "#28a745"; // High pressure
     else if (pressure >= 1000) return "#f1c40f";  // Normal pressure
     else if (pressure >= 980) return "#e67e22";  //  Low pressure
     else return "#e74c3c"; // Very low pressure
 }
+
 setInterval(fetchTemperatureData, 1000);
 fetchTemperatureData();
-
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -347,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                   scales: {
+                    scales: {
                         x: {
                             title: {
                                 display: true,
@@ -368,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
             gridImportExportChart.update();
         }
 
-         const voltageData = [data.voltage_phase_1, data.voltage_phase_2, data.voltage_phase_3];
+        const voltageData = [data.voltage_phase_1, data.voltage_phase_2, data.voltage_phase_3];
         const voltageLabels = ["Phase 1 (V)", "Phase 2 (V)", "Phase 3 (V)"];
 
         if (!voltagePhaseChart) {
@@ -452,6 +465,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentMetricsChart.update();
         }
     }
+
     function fetchSolarData() {
         fetch("/solar-data")
             .then(response => response.json())
