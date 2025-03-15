@@ -98,6 +98,7 @@ function fetchSolarData() {
         });
 }
 
+
 setInterval(fetchSolarData, 20000);
 fetchSolarData();
 
@@ -110,15 +111,17 @@ function fetchTemperatureData() {
             const thermometerFill = document.getElementById('thermometer-fill');
             const temperatureIcon = document.querySelector("#temperature-icon");
             const humidityIcon = document.querySelector("#humidity-icon");
-            const humidityFill = document.getElementById("humidity-fill");
-
+            const pressureIcon = document.querySelector("#pressure-icon");
+            const pressureElement = document.getElementById('pressure');
+            const pressureFill = document.getElementById('pressure-fill');
 
             const temperature = data.temperature;
             const humidity = data.humidity;
+            const pressure = data.pressure;
 
             temperatureElement.textContent = `Temperature: ${temperature}°C`;
             humidityElement.textContent = `Humidity: ${humidity}%`;
-
+            pressureElement.textContent = `Pressure: ${pressure} hPa`;
             let iconClass = "fa-thermometer-empty";
             if (temperature > 10) iconClass = "fa-thermometer-quarter";
             if (temperature > 20) iconClass = "fa-thermometer-half";
@@ -127,7 +130,7 @@ function fetchTemperatureData() {
 
 
             humidityIcon.style.color = getHumidityColor(humidity);
-
+            pressureIcon.style.color = getPressureColor(pressure);
 
             temperatureIcon.className = `fa-solid ${iconClass}`;
 
@@ -138,11 +141,14 @@ function fetchTemperatureData() {
 
             temperatureIcon.style.color = getTemperatureColor(temperature)
 
+
+
         })
         .catch(error => {
             console.error('Error fetching temperature data:', error);
             document.getElementById('temperature').textContent = `Error fetching data: ${error}`;
             document.getElementById('humidity').textContent = `Error fetching data: ${error}`;
+            document.getElementById('pressure').textContent = 'Error fetching data';
         });
 }
 
@@ -168,9 +174,15 @@ function getHumidityColor(humidity) {
     else return "#023e8a"// Normal air
 
 }
-
+function getPressureColor(pressure) {
+    if (pressure >= 1020) return "#28a745"; // High pressure
+    else if (pressure >= 1000) return "#f1c40f";  // Normal pressure
+    else if (pressure >= 980) return "#e67e22";  //  Low pressure
+    else return "#e74c3c"; // Very low pressure
+}
 setInterval(fetchTemperatureData, 1000);
 fetchTemperatureData();
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -270,6 +282,184 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleIPVisibility(e.target);
         saveSettings();
     });
+    // Graphics
+    let powerEnergyChart, gridImportExportChart, voltagePhaseChart, currentMetricsChart;
+
+    function updateCharts(data) {
+        // Power & Energy Chart Data
+        const powerEnergyData = [data.energy_produced, data.energy_consumed, data.net_energy_balance];
+        const powerEnergyLabels = ["Energy Produced (kWh)", "Energy Consumed (kWh)", "Net Balance (kWh)"];
+        const powerEnergyColors = ["#28a745", "#f39c12", "#8e44ad"];
+
+        if (!powerEnergyChart) {
+            const ctx = document.getElementById("powerEnergyChart").getContext("2d");
+            powerEnergyChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: powerEnergyLabels,
+                    datasets: [{
+                        label: "Power & Energy",
+                        data: powerEnergyData,
+                        backgroundColor: powerEnergyColors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "kWh"
+                            }
+                        },
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: Math.max(...powerEnergyData) + 100,
+                            title: {display: true}
+                        }
+                    },
+                    plugins: {
+                        legend: {display: false}
+                    }
+                }
+            });
+        } else {
+            powerEnergyChart.data.datasets[0].data = powerEnergyData;
+            powerEnergyChart.update();
+        }
+        // Grid Import/Export Chart
+        const gridData = [data.grid_import, data.grid_export];
+        const gridLabels = ["Grid Import (kWh)", "Grid Export (kWh)"];
+
+        if (!gridImportExportChart) {
+            const ctx2 = document.getElementById("gridImportExportChart").getContext("2d");
+            gridImportExportChart = new Chart(ctx2, {
+                type: "bar",
+                data: {
+                    labels: gridLabels,
+                    datasets: [{
+                        label: "Grid Import/Export",
+                        data: gridData,
+                        backgroundColor: ["#ff5733", "#f2079c"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                   scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "kWh"
+                            }
+                        },
+                        y: {
+                            title: {display: true}
+                        }
+                    },
+                    plugins: {
+                        legend: {display: false}
+                    }
+                }
+            });
+        } else {
+            gridImportExportChart.data.datasets[0].data = gridData;
+            gridImportExportChart.update();
+        }
+
+         const voltageData = [data.voltage_phase_1, data.voltage_phase_2, data.voltage_phase_3];
+        const voltageLabels = ["Phase 1 (V)", "Phase 2 (V)", "Phase 3 (V)"];
+
+        if (!voltagePhaseChart) {
+            const ctx3 = document.getElementById("voltagePhaseChart").getContext("2d");
+            voltagePhaseChart = new Chart(ctx3, {
+                type: "line",
+                data: {
+                    labels: voltageLabels,
+                    datasets: [{
+                        label: "Voltage Phase",
+                        data: voltageData,
+                        borderColor: "#ff9900",
+                        backgroundColor: "rgba(255, 153, 0, 0.2)",
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: "#ff6600",
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                borderDash: [5, 5]
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            voltagePhaseChart.data.datasets[0].data = voltageData;
+            voltagePhaseChart.update();
+        }
+        // Current & Other Metrics Chart Data
+        const currentMetricsData = [data.current_phase_1, data.current_phase_2, data.current_phase_3];
+        const currentMetricsLabels = ["Current Phase 1 (A)", "Current Phase 2 (A)", "Current Phase 3 (A)"];
+
+        if (!currentMetricsChart) {
+            const ctx3 = document.getElementById("currentMetricsChart").getContext("2d");
+            currentMetricsChart = new Chart(ctx3, {
+                type: "doughnut",
+                data: {
+                    labels: currentMetricsLabels,
+                    datasets: [{
+                        label: "Current & Other Metrics",
+                        data: currentMetricsData,
+                        backgroundColor: ["#1abc9c", "#3498db", "#f1c40f"],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                boxWidth: 20,
+                                padding: 10
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            currentMetricsChart.data.datasets[0].data = currentMetricsData;
+            currentMetricsChart.update();
+        }
+    }
+    function fetchSolarData() {
+        fetch("/solar-data")
+            .then(response => response.json())
+            .then(data => updateCharts(data))
+            .catch(error => console.error("Error fetching solar data:", error));
+    }
+
+    setInterval(fetchSolarData, 5000);
 
 
 });

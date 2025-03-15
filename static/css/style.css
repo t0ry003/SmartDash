@@ -224,7 +224,7 @@ label {
     text-shadow: 0 0 15px rgba(0, 255, 188, 0.83);
 }
 
-#block-thermometer, #block-humidity {
+#block-thermometer, #block-humidity , #block-pressure {
     background: #1e1e1e;
     padding: 30px;
     border-radius: 10px;
@@ -232,7 +232,7 @@ label {
     max-width: 300px;
 }
 
-#thermometer-container, #droplet-humidity {
+#thermometer-container, #droplet-humidity, #droplet-pressure {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -269,6 +269,14 @@ label {
     transition: height 0.5s ease-in-out, background 0.5s ease-in-out;
     background: linear-gradient(to top, #007bff, #00c6ff);
 }
+
+#pressure-icon {
+    transition: color 0.2s ease-in-out;
+    font-size: 8rem;
+    color: lightblue;
+    animation: bounce 1.5s infinite;
+}
+
 
 /* Bounce animation */
 @keyframes bounce {

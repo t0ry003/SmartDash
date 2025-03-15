@@ -269,9 +269,11 @@ def fetch_fronius_data(ip_address):
 def get_temperature_data():
     temperature = round(random.uniform(5, 40.0), 2)  # Simulated temperature in °C
     humidity = round(random.uniform(0, 70.0), 2)  # Simulated humidity in %
+    pressure = round(random.uniform(0, 100), 2)
     data = {
         'temperature': temperature,
-        'humidity': humidity
+        'humidity': humidity,
+        'pressure': pressure
     }
     return jsonify(data)
 
