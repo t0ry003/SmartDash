@@ -39,7 +39,7 @@
         {% for device in devices %}
         <div class="col-md-4 device-card"
              data-device-name="{{ device.name }}"
-             onclick="toggleOn('{{ device.name }}', '{{ device.ip }}')"
+             onclick="toggleOn('{{ device.name }}', '{{ device.ip }}', '{{ device.type }}')"
              oncontextmenu="showContextMenu(event, '{{ device.name }}')">
             <div id="device-card" class="card text-light p-3 mb-4 mx-auto">
                 <div class="d-flex flex-column justify-content-center align-items-center text-center">

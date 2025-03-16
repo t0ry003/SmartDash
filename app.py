@@ -32,9 +32,9 @@ class User(UserMixin, db.Model):
     devices = db.Column(db.Text, default='[]')
     settings = db.Column(db.Text, default='{}')
 
-    def add_device(self, name, ip, type):
+    def add_device(self, name, ip, device_type):
         device_list = json.loads(self.devices)
-        device_list.append({'name': name, 'ip': ip, 'type': type})
+        device_list.append({'name': name, 'ip': ip, 'type': device_type})
         self.devices = json.dumps(device_list)
         db.session.commit()
 
@@ -154,9 +154,10 @@ def toggle_device():
     data = request.get_json()
     device_name = data.get('device_name')
     device_ip = data.get('device_ip')
+    device_type = data.get('device_type')
     state = data.get('state')
 
-    print(f"Turning {state} the device: {device_name}, IP: {device_ip}")
+    print(f"Turning {state} the device: {device_name}, IP: {device_ip}, Device Type: {device_type}")
 
     return jsonify({'message': f'Toggling device: {device_name}, IP: {device_ip}, State: {state}'}), 200
 

@@ -9,14 +9,25 @@ function hexToRgb(hex) {
 }
 
 
-function toggleOn(deviceName, deviceIp) {
+function toggleOn(deviceName, deviceIp, deviceType) {
     var bulbIcon = document.getElementById('bulb-icon-' + deviceName);
     var state = 'off';
 
-    const newColor = hexToRgb("#52887A3F")
+    const newColor = hexToRgb("#52887A3F");
     const color = window.getComputedStyle(bulbIcon).color;
 
+    // Show menu based on device type without toggling icon
+    if (deviceType === 'fronius') {
+        showMenu('solar');
+        return;
+    } else if (deviceType === 'thermostat') {
+        showMenu('temp');
+        return;
+    } else if (deviceType === 'sensor') {
+        return; // Do nothing
+    }
 
+    // Toggle icon color for other device types
     if (color === newColor) {
         bulbIcon.style.color = 'gray';
         bulbIcon.style.textShadow = 'none';
@@ -34,6 +45,7 @@ function toggleOn(deviceName, deviceIp) {
         body: JSON.stringify({
             device_name: deviceName,
             device_ip: deviceIp,
+            device_type: deviceType,
             state: state,
         })
     })
