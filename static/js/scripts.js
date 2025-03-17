@@ -85,10 +85,12 @@ function changeTheme(theme) {
 
     console.log("Theme selected:", theme);
     if (theme === 'light') {
+        document.body.classList.add('light-theme');
         document.body.style.setProperty("background-color", "white", "important");
         document.body.style.setProperty("color", "white", "important");
 
     } else {
+        document.body.classList.add("dark-theme"); // Add dark theme
         document.body.style.backgroundColor = '#212529';
         document.body.style.color = 'white';
     }

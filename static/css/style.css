@@ -1,11 +1,14 @@
 body {
-    background-color: #121212;
-    color: white;
+   background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
 .card {
     border-radius: 15px;
-    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px var(--card-shadow);
 }
 
 .btn-primary {
@@ -299,6 +302,21 @@ label {
 
 :root {
     --favicon-color: red; /* Default color */
+
+}
+.light-theme{
+    --bg-color: white;
+    --text-color: black;
+    --card-bg: white;
+    --card-text: black;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+}
+.dark-theme {
+   --bg-color: #212529;
+    --text-color: white;
+    --card-bg: #1e1e1e;
+    --card-text: white;
+    --card-shadow: rgba(255, 255, 255, 0.1);
 }
 
 link[rel="icon"] {
