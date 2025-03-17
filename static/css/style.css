@@ -225,7 +225,7 @@ label {
     text-shadow: 0 0 15px rgba(0, 255, 188, 0.83);
 }
 
-#block-thermometer, #block-humidity , #block-pressure {
+#block-thermometer, #block-humidity, #block-pressure {
     background: #1e1e1e;
     padding: 30px;
     border-radius: 10px;
@@ -296,6 +296,7 @@ label {
         align-items: center;
     }
 }
+
 :root {
     --favicon-color: red; /* Default color */
 }

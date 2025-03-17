@@ -31,9 +31,11 @@ function toggleOn(deviceName, deviceIp, deviceType) {
     if (color === newColor) {
         bulbIcon.style.color = 'gray';
         bulbIcon.style.textShadow = 'none';
+        bulbIcon.style.transition = 'color 0.3s ease-in-out, text-shadow 0.3s ease-in-out';
     } else {
         bulbIcon.style.color = newColor;
         bulbIcon.style.textShadow = `0 0 10px ${newColor}`;
+        bulbIcon.style.transition = 'color 0.3s ease-in-out, text-shadow 0.3s ease-in-out';
         state = 'on';
     }
 
