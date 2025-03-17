@@ -81,14 +81,30 @@ function showMenu(menuName) {
 
 
 function changeTheme(theme) {
+
+
+    console.log("Theme selected:", theme);
     if (theme === 'light') {
-        document.body.style.backgroundColor = 'white';
-        document.body.style.color = 'black';
+        document.body.style.setProperty("background-color", "white", "important");
+        document.body.style.setProperty("color", "white", "important");
+
     } else {
-        document.body.style.backgroundColor = '#121212';
+        document.body.style.backgroundColor = '#212529';
         document.body.style.color = 'white';
     }
+    localStorage.setItem("theme", theme);
 }
+
+window.onload = function () {
+    const savedTheme = localStorage.getItem("theme");
+    const themeSelect = document.getElementById("theme-select");
+
+    if (savedTheme) {
+        changeTheme(savedTheme); // Apply saved theme
+        themeSelect.value = savedTheme; // Set the dropdown to match
+    }
+};
+
 
 function fetchSolarData() {
     fetch('/solar-data')
@@ -174,7 +190,7 @@ function fetchTemperatureData() {
             console.error('Error fetching temperature data:', error);
             document.getElementById('temperature').textContent = `Error fetching data: ${error}`;
             document.getElementById('humidity').textContent = `Error fetching data: ${error}`;
-            document.getElementById('pressure').textContent = 'Error fetching data';
+            document.getElementById('pressure').textContent = `Error fetching data: ${error}`;
         });
 }
 
@@ -202,10 +218,10 @@ function getHumidityColor(humidity) {
 }
 
 function getPressureColor(pressure) {
-    if (pressure >= 1020) return "#28a745"; // High pressure
-    else if (pressure >= 1000) return "#f1c40f";  // Normal pressure
-    else if (pressure >= 980) return "#e67e22";  //  Low pressure
-    else return "#e74c3c"; // Very low pressure
+    if (pressure <= 980) return "#28a745"; // Very low pressure
+    else if (pressure <= 1000) return "#f1c40f";  // Low pressure
+    else if (pressure <= 1200) return "#e67e22";  //  Normal pressure
+    else return "#e74c3c"; // High pressure
 }
 
 setInterval(fetchTemperatureData, 1000);
