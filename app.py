@@ -3,17 +3,25 @@ import os
 import random
 
 import requests
+import pymssql
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 
 # Connect to your remote MySQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sql7767154:gukxfaZppt@sql7.freesqldatabase.com:3306/sql7767154'
+#server: smartdashproject.database.windows.net
+# DB_name: smartdash
+# username: smartdashadmin
+# password: a7MgNwjiq_fs6&2
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://smartdashadmin:a7MgNwjiq_fs6&2@smartdashproject.database.windows.net:1433/smartdash'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)

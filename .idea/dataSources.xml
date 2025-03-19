@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://sql7.freesqldatabase.com:3306/sql7767154</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="smartdashproject" uuid="8c243f9d-a6dc-4edc-ba03-486374ebd8c0">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://smartdashproject.database.windows.net:1433;database=smartdash;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
