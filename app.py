@@ -287,6 +287,8 @@ def get_temperature_data():
     return jsonify(data)
 
 
+
+
 # Main
 if __name__ == '__main__':
     with app.app_context():

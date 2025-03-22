@@ -189,15 +189,52 @@
     </div>
 </div>
 
-
 <div id="account-menu" class="d-none container text-light mb-4">
     <h2 class="mb-3">Account Settings</h2>
     <div class="d-flex justify-content-center align-items-center">
-        <a id="btn-log-out" href="{{ url_for('logout') }}" class="btn">Logout</a>
+        <a id="btn-log-out" href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
     </div>
 </div>
 
-<!--about Smart Dash-->
+    <!-- Language selection menu -->
+<div id="language-menu" class="d-none container text-light mb-4">
+    <h2 class="mb-3">Language</h2>
+    <div class="d-flex justify-content-center align-items-center">
+        <label for="language-select" class="me-3">Choose Language:</label>
+        <select id="language-select" class="form-control w-25" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="ro">Română</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
+</div>
+
+    <!-- Help & Support Menu -->
+<div id="help-menu" class="d-none container text-light mb-4">
+    <h2 class="mb-3">Help & Support</h2>
+    <p class="text-center">Need help or want to give feedback? We're here for you.</p>
+
+    <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
+        <a href="https://github.com/t0ry003/SmartDash/wiki" target="_blank" class="btn btn-outline-light">
+            📚 View FAQ
+        </a>
+       <a href="mailto:catavoicu01@gmail.com?subject=SmartDash%20Support&body=Hello%2C%20I%20need%20help%20with..." class="btn btn-outline-light">
+         ✉️ Contact Support
+       </a>
+
+    </div>
+
+    <form class="text-center" action="https://formspree.io/f/xyzewzlr" method="POST">
+        <div class="mb-3">
+            <textarea name="message" class="form-control w-75 mx-auto" rows="4" placeholder="Write your question or feedback..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-light">Send Message</button>
+    </form>
+</div>
+
+
+    <!-- About Smart Dash -->
 <div id="about-menu" class="d-none container text-light mb-4">
     <h2 class="mb-3">About Smart Dash</h2>
     <p>Smart Dash is a simple web application that allows you to manage your smart devices from a single
@@ -210,6 +247,7 @@
 </div>
 
 
+    <div style="height: 100px;"></div>
 <footer id="navbar-bg" class="bottom-menu text-center p-3 fixed-bottom">
     <div id="navbar" class="d-flex justify-content-around align-items-center">
         <a id="menu-item-1" href="#" class="text-light d-flex flex-column align-items-center"

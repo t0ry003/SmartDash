@@ -181,7 +181,7 @@ label {
     text-align: center;
 }
 
-#appearance-menu, #account-menu, #about-menu {
+#appearance-menu, #account-menu, #about-menu,#language-menu, #help-menu{
     background: #1e1e1e;
     padding: 20px;
     border-radius: 10px;
