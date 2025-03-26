@@ -63,7 +63,7 @@ function showMenu(menuName) {
         home: ['main-content'],
         solar: ['solar-panel-data'],
         temp: ['temperature-data'],
-        settings: ['appearance-menu', 'account-menu', 'language-menu', 'help-menu', 'about-menu']
+        settings: ['appearance-menu', 'account-menu', 'help-menu', 'about-menu']
     };
 
     // Hide all menus first
