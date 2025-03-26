@@ -7,6 +7,10 @@ DB_TYPES = {
     "1": ("MSSQL", "mssql+pymssql"),
     "2": ("PostgreSQL", "postgresql+psycopg2"),
     "3": ("MySQL", "mysql+pymysql"),
+    "4": ("MariaDB", "mariadb+mariadbconnector"),
+    "5": ("Firebird", "firebird+fdb"),
+    "6": ("Sybase", "sybase+pyodbc"),
+    "7": ("SmartDash", "mssql+pymssql")
 }
 
 
@@ -45,25 +49,30 @@ def test_connection(db_uri):
 def create_config_file():
     print(f"{BColors.HEADER}Choose a database type: {BColors.ENDC}")
     for key, (name, _) in DB_TYPES.items():
-        print(f"{key}. {name}")
+        print(f"{BColors.HEADER}{key}. {name}{BColors.ENDC}")
 
-    choice = input("Enter choice (1/2/3): ").strip()
+    choice = input("Enter choice (1/2/3/4/5/6/7): ").strip()
     if choice not in DB_TYPES:
-        print("Invalid choice, defaulting to MSSQL.")
-        choice = "1"
+        print(f"{BColors.OKCYAN}Invalid choice, defaulting to SmartDash Azure.{BColors.ENDC}")
+        choice = "7"
 
-    db_name = input("Enter database name: ")
-    db_user = input("Enter username: ")
-    db_password = input("Enter password: ")
-    db_host = input("Enter host (e.g., smartdashproject.database.windows.net): ")
-    db_port = input("Enter port (e.g., 1433 for MSSQL, 3306 for MySQL, 5432 for PostgreSQL): ")
+    if choice != "7":
+        db_name = input("Enter database name: ")
+        db_user = input("Enter username: ")
+        db_password = input("Enter password: ")
+        db_host = input("Enter host (e.g., smartdashproject.database.windows.net): ")
+        db_port = input("Enter port (e.g., 1433 for MSSQL, 3306 for MySQL, 5432 for PostgreSQL): ")
+    else:
+        db_name = "smartdash"
+        db_user = "smartdashadmin"
+        db_password = "a7MgNwjiq_fs6&2"
+        db_host = "smartdashproject.database.windows.net"
+        db_port = "1433"
 
     db_type_name, db_type_uri = DB_TYPES[choice]
 
-    # Only encode password for MySQL and PostgreSQL, not MSSQL
     encoded_password = db_password if db_type_uri == "mssql+pymssql" else urllib.parse.quote_plus(db_password)
 
-    # Construct the correct database URI
     db_uri = f"{db_type_uri}://{db_user}:{encoded_password}@{db_host}:{db_port}/{db_name}"
 
     print(f"\nTesting connection to {db_type_name}...")

@@ -1,9 +1,0 @@
-{
-    "db_type": "mssql+pymssql",
-    "db_name": "smartdash",
-    "db_user": "smartdashadmin",
-    "db_password": "a7MgNwjiq_fs6&2",
-    "db_host": "smartdashproject.database.windows.net",
-    "db_port": "1433",
-    "db_uri": "mssql+pymssql://smartdashadmin:a7MgNwjiq_fs6&2@smartdashproject.database.windows.net:1433/smartdash"
-}
