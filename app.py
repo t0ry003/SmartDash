@@ -1,27 +1,32 @@
-import json
 import os
 import random
 
 import requests
-import pymssql
+import setup
+from setup import *
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 
-# Connect to your remote MySQL database
-#server: smartdashproject.database.windows.net
-# DB_name: smartdash
-# username: smartdashadmin
-# password: a7MgNwjiq_fs6&2
+if not setup.check_config_file():
+    print(f"{BColors.OKCYAN}Config file not found! Creating a new one...{BColors.ENDC}")
+    db_uri = setup.create_config_file()
+else:
+    config = setup.load_config()
+    db_uri = config["db_uri"] if config else None
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://smartdashadmin:a7MgNwjiq_fs6&2@smartdashproject.database.windows.net:1433/smartdash'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+if db_uri:
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+else:
+    print(f"{BColors.WARNING}No valid database configuration found. Exiting...{BColors.ENDC}")
+    exit(1)
 
+print(f"{BColors.OKGREEN}DB URI: {db_uri}{BColors.ENDC}")
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -285,8 +290,6 @@ def get_temperature_data():
         'pressure': pressure
     }
     return jsonify(data)
-
-
 
 
 # Main
