@@ -1,5 +1,5 @@
 body {
-   background-color: var(--bg-color);
+    background-color: var(--bg-color);
     color: var(--text-color);
 }
 
@@ -137,7 +137,7 @@ label {
     border-radius: 15px;
 }
 
-#btn-add-device, #btn-login-submit, #btn-register-submit {
+#btn-add-device, #btn-login-submit, #btn-register-submit, .btn {
     background: #52887AFF;
     border-radius: 15px;
     padding: 10px;
@@ -146,7 +146,7 @@ label {
     transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-#btn-add-device:hover, #btn-login-submit:hover, #btn-register-submit:hover {
+#btn-add-device:hover, #btn-login-submit:hover, #btn-register-submit:hover, .btn:hover {
     background: #3f6f64;
     box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
 }
@@ -181,7 +181,7 @@ label {
     text-align: center;
 }
 
-#appearance-menu, #account-menu, #about-menu, #help-menu{
+#appearance-menu, #account-menu, #about-menu, #help-menu {
     background: #1e1e1e;
     padding: 20px;
     border-radius: 10px;
@@ -207,6 +207,23 @@ label {
 
 #show-ip-checkbox {
     scale: 1.4;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: #333;
+    border: 2px solid #52887AFF;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+#show-ip-checkbox:checked {
+    background-color: #52887AFF;
+}
+
+#show-ip-checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
 }
 
 #navbar-bg {
@@ -219,12 +236,12 @@ label {
 }
 
 
-#menu-item-1, #menu-item-2, #menu-item-3, #menu-item-4 {
+#menu-item-1 i, #menu-item-2 i, #menu-item-3 i, #menu-item-4 i {
     transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
 }
 
-#menu-item-1:hover, #menu-item-2:hover, #menu-item-3:hover, #menu-item-4:hover {
-    color: #2fffc4;
+#menu-item-1:hover i, #menu-item-2:hover i, #menu-item-3:hover i, #menu-item-4:hover i {
+    color: #4dc0a6;
     text-shadow: 0 0 15px rgba(0, 255, 188, 0.83);
 }
 
@@ -304,15 +321,17 @@ label {
     --favicon-color: red; /* Default color */
 
 }
-.light-theme{
+
+.light-theme {
     --bg-color: white;
     --text-color: black;
     --card-bg: white;
     --card-text: black;
     --card-shadow: rgba(0, 0, 0, 0.1);
 }
+
 .dark-theme {
-   --bg-color: #212529;
+    --bg-color: #212529;
     --text-color: white;
     --card-bg: #1e1e1e;
     --card-text: white;
