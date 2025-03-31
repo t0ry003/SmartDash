@@ -8,36 +8,20 @@
 
 <div align="center">
     <h3 align="center">A simple web application to manage your smart devices from a single dashboard</h3>
-
     <p align="center">
         <a href="#installation">Installation</a> •
         <a href="#configuration">Configuration</a> •
-        <a href="#usage">Usage</a> •
-        <a href="#main-features">Main Features</a> •
-        <a href="#development">Development</a> •
-        <a href="#wiki">Wiki</a>
+        <a href="https://github.com/t0ry003/SmartDash/wiki">Wiki</a>
     </p>
-
-    <img src="Documentation/demo1.gif" alt="Demo_1">
-    <img src="Documentation/demo2.gif" alt="Demo_2">
-</div>
 
 [![GitHub stars](https://img.shields.io/github/stars/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/network)
 [![GitHub issues](https://img.shields.io/github/issues/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/pulls)
 [![GitHub license](https://img.shields.io/github/license/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/blob/main/LICENSE)
+</div>
 
 SmartDash is a simple web application that allows you to manage your smart devices from a single dashboard. This guide will help you install and use the application.
-
-## Table of Contents
-
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Main Features](#main-features)
-- [Development](#development)
-- [Wiki](#wiki)
 
 ## Installation
 
