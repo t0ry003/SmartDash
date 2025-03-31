@@ -77,3 +77,7 @@ The `config.json` file will be created in the root directory with the following 
     "db_port": "your_database_port",
     "db_uri": "your_database_uri"
 }
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
