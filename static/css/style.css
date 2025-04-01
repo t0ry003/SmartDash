@@ -435,7 +435,6 @@ link[rel="icon"] {
     background-color: var(--card-bg);
     color: var(--card-text);
     border-radius: 10px;
-    box-shadow: 0 0 15px var(--card-shadow);
 }
 
 .modal-header {
@@ -443,9 +442,9 @@ link[rel="icon"] {
 }
 
 .modal-header .btn-close {
-    background-color: #444;
+    background-color: #ffffff;
+    color: #ffffff;
     border: none;
-    color: #fff;
 }
 
 .modal-body {

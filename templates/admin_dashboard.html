@@ -73,16 +73,16 @@
                         <div class="device-list">
                             {% for device in user.get_devices() %}
                                 <div class="row mb-2 justify-content-center">
-                                    <div class="col">
+                                    <div class="col-2">
                                         <input type="text" value="{{ device.name }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="name">
                                     </div>
-                                    <div class="col">
+                                    <div class="col-2">
                                         <input type="text" value="{{ device.ip }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="ip">
                                     </div>
-                                    <div class="col">
+                                    <div class="col-2">
                                         <input type="text" value="{{ device.type }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="type">
                                     </div>
-                                    <div class="col-auto">
+                                    <div class="col-2">
                                         <button class="btn btn-danger btn-sm" onclick="deleteDevice({{ user.id }}, {{ loop.index0 }})">Delete</button>
                                     </div>
                                 </div>
