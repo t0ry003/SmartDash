@@ -1,0 +1,1 @@
+[{"name": "Kitchen", "ip": "192.168.0.1", "type": "light"}, {"name": "Smart Plug", "ip": "192.168.0.2", "type": "plug"}, {"name": "Smart Sensor", "ip": "192.168.0.3", "type": "sensor"}, {"name": "Smart Thermostat", "ip": "192.168.0.5", "type": "thermostat"}, {"name": "Fronius", "ip": "miracol-home.asuscomm.com:9999", "type": "fronius"}]

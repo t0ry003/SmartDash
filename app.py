@@ -43,8 +43,13 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)  # Store hashed passwords
+    role = db.Column(db.String(50), default='user')  # Default role is 'user'
     devices = db.Column(db.Text, default='[]')
-    settings = db.Column(db.Text, default='{}')
+    settings = db.Column(db.Text, default='{"theme": "dark", "show_ip": false}')
+
+    def change_password(self, new_password):
+        self.password = new_password
+        db.session.commit()
 
     def add_device(self, name, ip, device_type):
         device_list = json.loads(self.devices)
@@ -98,13 +103,19 @@ def register():
             flash('Username already exists. Choose another one.')
             return redirect(url_for('register'))
 
+        # check if any user exists to create the first admin
+        if User.query.count() == 0:
+            role = 'admin'
+        else:
+            role = 'user'
+
         # Hash the password before saving using bcrypt
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        new_user = User(username=username, password=hashed_password)
+        new_user = User(username=username, password=hashed_password, role=role)
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Registration successful! You can now log in.')
+        flash(f'Registration successful! Your account {username} in as an {role}.')
         return redirect(url_for('login'))
 
     return render_template('register.html')
@@ -120,11 +131,34 @@ def login():
 
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for('home'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Invalid username or password')
 
     return render_template('login.html')
+
+
+@app.route('/change_password', methods=['POST'])
+@login_required
+def change_password():
+    current_password = request.form['current_password']
+    new_password = request.form['new_password']
+    confirm_password = request.form['confirm_password']
+
+    if not bcrypt.check_password_hash(current_user.password, current_password):
+        flash('Current password is incorrect.')
+        return redirect(url_for('home'))
+
+    if new_password != confirm_password:
+        flash('New passwords do not match.')
+        return redirect(url_for('home'))
+
+    hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    current_user.change_password(hashed_password)
+    flash('Password changed successfully. Please log in with your new password.')
+    logout_user()
+    return redirect(url_for('login'))
 
 
 # Route: Logout
@@ -133,6 +167,86 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+# Admin panel for user management
+@app.route('/admin_dashboard', methods=['GET', 'POST'])
+@login_required
+def admin_dashboard():
+    if current_user.role != 'admin':
+        flash('You do not have permission to access this page.')
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+        user_id = request.form.get('user_id')
+        user = User.query.get(user_id)
+
+        if action == 'delete':
+            db.session.delete(user)
+            db.session.commit()
+            flash(f'User {user.username} has been deleted.')
+        elif action == 'change_role':
+            new_role = request.form.get('new_role')
+            if user.role == 'admin' and new_role == 'user':
+                admin_count = User.query.filter_by(role='admin').count()
+                if admin_count <= 1:
+                    flash('Cannot change the role of the last remaining admin.')
+                else:
+                    user.role = new_role
+                    db.session.commit()
+                    flash(f'User {user.username} role has been changed to {new_role}.')
+            else:
+                user.role = new_role
+                db.session.commit()
+                flash(f'User {user.username} role has been changed to {new_role}.')
+        elif action == 'save_settings':
+            settings = {
+                'theme': request.form.get('theme'),
+                'show_ip': request.form.get('show_ip') == 'on'
+            }
+            user.save_settings(settings)
+            flash(f'Settings for {user.username} have been updated.')
+
+    users = User.query.all()
+    return render_template('admin_dashboard.html', users=users)
+
+
+@app.route('/save_devices/<int:user_id>', methods=['POST'])
+@login_required
+def save_devices(user_id):
+    if current_user.role != 'admin':
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+
+    devices = request.json
+    user.devices = json.dumps(devices)
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'message': 'Devices saved successfully'})
+
+
+@app.route('/delete_device/<int:user_id>/<int:device_id>', methods=['POST'])
+@login_required
+def delete_device(user_id, device_id):
+    if current_user.role != 'admin':
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+
+    devices = json.loads(user.devices)
+    if device_id < len(devices):
+        devices.pop(device_id)
+        user.devices = json.dumps(devices)
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': 'Device deleted successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Device not found'}), 404
 
 
 # Route: Add Device

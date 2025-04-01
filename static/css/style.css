@@ -132,7 +132,7 @@ label {
     -ms-overflow-style: none;
 }
 
-#device-input1, #device-input2, #device-type {
+#device-input1, #device-input2, #device-type, #role_select {
     padding: 10px;
     border-radius: 15px;
 }
@@ -205,7 +205,7 @@ label {
     text-shadow: 0 0 0.25rem rgba(82, 136, 122, 0.6);
 }
 
-#show-ip-checkbox {
+.form-check-input {
     scale: 1.4;
     appearance: none;
     width: 20px;
@@ -217,11 +217,11 @@ label {
     position: relative;
 }
 
-#show-ip-checkbox:checked {
+.form-check-input:checked {
     background-color: #52887AFF;
 }
 
-#show-ip-checkbox:focus {
+.form-check-input:focus {
     outline: none;
     box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
 }
@@ -340,4 +340,179 @@ label {
 
 link[rel="icon"] {
     filter: invert(33%) sepia(95%) saturate(749%) hue-rotate(357deg); /* Adjust color */
+}
+
+.table-responsive {
+    margin-top: 20px;
+}
+
+.table-dark {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-dark th, .table-dark td {
+    border-color: #333;
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.table-dark thead th {
+    background-color: #333;
+    border-bottom: 2px solid #444;
+}
+
+.table-dark tbody tr:hover {
+    background-color: inherit; /* Remove hover effect */
+}
+
+.table-dark tbody tr {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.table-dark tbody td {
+    border-top: 1px solid #444;
+}
+
+.btn {
+    border-radius: 20px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.btn:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.form-control {
+    border-radius: 10px;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 10px;
+}
+
+.form-control:focus {
+    border-color: #52887AFF;
+    background-color: #444;
+    box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
+}
+
+.select-role {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-role select {
+    margin-right: 10px;
+}
+
+/* Modal Custom Styles */
+.modal-content {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    border-radius: 10px;
+    box-shadow: 0 0 15px var(--card-shadow);
+}
+
+.modal-header {
+    border-bottom: 1px solid #444;
+}
+
+.modal-header .btn-close {
+    background-color: #444;
+    border: none;
+    color: #fff;
+}
+
+.modal-body {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+}
+
+.modal-footer {
+    border-top: 1px solid #444;
+}
+
+.modal-footer .btn {
+    background-color: #52887AFF;
+    border: none;
+    color: white;
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.modal-footer .btn:hover {
+    background-color: #3f6f64;
+    box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
+}
+
+/* Navbar styling */
+.navbar {
+    background: linear-gradient(45deg, #4b0082, #212529);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.navbar:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.1);
+}
+
+.navbar-logo {
+    height: 40px;
+    margin-right: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.navbar-logo:hover {
+    transform: rotate(360deg);
+}
+
+.nav-link {
+    color: #e0e0e0;
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    color: #4dc0a6;
+    text-shadow: 0 0 10px rgba(0, 255, 188, 0.5);
+}
+
+.navbar-toggler {
+    border: none;
+    transition: transform 0.3s ease-in-out;
+}
+
+.navbar-toggler:hover {
+    transform: rotate(90deg);
 }

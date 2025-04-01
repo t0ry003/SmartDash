@@ -79,6 +79,10 @@ function showMenu(menuName) {
     }
 }
 
+function showChangePasswordModal() {
+    var changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+    changePasswordModal.show();
+}
 
 function changeTheme(theme) {
 
@@ -506,6 +510,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     setInterval(fetchSolarData, 5000);
-
-
 });

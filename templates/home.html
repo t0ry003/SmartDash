@@ -1,6 +1,17 @@
-<script src="../static/js/scripts.js"></script>{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Smart Dashboard{% endblock %}
 {% block content %}
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <div class="container" id="main-content">
         <h1 class="text-center text-light">Welcome, {{ username }}!</h1>
@@ -192,8 +203,51 @@
 
     <div id="account-menu" class="d-none container text-light mb-4">
         <h2 class="mb-3">Account Settings</h2>
-        <div class="d-flex justify-content-center align-items-center">
-            <a id="btn-log-out" href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <a id="btn-log-out" href="{{ url_for('logout') }}" class="btn btn-danger me-2">Logout</a>
+            <button id="btn-change-password" class="btn btn-primary" onclick="showChangePasswordModal()">Change
+                Password
+            </button>
+        </div>
+        {% if current_user.role == 'admin' %}
+            <div class="d-flex justify-content-center align-items-center">
+                <a id="btn-admin-dashboard" href="{{ url_for('admin_dashboard') }}" class="btn btn-success">Admin
+                    Dashboard</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="change-password-form" method="POST" action="{{ url_for('change_password') }}">
+                        <div class="mb-3">
+                            <label for="current-password" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current-password" name="current_password"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new-password" name="new_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm-password" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm-password" name="confirm_password"
+                                   required>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center align-items-center">
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
