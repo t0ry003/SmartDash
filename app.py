@@ -200,16 +200,47 @@ def admin_dashboard():
                 user.role = new_role
                 db.session.commit()
                 flash(f'User {user.username} role has been changed to {new_role}.')
-        elif action == 'save_settings':
-            settings = {
-                'theme': request.form.get('theme'),
-                'show_ip': request.form.get('show_ip') == 'on'
-            }
-            user.save_settings(settings)
-            flash(f'Settings for {user.username} have been updated.')
 
     users = User.query.all()
     return render_template('admin_dashboard.html', users=users)
+
+
+@app.route('/admin/update_settings/<int:user_id>', methods=['POST'])
+@login_required
+def admin_update_settings(user_id):
+    if current_user.role != 'admin':
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+
+    data = request.get_json()
+    if not data:
+        return jsonify({'status': 'error', 'message': 'Invalid data'}), 400
+
+    user.save_settings(data)
+    return jsonify({'status': 'success', 'message': 'Settings updated successfully'})
+
+
+@app.route('/admin/update_devices/<int:user_id>', methods=['POST'])
+@login_required
+def admin_update_devices(user_id):
+    if current_user.role != 'admin':
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+
+    devices = request.get_json()
+    if not devices:
+        return jsonify({'status': 'error', 'message': 'Invalid data'}), 400
+
+    user.devices = json.dumps(devices)
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'message': 'Devices updated successfully'})
 
 
 @app.route('/save_devices/<int:user_id>', methods=['POST'])

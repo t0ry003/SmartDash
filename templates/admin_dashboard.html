@@ -2,12 +2,10 @@
 {% block title %}Admin Dashboard - Smart Dash{% endblock %}
 {% block content %}
     <div class="container" id="main-content">
-        <h1 class="text-center text-light">Admin Dashboard</h1>
-        <p class="text-center text-light">Manage all users and their devices</p>
 
         <!-- Flash messages -->
         {% for message in get_flashed_messages() %}
-            <div class="alert alert-danger mt-2">{{ message }}</div>
+            <div class="alert alert-danger mt-2 text-center">{{ message }}</div>
         {% endfor %}
 
         <div class="table-responsive">
@@ -29,54 +27,14 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.role }}</td>
                         <td>
-                            <button class="btn btn-success btn-sm" onclick="toggleDevices({{ user.id }})">
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#devicesModal-{{ user.id }}">
                                 Show Devices ({{ user.get_devices()|length }})
                             </button>
-                            <ul id="devices-list-{{ user.id }}" class="d-none mt-2">
-                                {% for device in user.get_devices() %}
-                                    <li>
-                                        <input type="text" value="{{ device.name }}" class="form-control mb-2"
-                                               data-device-id="{{ loop.index0 }}" data-field="name">
-                                        <input type="text" value="{{ device.ip }}" class="form-control mb-2"
-                                               data-device-id="{{ loop.index0 }}" data-field="ip">
-                                        <input type="text" value="{{ device.type }}" class="form-control mb-2"
-                                               data-device-id="{{ loop.index0 }}" data-field="type">
-                                        <button class="btn btn-danger btn-sm mb-2"
-                                                onclick="deleteDevice({{ user.id }}, {{ loop.index0 }})">Delete
-                                        </button>
-                                    </li>
-                                {% endfor %}
-                                <button id="save-devices-{{ user.id }}" class="btn btn-success btn-sm mt-2 d-none"
-                                        onclick="saveDevices({{ user.id }})">Save Devices
-                                </button>
-                            </ul>
                         </td>
                         <td>
-                            <button class="btn btn-success btn-sm" onclick="toggleSettings({{ user.id }})">Show Settings</button>
-                            <div id="settings-{{ user.id }}" class="d-none mt-2">
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label for="theme-select-{{ user.id }}" class="form-label">Theme</label>
-                                        <select id="theme-select-{{ user.id }}" class="form-control d-inline w-auto" data-setting-field="theme">
-                                            <option value="dark" {% if user.get_settings().theme == 'dark' %}selected{% endif %}>Dark</option>
-                                            <option value="light" {% if user.get_settings().theme == 'light' %}selected{% endif %}>Light</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-2 align-items-center">
-                                    <div class="col-auto">
-                                        <input type="checkbox" class="form-check-input me-1" data-setting-field="show_ip" id="show-ip-admin-{{ user.id }}" {% if user.get_settings().show_ip %}checked{% endif %}>
-                                    </div>
-                                    <div class="col">
-                                        <label for="show-ip-admin-{{ user.id }}" class="form-check-label">Show IP</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 text-center">
-                                        <button class="btn btn-success btn-sm mt-2" onclick="saveSettings({{ user.id }})">Save Settings</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#settingsModal-{{ user.id }}">
+                                Show Settings
+                            </button>
                         </td>
                         <td class="select-role">
                             <form method="POST" class="d-inline me-2">
@@ -89,8 +47,7 @@
                                 <input type="hidden" name="action" value="change_role">
                                 <select name="new_role" id="role_select" class="form-control d-inline w-auto">
                                     <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
-                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin
-                                    </option>
+                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
                                 </select>
                                 <button type="submit" class="btn btn-success btn-sm">Change Role</button>
                             </form>
@@ -101,19 +58,97 @@
             </table>
         </div>
     </div>
-    <script>
-        function toggleDevices(userId) {
-            const devicesList = document.getElementById(`devices-list-${userId}`);
-            const saveButton = document.getElementById(`save-devices-${userId}`);
-            if (devicesList.classList.contains('d-none')) {
-                devicesList.classList.remove('d-none');
-                saveButton.classList.remove('d-none');
-            } else {
-                devicesList.classList.add('d-none');
-                saveButton.classList.add('d-none');
+
+    <!-- Modals for each user -->
+    {% for user in users %}
+        <!-- Devices Modal -->
+        <div class="modal fade" id="devicesModal-{{ user.id }}" tabindex="-1" aria-labelledby="devicesModalLabel-{{ user.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="devicesModalLabel-{{ user.id }}">Devices for {{ user.username }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="device-list">
+                            {% for device in user.get_devices() %}
+                                <div class="row mb-2 justify-content-center">
+                                    <div class="col">
+                                        <input type="text" value="{{ device.name }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="name">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" value="{{ device.ip }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="ip">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" value="{{ device.type }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="type">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-danger btn-sm" onclick="deleteDevice({{ user.id }}, {{ loop.index0 }})">Delete</button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center">
+                            <button id="save-devices-{{ user.id }}" class="btn btn-success btn-sm mt-2" onclick="saveDevices({{ user.id }})">Save Devices</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal fade" id="settingsModal-{{ user.id }}" tabindex="-1" aria-labelledby="settingsModalLabel-{{ user.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="settingsModalLabel-{{ user.id }}">Settings for {{ user.username }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-2 justify-content-center">
+                            <div class="col-12 text-center">
+                                <label for="theme-select-{{ user.id }}" class="form-label">Theme</label>
+                                <select id="theme-select-{{ user.id }}" class="form-control form-control-sm d-inline w-auto" data-setting-field="theme">
+                                    <option value="dark" {% if user.get_settings().theme == 'dark' %}selected{% endif %}>Dark</option>
+                                    <option value="light" {% if user.get_settings().theme == 'light' %}selected{% endif %}>Light</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2 align-items-center justify-content-center">
+                            <div class="col-auto text-center">
+                                <input type="checkbox" class="form-check-input me-1" data-setting-field="show_ip" id="show-ip-admin-{{ user.id }}" {% if user.get_settings().show_ip %}checked{% endif %}>
+                                <label for="show-ip-admin-{{ user.id }}" class="form-check-label">Show IP</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-success btn-sm mt-2" onclick="saveSettings({{ user.id }})">Save Settings</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <style>
+        .modal-md {
+            max-width: 50%;
+        }
+        .device-list {
+            max-height: 400px;
+        }
+        .form-control-sm {
+            max-width: 150px;
+        }
+        @media (max-width: 768px) {
+            .row {
+                justify-content: center;
             }
         }
+    </style>
 
+    <script>
         function deleteDevice(userId, deviceId) {
             fetch(`/delete_device/${userId}/${deviceId}`, {
                 method: 'POST',
@@ -133,14 +168,14 @@
 
         function saveDevices(userId) {
             const devices = [];
-            document.querySelectorAll(`[data-device-id]`).forEach(input => {
+            document.querySelectorAll(`#devicesModal-${userId} [data-device-id]`).forEach(input => {
                 const deviceId = input.getAttribute('data-device-id');
                 const field = input.getAttribute('data-field');
                 if (!devices[deviceId]) devices[deviceId] = {};
                 devices[deviceId][field] = input.value;
             });
 
-            fetch(`/save_devices/${userId}`, {
+            fetch(`/admin/update_devices/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -149,26 +184,17 @@
             }).then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('Devices saved successfully');
+                        alert('Devices updated successfully');
                         location.reload();
                     } else {
-                        alert('Error saving devices');
+                        alert('Error updating devices');
                     }
                 });
         }
 
-        function toggleSettings(userId) {
-            const settingsDiv = document.getElementById(`settings-${userId}`);
-            if (settingsDiv.classList.contains('d-none')) {
-                settingsDiv.classList.remove('d-none');
-            } else {
-                settingsDiv.classList.add('d-none');
-            }
-        }
-
         function saveSettings(userId) {
             const settings = {};
-            document.querySelectorAll(`#settings-${userId} [data-setting-field]`).forEach(input => {
+            document.querySelectorAll(`#settingsModal-${userId} [data-setting-field]`).forEach(input => {
                 const field = input.getAttribute('data-setting-field');
                 if (input.type === 'checkbox') {
                     settings[field] = input.checked;
@@ -177,7 +203,7 @@
                 }
             });
 
-            fetch(`/save_settings`, {
+            fetch(`/admin/update_settings/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -186,10 +212,10 @@
             }).then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('Settings saved successfully');
+                        alert('Settings updated successfully');
                         location.reload();
                     } else {
-                        alert('Error saving settings');
+                        alert('Error updating settings');
                     }
                 });
         }

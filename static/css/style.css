@@ -215,14 +215,23 @@ label {
     border-radius: 4px;
     cursor: pointer;
     position: relative;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
 .form-check-input:checked {
+    border-color: #2fffc4;
     background-color: #52887AFF;
 }
 
 .form-check-input:focus {
     outline: none;
+    border-color: #2fffc4;
+    box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
+}
+
+.form-check-input:hover {
+    outline: none;
+    border-color: #2fffc4;
     box-shadow: 0 0 0 0.25rem rgba(82, 136, 122, 0.25);
 }
 
@@ -350,30 +359,23 @@ link[rel="icon"] {
     background-color: #1e1e1e;
     color: #e0e0e0;
     border-radius: 10px;
+    border-bottom: none;
     overflow: hidden;
 }
 
 .table-dark th, .table-dark td {
-    border-color: #333;
+    border-bottom: none;
     padding: 15px;
     vertical-align: middle;
 }
 
 .table-dark thead th {
     background-color: #333;
-    border-bottom: 2px solid #444;
-}
-
-.table-dark tbody tr:hover {
-    background-color: inherit; /* Remove hover effect */
+    border-bottom: none;
 }
 
 .table-dark tbody tr {
     transition: background-color 0.3s ease-in-out;
-}
-
-.table-dark tbody td {
-    border-top: 1px solid #444;
 }
 
 .btn {
@@ -469,13 +471,8 @@ link[rel="icon"] {
 
 /* Navbar styling */
 .navbar {
-    background: linear-gradient(45deg, #4b0082, #212529);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(90deg, #212529, #1e0034, #212529);
     transition: box-shadow 0.3s ease-in-out;
-}
-
-.navbar:hover {
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
