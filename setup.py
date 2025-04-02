@@ -42,7 +42,8 @@ def test_connection(db_uri):
         print(f"{BColors.OKGREEN}Connection successful!{BColors.ENDC}")
         return True
     except Exception as e:
-        print(f"{BColors.FAIL}Connection failed: {e}{BColors.ENDC}")
+        print(
+            f"{BColors.FAIL}Connection failed: {e}{BColors.ENDC}\n{BColors.OKCYAN}THE DATABASE MAY BE IN TIMEOUT.{BColors.ENDC}")
         return False
 
 

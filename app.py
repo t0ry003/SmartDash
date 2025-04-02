@@ -2,6 +2,8 @@ import os
 import random
 
 import requests
+from Scripts.bottle import response
+
 import setup
 import pymssql
 from setup import *
@@ -32,13 +34,11 @@ print(f"{BColors.OKGREEN}DB URI: {db_uri}{BColors.ENDC}")
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-# Flask-Login setup
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 
-# User Model
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -66,7 +66,6 @@ class User(UserMixin, db.Model):
     def get_devices(self):
         return json.loads(self.devices)
 
-    #     save user settings: theme, show ip address
     def save_settings(self, user_settings):
         self.settings = json.dumps(user_settings)
         db.session.commit()
@@ -75,13 +74,11 @@ class User(UserMixin, db.Model):
         return json.loads(self.settings)
 
 
-# Load user function
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
 
-# Route: Home (requires login)
 @app.route('/')
 @login_required
 def home():
@@ -90,7 +87,6 @@ def home():
     return render_template('home.html', username=user.username, devices=devices, get_device_icon=get_device_icon)
 
 
-# Route: Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -103,13 +99,11 @@ def register():
             flash('Username already exists. Choose another one.')
             return redirect(url_for('register'))
 
-        # check if any user exists to create the first admin
         if User.query.count() == 0:
             role = 'admin'
         else:
             role = 'user'
 
-        # Hash the password before saving using bcrypt
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         new_user = User(username=username, password=hashed_password, role=role)
         db.session.add(new_user)
@@ -121,7 +115,6 @@ def register():
     return render_template('register.html')
 
 
-# Route: Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -161,7 +154,6 @@ def change_password():
     return redirect(url_for('login'))
 
 
-# Route: Logout
 @app.route('/logout')
 @login_required
 def logout():
@@ -169,7 +161,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-# Admin panel for user management
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
 @login_required
 def admin_dashboard():
@@ -280,32 +271,57 @@ def delete_device(user_id, device_id):
         return jsonify({'status': 'error', 'message': 'Device not found'}), 404
 
 
-# Route: Add Device
 @app.route('/add_device', methods=['POST'])
 @login_required
 def add_device():
     if not current_user.is_authenticated:
-        return redirect(url_for('login'))  # Ensure the user is logged in
+        return redirect(url_for('login'))
 
     device_name = request.form['device_name']
     device_ip = request.form['device_ip']
     device_type = request.form['device_type']
     current_user.add_device(device_name, device_ip, device_type)
 
-    return redirect(url_for('home'))  # Redirect to home after adding device
+    return redirect(url_for('home'))
 
 
-# Route: Remove Device
+@app.route('/export_data', methods=['GET'])
+@login_required
+def export_data():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    if (current_user.role != 'admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+
+    users = User.query.all()
+    data = []
+
+    for user in users:
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'role': user.role,
+            'devices': json.loads(user.devices),
+            'settings': json.loads(user.settings)
+        }
+        data.append(user_data)
+
+    response = jsonify(data)
+    response.headers['Content-Disposition'] = 'attachment; filename=exported_data.json'
+    return response
+
+
 @app.route('/remove_device', methods=['POST'])
 @login_required
 def remove_device():
     if not current_user.is_authenticated:
-        return redirect(url_for('login'))  # Ensure the user is logged in
+        return redirect(url_for('login'))
 
     device_name = request.form['device_name']
     current_user.remove_device(device_name)
 
-    return redirect(url_for('home'))  # Redirect to home after removing device
+    return redirect(url_for('home'))
 
 
 @app.route('/toggle_device', methods=['POST'])
@@ -347,7 +363,7 @@ def get_device_icon(device_type):
         "sensor": "fa-rss",
         "fronius": "fa-solar-panel"
     }
-    return icons.get(device_type, "fa-question-circle")  # Default icon if type not found
+    return icons.get(device_type, "fa-question-circle")
 
 
 @app.route('/solar-data')
@@ -378,7 +394,7 @@ def solar_data():
             power_factor = data.get('Body', {}).get('Data', {}).get('PowerFactor_Sum', 0)
             reactive_power = data.get('Body', {}).get('Data', {}).get('PowerReactive_Q_Sum', 0)
 
-            co2_savings = 10.82  # You might want to calculate this dynamically
+            co2_savings = 10.82
 
             return jsonify({
                 'power': power,
@@ -403,7 +419,7 @@ def solar_data():
 
 def fetch_fronius_device_data():
     if not current_user.is_authenticated:
-        return redirect(url_for('login'))  # Ensure the user is logged in
+        return redirect(url_for('login'))
 
     device_data = []
     for device in current_user.get_devices():
@@ -427,8 +443,8 @@ def fetch_fronius_data(ip_address):
 
 @app.route('/temperature-data', methods=['GET'])
 def get_temperature_data():
-    temperature = round(random.uniform(5, 40.0), 2)  # Simulated temperature in °C
-    humidity = round(random.uniform(0, 70.0), 2)  # Simulated humidity in %
+    temperature = round(random.uniform(5, 40.0), 2)
+    humidity = round(random.uniform(0, 70.0), 2)
     pressure = round(random.uniform(0, 100), 2)
     data = {
         'temperature': temperature,
@@ -438,8 +454,7 @@ def get_temperature_data():
     return jsonify(data)
 
 
-# Main
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Creates database tables in MySQL
+        db.create_all()
     app.run(host="0.0.0.0", port=5000, debug=True)

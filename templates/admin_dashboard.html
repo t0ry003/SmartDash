@@ -8,6 +8,8 @@
             <div class="alert alert-danger mt-2 text-center">{{ message }}</div>
         {% endfor %}
 
+        <button id="export-data-btn" class="btn btn-primary btn-sm mt-2">Export Data</button>
+
         <div class="table-responsive">
             <table class="table table-dark table-striped text-center align-middle">
                 <thead>
@@ -27,12 +29,14 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.role }}</td>
                         <td>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#devicesModal-{{ user.id }}">
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#devicesModal-{{ user.id }}">
                                 Show Devices ({{ user.get_devices()|length }})
                             </button>
                         </td>
                         <td>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#settingsModal-{{ user.id }}">
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#settingsModal-{{ user.id }}">
                                 Show Settings
                             </button>
                         </td>
@@ -47,7 +51,8 @@
                                 <input type="hidden" name="action" value="change_role">
                                 <select name="new_role" id="role_select" class="form-control d-inline w-auto">
                                     <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
-                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin
+                                    </option>
                                 </select>
                                 <button type="submit" class="btn btn-success btn-sm">Change Role</button>
                             </form>
@@ -62,11 +67,13 @@
     <!-- Modals for each user -->
     {% for user in users %}
         <!-- Devices Modal -->
-        <div class="modal fade" id="devicesModal-{{ user.id }}" tabindex="-1" aria-labelledby="devicesModalLabel-{{ user.id }}" aria-hidden="true">
+        <div class="modal fade" id="devicesModal-{{ user.id }}" tabindex="-1"
+             aria-labelledby="devicesModalLabel-{{ user.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="devicesModalLabel-{{ user.id }}">Devices for {{ user.username }}</h5>
+                        <h5 class="modal-title" id="devicesModalLabel-{{ user.id }}">Devices
+                            for {{ user.username }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -74,22 +81,31 @@
                             {% for device in user.get_devices() %}
                                 <div class="row mb-2 justify-content-center">
                                     <div class="col-2">
-                                        <input type="text" value="{{ device.name }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="name">
+                                        <input type="text" value="{{ device.name }}"
+                                               class="form-control form-control-sm" data-device-id="{{ loop.index0 }}"
+                                               data-field="name">
                                     </div>
                                     <div class="col-2">
-                                        <input type="text" value="{{ device.ip }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="ip">
+                                        <input type="text" value="{{ device.ip }}" class="form-control form-control-sm"
+                                               data-device-id="{{ loop.index0 }}" data-field="ip">
                                     </div>
                                     <div class="col-2">
-                                        <input type="text" value="{{ device.type }}" class="form-control form-control-sm" data-device-id="{{ loop.index0 }}" data-field="type">
+                                        <input type="text" value="{{ device.type }}"
+                                               class="form-control form-control-sm" data-device-id="{{ loop.index0 }}"
+                                               data-field="type">
                                     </div>
                                     <div class="col-2">
-                                        <button class="btn btn-danger btn-sm" onclick="deleteDevice({{ user.id }}, {{ loop.index0 }})">Delete</button>
+                                        <button class="btn btn-danger btn-sm"
+                                                onclick="deleteDevice({{ user.id }}, {{ loop.index0 }})">Delete
+                                        </button>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                         <div class="text-center">
-                            <button id="save-devices-{{ user.id }}" class="btn btn-success btn-sm mt-2" onclick="saveDevices({{ user.id }})">Save Devices</button>
+                            <button id="save-devices-{{ user.id }}" class="btn btn-success btn-sm mt-2"
+                                    onclick="saveDevices({{ user.id }})">Save Devices
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -97,32 +113,43 @@
         </div>
 
         <!-- Settings Modal -->
-        <div class="modal fade" id="settingsModal-{{ user.id }}" tabindex="-1" aria-labelledby="settingsModalLabel-{{ user.id }}" aria-hidden="true">
+        <div class="modal fade" id="settingsModal-{{ user.id }}" tabindex="-1"
+             aria-labelledby="settingsModalLabel-{{ user.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="settingsModalLabel-{{ user.id }}">Settings for {{ user.username }}</h5>
+                        <h5 class="modal-title" id="settingsModalLabel-{{ user.id }}">Settings
+                            for {{ user.username }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row mb-2 justify-content-center">
                             <div class="col-12 text-center">
                                 <label for="theme-select-{{ user.id }}" class="form-label">Theme</label>
-                                <select id="theme-select-{{ user.id }}" class="form-control form-control-sm d-inline w-auto" data-setting-field="theme">
-                                    <option value="dark" {% if user.get_settings().theme == 'dark' %}selected{% endif %}>Dark</option>
-                                    <option value="light" {% if user.get_settings().theme == 'light' %}selected{% endif %}>Light</option>
+                                <select id="theme-select-{{ user.id }}"
+                                        class="form-control form-control-sm d-inline w-auto" data-setting-field="theme">
+                                    <option value="dark"
+                                            {% if user.get_settings().theme == 'dark' %}selected{% endif %}>Dark
+                                    </option>
+                                    <option value="light"
+                                            {% if user.get_settings().theme == 'light' %}selected{% endif %}>Light
+                                    </option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-2 align-items-center justify-content-center">
                             <div class="col-auto text-center">
-                                <input type="checkbox" class="form-check-input me-1" data-setting-field="show_ip" id="show-ip-admin-{{ user.id }}" {% if user.get_settings().show_ip %}checked{% endif %}>
+                                <input type="checkbox" class="form-check-input me-1" data-setting-field="show_ip"
+                                       id="show-ip-admin-{{ user.id }}"
+                                       {% if user.get_settings().show_ip %}checked{% endif %}>
                                 <label for="show-ip-admin-{{ user.id }}" class="form-check-label">Show IP</label>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row align-items-center justify-content-center">
                             <div class="col-12 text-center">
-                                <button class="btn btn-success btn-sm mt-2" onclick="saveSettings({{ user.id }})">Save Settings</button>
+                                <button class="btn btn-success btn-sm mt-2" onclick="saveSettings({{ user.id }})">Save
+                                    Settings
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -135,12 +162,15 @@
         .modal-md {
             max-width: 50%;
         }
+
         .device-list {
             max-height: 400px;
         }
+
         .form-control-sm {
             max-width: 150px;
         }
+
         @media (max-width: 768px) {
             .row {
                 justify-content: center;
@@ -219,5 +249,21 @@
                     }
                 });
         }
+
+        document.getElementById('export-data-btn').addEventListener('click', function () {
+            fetch('/export_data')
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'exported_data.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error exporting data:', error));
+        });
     </script>
 {% endblock %}
