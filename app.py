@@ -332,7 +332,8 @@ def toggle_device():
     device_type = data.get('device_type')
     state = data.get('state')
 
-    print(f"Turning {state} the device: {device_name}, IP: {device_ip}, Device Type: {device_type}")
+    print(
+        f"{current_user.username} - Turning {state} the device: {device_name}, IP: {device_ip}, Device Type: {device_type}")
 
     return jsonify({'message': f'Toggling device: {device_name}, IP: {device_ip}, State: {state}'}), 200
 
