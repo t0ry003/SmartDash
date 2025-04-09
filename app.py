@@ -1,12 +1,10 @@
 import os
 import random
-
 import requests
-from Scripts.bottle import response
-
 import setup
-import pymssql
+import base64
 from setup import *
+from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -14,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
 
 if not setup.check_config_file():
     print(f"{BColors.OKCYAN}Config file not found! Creating a new one...{BColors.ENDC}")
@@ -42,10 +41,11 @@ login_manager.init_app(app)
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)  # Store hashed passwords
-    role = db.Column(db.String(50), default='user')  # Default role is 'user'
+    password = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(50), default='user')
     devices = db.Column(db.Text, default='[]')
     settings = db.Column(db.Text, default='{"theme": "dark", "show_ip": false}')
+    profile_picture = db.Column(db.Text, default=None)
 
     def change_password(self, new_password):
         self.password = new_password
@@ -120,10 +120,11 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        remember = 'remember' in request.form
         user = User.query.filter_by(username=username).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
-            login_user(user)
+            login_user(user, remember=remember)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
@@ -152,6 +153,33 @@ def change_password():
     flash('Password changed successfully. Please log in with your new password.')
     logout_user()
     return redirect(url_for('login'))
+
+
+@app.route('/upload_profile_picture', methods=['POST'])
+@login_required
+def upload_profile_picture():
+    if 'profile_picture' not in request.files:
+        flash('No file uploaded.')
+        return redirect(url_for('home'))
+
+    file = request.files['profile_picture']
+    if file.filename == '':
+        flash('No selected file.')
+        return redirect(url_for('home'))
+
+    current_user.profile_picture = base64.b64encode(file.read()).decode('utf-8')
+    db.session.commit()
+    flash('Profile picture updated successfully.')
+    return redirect(url_for('home'))
+
+
+@app.route('/remove_profile_picture', methods=['POST'])
+@login_required
+def remove_profile_picture():
+    current_user.profile_picture = None
+    db.session.commit()
+    flash('Profile picture removed successfully.')
+    return redirect(url_for('home'))
 
 
 @app.route('/logout')

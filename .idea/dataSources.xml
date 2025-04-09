@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="smartdashproject" uuid="8c243f9d-a6dc-4edc-ba03-486374ebd8c0">
+    <data-source source="LOCAL" name="smartdash@smartdashproject.database.windows.net" uuid="1543f938-87fc-45df-8026-c539e0e58bef">
       <driver-ref>sqlserver.ms</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
-      <jdbc-url>jdbc:sqlserver://smartdashproject.database.windows.net:1433;database=smartdash;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;</jdbc-url>
+      <jdbc-url>jdbc:sqlserver://smartdashproject.database.windows.net:1433;database=smartdash</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

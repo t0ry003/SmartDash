@@ -1,513 +1,264 @@
-function hexToRgb(hex) {
-    hex = hex.replace(/^#/, ""); // Remove "#" if present
-
-    let r = parseInt(hex.substring(0, 2), 16);
-    let g = parseInt(hex.substring(2, 4), 16);
-    let b = parseInt(hex.substring(4, 6), 16);
-
-    return `rgb(${r}, ${g}, ${b})`; // Remove alpha because getComputedStyle() does not use it
+function hexToRgb(e) {
+    let t = parseInt((e = e.replace(/^#/, "")).substring(0, 2), 16), n;
+    return `rgb(${t}, ${parseInt(e.substring(2, 4), 16)}, ${parseInt(e.substring(4, 6), 16)})`
 }
 
-
-function toggleOn(deviceName, deviceIp, deviceType) {
-    var bulbIcon = document.getElementById('bulb-icon-' + deviceName);
-    var state = 'off';
-
-    const newColor = hexToRgb("#52887A3F");
-    const color = window.getComputedStyle(bulbIcon).color;
-
-    // Show menu based on device type without toggling icon
-    if (deviceType === 'fronius') {
-        showMenu('solar');
-        return;
-    } else if (deviceType === 'thermostat') {
-        showMenu('temp');
-        return;
-    } else if (deviceType === 'sensor') {
-        return; // Do nothing
+function toggleOn(e, t, n) {
+    var o = document.getElementById("bulb-icon-" + e), a = "off";
+    let r = hexToRgb("#52887A3F"), l = window.getComputedStyle(o).color;
+    if ("fronius" === n) {
+        showMenu("solar");
+        return
     }
-
-    // Toggle icon color for other device types
-    if (color === newColor) {
-        bulbIcon.style.color = 'gray';
-        bulbIcon.style.textShadow = 'none';
-        bulbIcon.style.transition = 'color 0.3s ease-in-out, text-shadow 0.3s ease-in-out';
-    } else {
-        bulbIcon.style.color = newColor;
-        bulbIcon.style.textShadow = `0 0 10px ${newColor}`;
-        bulbIcon.style.transition = 'color 0.3s ease-in-out, text-shadow 0.3s ease-in-out';
-        state = 'on';
+    if ("thermostat" === n) {
+        showMenu("temp");
+        return
     }
-
-    fetch('/toggle_device', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            device_name: deviceName,
-            device_ip: deviceIp,
-            device_type: deviceType,
-            state: state,
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.message);
-        })
-        .catch(error => console.error('Error:', error));
+    "sensor" !== n && (l === r ? (o.style.color = "gray", o.style.textShadow = "none", o.style.transition = "color 0.3s ease-in-out, text-shadow 0.3s ease-in-out") : (o.style.color = r, o.style.textShadow = `0 0 10px ${r}`, o.style.transition = "color 0.3s ease-in-out, text-shadow 0.3s ease-in-out", a = "on"), fetch("/toggle_device", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({device_name: e, device_ip: t, device_type: n, state: a})
+    }).then(e => e.json()).then(e => {
+        console.log(e.message)
+    }).catch(e => console.error("Error:", e)))
 }
 
-function showMenu(menuName) {
-    const menuMap = {
-        home: ['main-content'],
-        solar: ['solar-panel-data'],
-        temp: ['temperature-data'],
-        settings: ['appearance-menu', 'account-menu', 'help-menu', 'about-menu']
+function showMenu(e) {
+    let t = {
+        home: ["main-content"],
+        solar: ["solar-panel-data"],
+        temp: ["temperature-data"],
+        settings: ["appearance-menu", "account-menu", "help-menu", "about-menu"]
     };
+    Object.values(t).flat().forEach(e => {
+        document.getElementById(e).classList.add("d-none")
+    }), t[e] && t[e].forEach(e => {
+        document.getElementById(e).classList.remove("d-none")
+    })
+}
 
-    // Hide all menus first
-    Object.values(menuMap).flat().forEach(id => {
-        document.getElementById(id).classList.add('d-none');
-    });
-
-    // Show selected menu
-    if (menuMap[menuName]) {
-        menuMap[menuName].forEach(id => {
-            document.getElementById(id).classList.remove('d-none');
-        });
+function autoUploadProfilePicture(e) {
+    if (e.files && e.files[0]) {
+        let t = e.files[0];
+        if (!["image/png", "image/jpeg"].includes(t.type)) {
+            alert("Only PNG and JPG files are allowed.");
+            return
+        }
+        if (t.size > 2097152) {
+            alert("File size must be less than 2MB.");
+            return
+        }
+        let n = new FormData;
+        n.append("profile_picture", t);
+        let o = document.createElement("div");
+        o.className = "loading-spinner";
+        let a = e.closest(".profile-picture-wrapper");
+        a.appendChild(o), fetch("/upload_profile_picture", {method: "POST", body: n}).then(e => {
+            e.ok ? location.reload() : e.text().then(e => {
+                alert(`Failed to upload profile picture: ${e}`)
+            })
+        }).catch(e => {
+            console.error("Error:", e), alert("An error occurred while uploading the profile picture.")
+        }).finally(() => {
+            o.remove()
+        })
     }
 }
 
 function showChangePasswordModal() {
-    var changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
-    changePasswordModal.show();
+    new bootstrap.Modal(document.getElementById("changePasswordModal")).show()
 }
 
-function changeTheme(theme) {
-
-
-    console.log("Theme selected:", theme);
-    if (theme === 'light') {
-        document.body.classList.add('light-theme');
-        document.body.style.setProperty("background-color", "white", "important");
-        document.body.style.setProperty("color", "white", "important");
-
-    } else {
-        document.body.classList.add("dark-theme"); // Add dark theme
-        document.body.style.backgroundColor = '#212529';
-        document.body.style.color = 'white';
-    }
-    localStorage.setItem("theme", theme);
+function changeTheme(e) {
+    console.log("Theme selected:", e), "light" === e ? (document.body.classList.add("light-theme"), document.body.style.setProperty("background-color", "white", "important"), document.body.style.setProperty("color", "white", "important")) : (document.body.classList.add("dark-theme"), document.body.style.backgroundColor = "#212529", document.body.style.color = "white"), localStorage.setItem("theme", e)
 }
-
-window.onload = function () {
-    const savedTheme = localStorage.getItem("theme");
-    const themeSelect = document.getElementById("theme-select");
-
-    if (savedTheme) {
-        changeTheme(savedTheme); // Apply saved theme
-        themeSelect.value = savedTheme; // Set the dropdown to match
-    }
-};
-
 
 function fetchSolarData() {
-    fetch('/solar-data')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('solar-power').textContent = `${data.power}`;
-            document.getElementById('solar-energy').textContent = `${data.energy_produced}`;
-            document.getElementById('solar-energy-consumed').textContent = `${data.energy_consumed}`;
-            document.getElementById('solar-net-balance').textContent = `${data.net_energy_balance}`;
-            document.getElementById('solar-self-sufficiency').textContent = `${data.self_sufficiency}`;
-
-            document.getElementById('solar-grid-import').textContent = `${data.grid_import}`;
-            document.getElementById('solar-grid-export').textContent = `${data.grid_export}`;
-
-            document.getElementById('solar-voltage-1').textContent = `${data.voltage_phase_1}`;
-            document.getElementById('solar-voltage-2').textContent = `${data.voltage_phase_2}`;
-            document.getElementById('solar-voltage-3').textContent = `${data.voltage_phase_3}`;
-
-            document.getElementById('solar-current-1').textContent = `${data.current_phase_1}`;
-            document.getElementById('solar-current-2').textContent = `${data.current_phase_2}`;
-            document.getElementById('solar-current-3').textContent = `${data.current_phase_3}`;
-
-            document.getElementById('solar-power-factor').textContent = data.power_factor;
-            document.getElementById('solar-reactive-power').textContent = `${data.reactive_power}`;
-
-            document.getElementById('solar-co2').textContent = `${data.co2_savings}`;
-        })
-        .catch(error => {
-            console.error('Error fetching solar data:', error);
-            const errorMessage = 'Error fetching data';
-            document.getElementById('solar-power').textContent = errorMessage;
-            document.getElementById('solar-energy').textContent = errorMessage;
-            document.getElementById('solar-voltage-1').textContent = errorMessage;
-        });
+    fetch("/solar-data").then(e => e.json()).then(e => {
+        document.getElementById("solar-power").textContent = `${e.power}`, document.getElementById("solar-energy").textContent = `${e.energy_produced}`, document.getElementById("solar-energy-consumed").textContent = `${e.energy_consumed}`, document.getElementById("solar-net-balance").textContent = `${e.net_energy_balance}`, document.getElementById("solar-self-sufficiency").textContent = `${e.self_sufficiency}`, document.getElementById("solar-grid-import").textContent = `${e.grid_import}`, document.getElementById("solar-grid-export").textContent = `${e.grid_export}`, document.getElementById("solar-voltage-1").textContent = `${e.voltage_phase_1}`, document.getElementById("solar-voltage-2").textContent = `${e.voltage_phase_2}`, document.getElementById("solar-voltage-3").textContent = `${e.voltage_phase_3}`, document.getElementById("solar-current-1").textContent = `${e.current_phase_1}`, document.getElementById("solar-current-2").textContent = `${e.current_phase_2}`, document.getElementById("solar-current-3").textContent = `${e.current_phase_3}`, document.getElementById("solar-power-factor").textContent = e.power_factor, document.getElementById("solar-reactive-power").textContent = `${e.reactive_power}`, document.getElementById("solar-co2").textContent = `${e.co2_savings}`
+    }).catch(e => {
+        console.error("Error fetching solar data:", e);
+        let t = "Error fetching data";
+        document.getElementById("solar-power").textContent = t, document.getElementById("solar-energy").textContent = t, document.getElementById("solar-voltage-1").textContent = t
+    })
 }
-
-
-setInterval(fetchSolarData, 20000);
-fetchSolarData();
 
 function fetchTemperatureData() {
-    fetch('/temperature-data')
-        .then(response => response.json())
-        .then(data => {
-            const temperatureElement = document.getElementById('temperature');
-            const humidityElement = document.getElementById('humidity');
-            const thermometerFill = document.getElementById('thermometer-fill');
-            const temperatureIcon = document.querySelector("#temperature-icon");
-            const humidityIcon = document.querySelector("#humidity-icon");
-            const pressureIcon = document.querySelector("#pressure-icon");
-            const pressureElement = document.getElementById('pressure');
-            const pressureFill = document.getElementById('pressure-fill');
-
-            const temperature = data.temperature;
-            const humidity = data.humidity;
-            const pressure = data.pressure;
-
-            temperatureElement.textContent = `Temperature: ${temperature}°C`;
-            humidityElement.textContent = `Humidity: ${humidity}%`;
-            pressureElement.textContent = `Pressure: ${pressure} hPa`;
-            let iconClass = "fa-thermometer-empty";
-            if (temperature > 10) iconClass = "fa-thermometer-quarter";
-            if (temperature > 20) iconClass = "fa-thermometer-half";
-            if (temperature > 30) iconClass = "fa-thermometer-three-quarters";
-            if (temperature > 40) iconClass = "fa-thermometer-full";
-
-
-            humidityIcon.style.color = getHumidityColor(humidity);
-            pressureIcon.style.color = getPressureColor(pressure);
-
-            temperatureIcon.className = `fa-solid ${iconClass}`;
-
-            // Calculate the fill height based on temperature
-            const minTemp = 0; // Minimum temperature expected
-            const maxTemp = 50; // Maximum temperature expected
-
-
-            temperatureIcon.style.color = getTemperatureColor(temperature)
-
-
-        })
-        .catch(error => {
-            console.error('Error fetching temperature data:', error);
-            document.getElementById('temperature').textContent = `Error fetching data: ${error}`;
-            document.getElementById('humidity').textContent = `Error fetching data: ${error}`;
-            document.getElementById('pressure').textContent = `Error fetching data: ${error}`;
-        });
+    fetch("/temperature-data").then(e => e.json()).then(e => {
+        let t = document.getElementById("temperature"), n = document.getElementById("humidity");
+        document.getElementById("thermometer-fill");
+        let o = document.querySelector("#temperature-icon"), a = document.querySelector("#humidity-icon"),
+            r = document.querySelector("#pressure-icon"), l = document.getElementById("pressure");
+        document.getElementById("pressure-fill");
+        let s = e.temperature, d = e.humidity, i = e.pressure;
+        t.textContent = `Temperature: ${s}\xb0C`, n.textContent = `Humidity: ${d}%`, l.textContent = `Pressure: ${i} hPa`;
+        let c = "fa-thermometer-empty";
+        s > 10 && (c = "fa-thermometer-quarter"), s > 20 && (c = "fa-thermometer-half"), s > 30 && (c = "fa-thermometer-three-quarters"), s > 40 && (c = "fa-thermometer-full"), a.style.color = getHumidityColor(d), r.style.color = getPressureColor(i), o.className = `fa-solid ${c}`, o.style.color = getTemperatureColor(s)
+    }).catch(e => {
+        console.error("Error fetching temperature data:", e), document.getElementById("temperature").textContent = `Error fetching data: ${e}`, document.getElementById("humidity").textContent = `Error fetching data: ${e}`, document.getElementById("pressure").textContent = `Error fetching data: ${e}`
+    })
 }
 
-function getTemperatureColor(temperature) {
-    // Define color thresholds
-    if (temperature <= 5) {
-        return '#264653';
-    } else if (temperature <= 10) {
-        return '#2a9d8f';
-    } else if (temperature <= 20) {
-        return '#e9c46a';
-    } else if (temperature <= 25) {
-        return '#f4a261';
-    } else {
-        return '#e76f51';
-    }
+function getTemperatureColor(e) {
+    return e <= 5 ? "#264653" : e <= 10 ? "#2a9d8f" : e <= 20 ? "#e9c46a" : e <= 25 ? "#f4a261" : "#e76f51"
 }
 
-function getHumidityColor(humidity) {
-    if (humidity < 30) return "#caf0f8"; // Dry air
-    else if (humidity < 50) return "#00b4d8";
-    else if (humidity < 70) return "#0077b6";
-    else return "#023e8a"// Normal air
-
+function getHumidityColor(e) {
+    return e < 30 ? "#caf0f8" : e < 50 ? "#00b4d8" : e < 70 ? "#0077b6" : "#023e8a"
 }
 
-function getPressureColor(pressure) {
-    if (pressure <= 980) return "#28a745"; // Very low pressure
-    else if (pressure <= 1000) return "#f1c40f";  // Low pressure
-    else if (pressure <= 1200) return "#e67e22";  //  Normal pressure
-    else return "#e74c3c"; // High pressure
+function getPressureColor(e) {
+    return e <= 980 ? "#28a745" : e <= 1e3 ? "#f1c40f" : e <= 1200 ? "#e67e22" : "#e74c3c"
 }
-
-setInterval(fetchTemperatureData, 1000);
-fetchTemperatureData();
-
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Load user settings from backend when the page loads
-    fetch('/get_settings')
-        .then(response => response.json())
-        .then(data => {
-            if (data.theme) {
-                document.getElementById("theme-select").value = data.theme;
-                changeTheme(data.theme);
-            }
-            if (data.show_ip !== undefined) {
-                document.getElementById("show-ip-checkbox").checked = data.show_ip;
-                toggleIPVisibility(document.getElementById("show-ip-checkbox"));
-            }
-        });
-
-    // Function to save settings
-    function saveSettings() {
-        const settings = {
+    document.body.style.overflow = "auto"
+}), document.addEventListener("DOMContentLoaded", function () {
+    let e = document.querySelectorAll(".alert");
+    e.forEach(e => {
+        setTimeout(() => {
+            e.classList.add("fade-out")
+        }, 5e3)
+    })
+}), window.onload = function () {
+    let e = localStorage.getItem("theme"), t = document.getElementById("theme-select");
+    e && (changeTheme(e), t.value = e)
+}, setInterval(fetchSolarData, 2e4), fetchSolarData(), setInterval(fetchTemperatureData, 1e3), fetchTemperatureData(), document.addEventListener("DOMContentLoaded", function () {
+    function e() {
+        let e = {
             theme: document.getElementById("theme-select").value,
             show_ip: document.getElementById("show-ip-checkbox").checked
         };
-
-        fetch('/save_settings', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(settings)
-        }).then(response => response.json())
-            .then(data => console.log(data.message));
+        fetch("/save_settings", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(e)
+        }).then(e => e.json()).then(e => console.log(e.message))
     }
 
-    // Function to toggle IP visibility
-    function toggleIPVisibility(checkbox) {
-        var ipElements = document.querySelectorAll('.device-ip');
+    function t(e) {
+        document.querySelectorAll(".device-ip").forEach(function (t) {
+            e.checked ? t.style.display = "block" : t.style.display = "none"
+        })
+    }
 
-        ipElements.forEach(function (ipElement) {
-            if (checkbox.checked) {
-                ipElement.style.display = 'block';
-            } else {
-                ipElement.style.display = 'none';
+    fetch("/get_settings").then(e => e.json()).then(e => {
+        e.theme && (document.getElementById("theme-select").value = e.theme, changeTheme(e.theme)), void 0 !== e.show_ip && (document.getElementById("show-ip-checkbox").checked = e.show_ip, t(document.getElementById("show-ip-checkbox")))
+    });
+    let n;
+    window.showContextMenu = function (e, t) {
+        e.preventDefault(), document.querySelectorAll(".context-menu").forEach(e => {
+            e.style.display = "none"
+        });
+        let n = document.getElementById(`context-menu-${t}`);
+        n && (n.style.top = `${e.pageY}px`, n.style.left = `${e.pageX}px`, n.style.display = "block")
+    }, document.addEventListener("click", function () {
+        document.querySelectorAll(".context-menu").forEach(e => {
+            e.style.display = "none"
+        })
+    }), document.querySelectorAll(".device-card").forEach(e => {
+        let t = e.getAttribute("data-device-name");
+        e.addEventListener("touchstart", function (e) {
+            n = setTimeout(() => showContextMenu(e, t), 600)
+        }), e.addEventListener("touchend", function () {
+            clearTimeout(n)
+        }), e.addEventListener("touchmove", function () {
+            clearTimeout(n)
+        })
+    }), document.getElementById("theme-select").addEventListener("change", e), document.getElementById("show-ip-checkbox").addEventListener("change", function (n) {
+        t(n.target), e()
+    });
+    let o, a, r, l;
+    setInterval(function e() {
+        fetch("/solar-data").then(e => e.json()).then(e => (function e(t) {
+            let n = [t.energy_produced, t.energy_consumed, t.net_energy_balance];
+            if (o) o.data.datasets[0].data = n, o.update(); else {
+                let s = document.getElementById("powerEnergyChart").getContext("2d");
+                o = new Chart(s, {
+                    type: "bar",
+                    data: {
+                        labels: ["Energy Produced (kWh)", "Energy Consumed (kWh)", "Net Balance (kWh)"],
+                        datasets: [{
+                            label: "Power & Energy",
+                            data: n,
+                            backgroundColor: ["#28a745", "#f39c12", "#8e44ad"]
+                        }]
+                    },
+                    options: {
+                        responsive: !0,
+                        maintainAspectRatio: !1,
+                        scales: {
+                            x: {title: {display: !0, text: "kWh"}},
+                            y: {suggestedMin: 0, suggestedMax: Math.max(...n) + 100, title: {display: !0}}
+                        },
+                        plugins: {legend: {display: !1}}
+                    }
+                })
             }
-        });
-    }
-
-    let pressTimer;
-
-    window.showContextMenu = function (event, deviceName) {
-        event.preventDefault(); // Prevent default right-click or long-press behavior
-
-        // Close any open context menus
-        document.querySelectorAll(".context-menu").forEach(menu => {
-            menu.style.display = "none";
-        });
-
-        // Get the correct menu
-        let contextMenu = document.getElementById(`context-menu-${deviceName}`);
-        if (contextMenu) {
-            contextMenu.style.top = `${event.pageY}px`;
-            contextMenu.style.left = `${event.pageX}px`;
-            contextMenu.style.display = "block";
-        }
-    };
-
-    // Hide context menu when clicking outside
-    document.addEventListener("click", function () {
-        document.querySelectorAll(".context-menu").forEach(menu => {
-            menu.style.display = "none";
-        });
-    });
-
-    // Handle long press for mobile
-    document.querySelectorAll(".device-card").forEach(element => {
-        let deviceName = element.getAttribute("data-device-name");
-
-        // Touch start (begin holding)
-        element.addEventListener("touchstart", function (event) {
-            pressTimer = setTimeout(() => showContextMenu(event, deviceName), 600); // Trigger after 600ms
-        });
-
-        // Cancel long-press if user lifts finger
-        element.addEventListener("touchend", function () {
-            clearTimeout(pressTimer);
-        });
-
-        // Cancel long-press if user moves finger
-        element.addEventListener("touchmove", function () {
-            clearTimeout(pressTimer);
-        });
-    });
-
-    // Event listeners for changes
-    document.getElementById("theme-select").addEventListener("change", saveSettings);
-    document.getElementById("show-ip-checkbox").addEventListener("change", function (e) {
-        toggleIPVisibility(e.target);
-        saveSettings();
-    });
-    // Graphics
-    let powerEnergyChart, gridImportExportChart, voltagePhaseChart, currentMetricsChart;
-
-    function updateCharts(data) {
-        // Power & Energy Chart Data
-        const powerEnergyData = [data.energy_produced, data.energy_consumed, data.net_energy_balance];
-        const powerEnergyLabels = ["Energy Produced (kWh)", "Energy Consumed (kWh)", "Net Balance (kWh)"];
-        const powerEnergyColors = ["#28a745", "#f39c12", "#8e44ad"];
-
-        if (!powerEnergyChart) {
-            const ctx = document.getElementById("powerEnergyChart").getContext("2d");
-            powerEnergyChart = new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: powerEnergyLabels,
-                    datasets: [{
-                        label: "Power & Energy",
-                        data: powerEnergyData,
-                        backgroundColor: powerEnergyColors
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: "kWh"
-                            }
-                        },
-                        y: {
-                            suggestedMin: 0,
-                            suggestedMax: Math.max(...powerEnergyData) + 100,
-                            title: {display: true}
-                        }
+            let d = [t.grid_import, t.grid_export];
+            if (a) a.data.datasets[0].data = d, a.update(); else {
+                let i = document.getElementById("gridImportExportChart").getContext("2d");
+                a = new Chart(i, {
+                    type: "bar",
+                    data: {
+                        labels: ["Grid Import (kWh)", "Grid Export (kWh)"],
+                        datasets: [{label: "Grid Import/Export", data: d, backgroundColor: ["#ff5733", "#f2079c"]}]
                     },
-                    plugins: {
-                        legend: {display: false}
+                    options: {
+                        responsive: !0,
+                        maintainAspectRatio: !1,
+                        scales: {x: {title: {display: !0, text: "kWh"}}, y: {title: {display: !0}}},
+                        plugins: {legend: {display: !1}}
                     }
-                }
-            });
-        } else {
-            powerEnergyChart.data.datasets[0].data = powerEnergyData;
-            powerEnergyChart.update();
-        }
-        // Grid Import/Export Chart
-        const gridData = [data.grid_import, data.grid_export];
-        const gridLabels = ["Grid Import (kWh)", "Grid Export (kWh)"];
-
-        if (!gridImportExportChart) {
-            const ctx2 = document.getElementById("gridImportExportChart").getContext("2d");
-            gridImportExportChart = new Chart(ctx2, {
-                type: "bar",
-                data: {
-                    labels: gridLabels,
-                    datasets: [{
-                        label: "Grid Import/Export",
-                        data: gridData,
-                        backgroundColor: ["#ff5733", "#f2079c"]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: "kWh"
-                            }
-                        },
-                        y: {
-                            title: {display: true}
-                        }
+                })
+            }
+            let c = [t.voltage_phase_1, t.voltage_phase_2, t.voltage_phase_3];
+            if (r) r.data.datasets[0].data = c, r.update(); else {
+                let u = document.getElementById("voltagePhaseChart").getContext("2d");
+                r = new Chart(u, {
+                    type: "line",
+                    data: {
+                        labels: ["Phase 1 (V)", "Phase 2 (V)", "Phase 3 (V)"],
+                        datasets: [{
+                            label: "Voltage Phase",
+                            data: c,
+                            borderColor: "#ff9900",
+                            backgroundColor: "rgba(255, 153, 0, 0.2)",
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointBackgroundColor: "#ff6600",
+                            fill: !0
+                        }]
                     },
-                    plugins: {
-                        legend: {display: false}
+                    options: {
+                        responsive: !0,
+                        maintainAspectRatio: !1,
+                        plugins: {legend: {display: !0, position: "top"}},
+                        scales: {x: {grid: {display: !1}}, y: {grid: {borderDash: [5, 5]}}}
                     }
-                }
-            });
-        } else {
-            gridImportExportChart.data.datasets[0].data = gridData;
-            gridImportExportChart.update();
-        }
-
-        const voltageData = [data.voltage_phase_1, data.voltage_phase_2, data.voltage_phase_3];
-        const voltageLabels = ["Phase 1 (V)", "Phase 2 (V)", "Phase 3 (V)"];
-
-        if (!voltagePhaseChart) {
-            const ctx3 = document.getElementById("voltagePhaseChart").getContext("2d");
-            voltagePhaseChart = new Chart(ctx3, {
-                type: "line",
-                data: {
-                    labels: voltageLabels,
-                    datasets: [{
-                        label: "Voltage Phase",
-                        data: voltageData,
-                        borderColor: "#ff9900",
-                        backgroundColor: "rgba(255, 153, 0, 0.2)",
-                        borderWidth: 3,
-                        pointRadius: 5,
-                        pointBackgroundColor: "#ff6600",
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
+                })
+            }
+            let g = [t.current_phase_1, t.current_phase_2, t.current_phase_3];
+            if (l) l.data.datasets[0].data = g, l.update(); else {
+                let h = document.getElementById("currentMetricsChart").getContext("2d");
+                l = new Chart(h, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Current Phase 1 (A)", "Current Phase 2 (A)", "Current Phase 3 (A)"],
+                        datasets: [{
+                            label: "Current & Other Metrics",
+                            data: g,
+                            backgroundColor: ["#1abc9c", "#3498db", "#f1c40f"],
+                            hoverOffset: 4
+                        }]
                     },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            grid: {
-                                borderDash: [5, 5]
-                            }
-                        }
+                    options: {
+                        responsive: !0,
+                        maintainAspectRatio: !1,
+                        plugins: {legend: {display: !0, position: "right", labels: {boxWidth: 20, padding: 10}}}
                     }
-                }
-            });
-        } else {
-            voltagePhaseChart.data.datasets[0].data = voltageData;
-            voltagePhaseChart.update();
-        }
-        // Current & Other Metrics Chart Data
-        const currentMetricsData = [data.current_phase_1, data.current_phase_2, data.current_phase_3];
-        const currentMetricsLabels = ["Current Phase 1 (A)", "Current Phase 2 (A)", "Current Phase 3 (A)"];
-
-        if (!currentMetricsChart) {
-            const ctx3 = document.getElementById("currentMetricsChart").getContext("2d");
-            currentMetricsChart = new Chart(ctx3, {
-                type: "doughnut",
-                data: {
-                    labels: currentMetricsLabels,
-                    datasets: [{
-                        label: "Current & Other Metrics",
-                        data: currentMetricsData,
-                        backgroundColor: ["#1abc9c", "#3498db", "#f1c40f"],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'right',
-                            labels: {
-                                boxWidth: 20,
-                                padding: 10
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            currentMetricsChart.data.datasets[0].data = currentMetricsData;
-            currentMetricsChart.update();
-        }
-    }
-
-    function fetchSolarData() {
-        fetch("/solar-data")
-            .then(response => response.json())
-            .then(data => updateCharts(data))
-            .catch(error => console.error("Error fetching solar data:", error));
-    }
-
-    setInterval(fetchSolarData, 5000);
+                })
+            }
+        })(e)).catch(e => console.error("Error fetching solar data:", e))
+    }, 5e3)
 });
