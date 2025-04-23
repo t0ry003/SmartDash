@@ -85,18 +85,42 @@ function fetchSolarData() {
 
 function fetchTemperatureData() {
     fetch("/temperature-data").then(e => e.json()).then(e => {
-        let t = document.getElementById("temperature"), n = document.getElementById("humidity");
-        document.getElementById("thermometer-fill");
-        let o = document.querySelector("#temperature-icon"), a = document.querySelector("#humidity-icon"),
-            r = document.querySelector("#pressure-icon"), l = document.getElementById("pressure");
-        document.getElementById("pressure-fill");
-        let s = e.temperature, d = e.humidity, i = e.pressure;
-        t.textContent = `Temperature: ${s}\xb0C`, n.textContent = `Humidity: ${d}%`, l.textContent = `Pressure: ${i} hPa`;
+        let t = document.getElementById("temperature"),
+            n = document.getElementById("humidity"),
+            l = document.getElementById("pressure"),
+            ip = document.getElementById("thermostat-ip");
+
+        let o = document.querySelector("#temperature-icon"),
+            a = document.querySelector("#humidity-icon"),
+            r = document.querySelector("#pressure-icon");
+
+        let s = e.temperature,
+            d = e.humidity,
+            i = e.pressure,
+            thermostatIp = e.thermostat_ip;
+
+        t.textContent = `Temperature: ${s}\xb0C`;
+        n.textContent = `Humidity: ${d}%`;
+        l.textContent = `Pressure: ${i} hPa`;
+        ip.textContent = thermostatIp ? `Thermostat IP: ${thermostatIp}` : "Thermostat IP: Not available";
+
         let c = "fa-thermometer-empty";
-        s > 10 && (c = "fa-thermometer-quarter"), s > 20 && (c = "fa-thermometer-half"), s > 30 && (c = "fa-thermometer-three-quarters"), s > 40 && (c = "fa-thermometer-full"), a.style.color = getHumidityColor(d), r.style.color = getPressureColor(i), o.className = `fa-solid ${c}`, o.style.color = getTemperatureColor(s)
+        s > 10 && (c = "fa-thermometer-quarter");
+        s > 20 && (c = "fa-thermometer-half");
+        s > 30 && (c = "fa-thermometer-three-quarters");
+        s > 40 && (c = "fa-thermometer-full");
+
+        a.style.color = getHumidityColor(d);
+        r.style.color = getPressureColor(i);
+        o.className = `fa-solid ${c}`;
+        o.style.color = getTemperatureColor(s);
     }).catch(e => {
-        console.error("Error fetching temperature data:", e), document.getElementById("temperature").textContent = `Error fetching data: ${e}`, document.getElementById("humidity").textContent = `Error fetching data: ${e}`, document.getElementById("pressure").textContent = `Error fetching data: ${e}`
-    })
+        console.error("Error fetching temperature data:", e);
+        document.getElementById("temperature").textContent = `Error fetching data: ${e}`;
+        document.getElementById("humidity").textContent = `Error fetching data: ${e}`;
+        document.getElementById("pressure").textContent = `Error fetching data: ${e}`;
+        document.getElementById("thermostat-ip").textContent = "Thermostat IP: Error fetching data";
+    });
 }
 
 function getTemperatureColor(e) {
