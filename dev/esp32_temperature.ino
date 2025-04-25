@@ -8,6 +8,15 @@ const char* password = "wifi_pass";
 // Create a web server on port 80
 WebServer server(80);
 
+// Simulation variables
+float temperature = 0;
+float humidity = 0;
+float pressure = 0;
+int direction = 1; // 1 = ascending, -1 = descending
+
+unsigned long lastUpdate = 0;
+const unsigned long updateInterval = 200; // milliseconds
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -22,10 +31,6 @@ void setup() {
 
   // Define the route for sensor data
   server.on("/sensor-data", []() {
-    float temperature = 3;
-    float humidity = 50;
-    float pressure = 20;
-
     String json = "{\"temperature\": " + String(temperature) +
                   ", \"humidity\": " + String(humidity) +
                   ", \"pressure\": " + String(pressure) + "}";
@@ -38,4 +43,19 @@ void setup() {
 
 void loop() {
   server.handleClient();
+
+  // Update simulated values every `updateInterval` ms
+  if (millis() - lastUpdate >= updateInterval) {
+    lastUpdate = millis();
+
+    // Update values
+    temperature += direction;
+    humidity += direction;
+    pressure += direction;
+
+    // Reverse direction at bounds
+    if (temperature >= 60 || temperature <= 0) {
+      direction *= -1;
+    }
+  }
 }

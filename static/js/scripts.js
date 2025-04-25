@@ -88,7 +88,8 @@ function fetchTemperatureData() {
         let t = document.getElementById("temperature"),
             n = document.getElementById("humidity"),
             l = document.getElementById("pressure"),
-            ip = document.getElementById("thermostat-ip");
+            ip = document.getElementById("thermostat-ip"),
+            status = document.getElementById("thermostat-status");
 
         let o = document.querySelector("#temperature-icon"),
             a = document.querySelector("#humidity-icon"),
@@ -97,12 +98,15 @@ function fetchTemperatureData() {
         let s = e.temperature,
             d = e.humidity,
             i = e.pressure,
+            stat = e.status,
             thermostatIp = e.thermostat_ip;
 
         t.textContent = `Temperature: ${s}\xb0C`;
         n.textContent = `Humidity: ${d}%`;
         l.textContent = `Pressure: ${i} hPa`;
-        ip.textContent = thermostatIp ? `Thermostat IP: ${thermostatIp}` : "Thermostat IP: Not available";
+        ip.textContent = thermostatIp ? `${thermostatIp}` : "Not available";
+        status.textContent = stat ? `${stat}` : "Not available";
+
 
         let c = "fa-thermometer-empty";
         s > 10 && (c = "fa-thermometer-quarter");
@@ -116,10 +120,10 @@ function fetchTemperatureData() {
         o.style.color = getTemperatureColor(s);
     }).catch(e => {
         console.error("Error fetching temperature data:", e);
-        document.getElementById("temperature").textContent = `Error fetching data: ${e}`;
-        document.getElementById("humidity").textContent = `Error fetching data: ${e}`;
-        document.getElementById("pressure").textContent = `Error fetching data: ${e}`;
-        document.getElementById("thermostat-ip").textContent = "Thermostat IP: Error fetching data";
+        document.getElementById("temperature").textContent = `Offline`;
+        document.getElementById("humidity").textContent = `Offline`;
+        document.getElementById("pressure").textContent = `Offline`;
+        document.getElementById("thermostat-ip").textContent = "Thermostat: Error fetching data";
     });
 }
 
@@ -147,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }), window.onload = function () {
     let e = localStorage.getItem("theme"), t = document.getElementById("theme-select");
     e && (changeTheme(e), t.value = e)
-}, setInterval(fetchSolarData, 2e4), fetchSolarData(), setInterval(fetchTemperatureData, 1e3), fetchTemperatureData(), document.addEventListener("DOMContentLoaded", function () {
+}, setInterval(fetchSolarData, 10000), fetchSolarData(), setInterval(fetchTemperatureData, 1000), fetchTemperatureData(), document.addEventListener("DOMContentLoaded", function () {
     function e() {
         let e = {
             theme: document.getElementById("theme-select").value,

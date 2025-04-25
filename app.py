@@ -375,6 +375,21 @@ def toggle_device():
     return jsonify({'message': f'Toggling device: {device_name}, IP: {device_ip}, State: {state}'}), 200
 
 
+@app.route('/get_status', methods=['GET'])
+def get_status():
+    data = request.get_json()
+    device_name = data.get('device_name')
+    device_ip = data.get('device_ip')
+    device_type = data.get('device_type')
+
+    response = os.system(f"ping -c 1 {device_ip}")
+    if response == 0:
+        status = "online"
+    else:
+        status = "offline"
+    print(f"{current_user.username} - Device {device_name} is {status}")
+
+
 @app.route('/save_settings', methods=['POST'])
 @login_required
 def save_settings():
@@ -504,11 +519,14 @@ def get_temperature_data():
                     sensor_data.update({
                         'temperature': esp_data.get('temperature'),
                         'humidity': esp_data.get('humidity'),
-                        'pressure': esp_data.get('pressure')
+                        'pressure': esp_data.get('pressure'),
+                        'status': 'online'
                     })
                 else:
+                    sensor_data['status'] = 'offline'
                     print(f"Error: Received status code {response.status_code} from ESP32")
             except requests.RequestException as e:
+                sensor_data['status'] = 'offline'
                 print(f"Error fetching data from ESP32: {e}")
 
     return jsonify(sensor_data)
