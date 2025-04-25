@@ -53,6 +53,10 @@ class User(UserMixin, db.Model):
 
     def add_device(self, name, ip, device_type):
         device_list = json.loads(self.devices)
+
+        if device_type == 'thermostat' and any(device['type'] == 'thermostat' for device in device_list):
+            raise ValueError("You can only add one thermostat.")
+
         device_list.append({'name': name, 'ip': ip, 'type': device_type})
         self.devices = json.dumps(device_list)
         db.session.commit()
@@ -308,7 +312,12 @@ def add_device():
     device_name = request.form['device_name']
     device_ip = request.form['device_ip']
     device_type = request.form['device_type']
-    current_user.add_device(device_name, device_ip, device_type)
+
+    try:
+        current_user.add_device(device_name, device_ip, device_type)
+    except ValueError as e:
+        flash(str(e))
+        return redirect(url_for('home'))
 
     return redirect(url_for('home'))
 
@@ -472,15 +481,37 @@ def fetch_fronius_data(ip_address):
 
 @app.route('/temperature-data', methods=['GET'])
 def get_temperature_data():
-    temperature = round(random.uniform(5, 40.0), 2)
-    humidity = round(random.uniform(0, 70.0), 2)
-    pressure = round(random.uniform(0, 100), 2)
-    data = {
-        'temperature': temperature,
-        'humidity': humidity,
-        'pressure': pressure
+    thermostat_ip = None
+    sensor_data = {
+        'temperature': None,
+        'humidity': None,
+        'pressure': None,
+        'thermostat_ip': None
     }
-    return jsonify(data)
+
+    if current_user.is_authenticated:
+        devices = current_user.get_devices()
+        thermostat = next((device for device in devices if device['type'] == 'thermostat'), None)
+        if thermostat:
+            thermostat_ip = thermostat['ip']
+            sensor_data['thermostat_ip'] = thermostat_ip
+
+            # Fetch data from the ESP32
+            try:
+                response = requests.get(f"http://{thermostat_ip}/sensor-data", timeout=5)
+                if response.status_code == 200:
+                    esp_data = response.json()
+                    sensor_data.update({
+                        'temperature': esp_data.get('temperature'),
+                        'humidity': esp_data.get('humidity'),
+                        'pressure': esp_data.get('pressure')
+                    })
+                else:
+                    print(f"Error: Received status code {response.status_code} from ESP32")
+            except requests.RequestException as e:
+                print(f"Error fetching data from ESP32: {e}")
+
+    return jsonify(sensor_data)
 
 
 if __name__ == '__main__':
