@@ -17,6 +17,9 @@ int direction = 1; // 1 = ascending, -1 = descending
 unsigned long lastUpdate = 0;
 const unsigned long updateInterval = 200; // milliseconds
 
+// State variable
+String deviceState = "off";
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -33,7 +36,8 @@ void setup() {
   server.on("/sensor-data", []() {
     String json = "{\"temperature\": " + String(temperature) +
                   ", \"humidity\": " + String(humidity) +
-                  ", \"pressure\": " + String(pressure) + "}";
+                  ", \"pressure\": " + String(pressure) +
+                  ", \"state\": \"" + deviceState + "\"}";
     server.send(200, "application/json", json);
   });
 
@@ -52,6 +56,9 @@ void loop() {
     temperature += direction;
     humidity += direction;
     pressure += direction;
+
+    if(temperature)
+      deviceState = "on"
 
     // Reverse direction at bounds
     if (temperature >= 60 || temperature <= 0) {
