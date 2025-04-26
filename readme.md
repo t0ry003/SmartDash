@@ -1,84 +1,100 @@
 <div align="center">
-    <img src="static/images/SmartDashLogox500.png" alt="Logo">
+  <img src="static/images/0.5x/Artboard%201@0.5x.png" alt="SmartDash" width="400">
 </div>
 
-<h1 align="center">
-    SmartDash
-</h1>
+<h1 align="center">SmartDash</h1>
 
 <div align="center">
-    <h3 align="center">A simple web application to manage your smart devices from a single dashboard</h3>
-    <p align="center">
-        <a href="#installation">Installation</a> •
-        <a href="#configuration">Configuration</a> •
-        <a href="https://github.com/t0ry003/SmartDash/wiki">Wiki</a>
-    </p>
+  <h3 align="center">📡 A modern web application to monitor and manage your smart devices effortlessly from a centralized dashboard.</h3>
+  <p align="center">
+    <a href="#installation">Installation</a> •
+    <a href="#configuration">Configuration</a> •
+    <a href="https://github.com/t0ry003/SmartDash/wiki">Wiki</a>
+  </p>
 
-[![GitHub stars](https://img.shields.io/github/stars/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/network)
-[![GitHub issues](https://img.shields.io/github/issues/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/pulls)
-[![GitHub license](https://img.shields.io/github/license/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/pulls)
+[![License](https://img.shields.io/github/license/t0ry003/SmartDash.svg)](https://github.com/t0ry003/SmartDash/blob/main/LICENSE)
 </div>
 
-SmartDash is a simple web application that allows you to manage your smart devices from a single dashboard. This guide will help you install and use the application.
+---
 
-## Installation
+## 📋 Overview
+
+**SmartDash** is a lightweight, flexible, and easy-to-use web dashboard designed to manage and monitor your smart home
+devices.  
+Built with **Python (Flask)** and **JavaScript**, it enables you to connect to various databases and offers a
+streamlined setup experience.
+
+Key Features:
+
+- 📱 Centralized control panel for your smart devices
+- ⚡ Quick and easy database configuration
+- 🧩 Modular architecture for future expansion
+- 🌐 Built using Flask and modern frontend technologies
+
+---
+
+## 🚀 Installation
 
 ### Prerequisites
 
-- Python 3.8 or higher
-- pip (Python package installer)
-- A supported database (e.g., MSSQL, PostgreSQL, MySQL, MariaDB, Firebird, Sybase)
+- Python **3.10** or **3.11**
+- `pip` (Python package manager)
+- A supported database (**MSSQL**, **PostgreSQL**, **MySQL**, **MariaDB**, Firebird, Sybase)
 
-### Steps
+### Setup Instructions
 
 1. **Clone the repository:**
-
-    ```sh
+    ```bash
     git clone https://github.com/t0ry003/SmartDash.git
     cd SmartDash
     ```
 
-2. **Create a virtual environment:**
-
-    ```sh
+2. **Create and activate a virtual environment:**
+    ```bash
     python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    # Activate the virtual environment
+    source venv/bin/activate   # On Windows: venv\Scripts\activate
     ```
 
-3. **Install the required packages:**
-
-    ```sh
+3. **Install required Python packages:**
+    ```bash
     pip install -r requirements.txt
     ```
 
-4. **Set up the database configuration:**
-
-   Run the `app.py` script to create the `config.json` file with your database settings:
-
-    ```sh
+4. **Run initial setup and database configuration:**
+    ```bash
     python app.py
     ```
+   This will guide you through generating a `config.json` file based on your database credentials.
 
-   Follow the prompts to enter your database details.
+---
 
-## Configuration
+## Database Installation
+### Tested Databases
+- **PostgreSQL**: PostgreSQL (https://www.postgresql.org/)
+- **MSSQL**: Microsoft SQL Server (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+- **MySQL**: MySQL (https://www.mysql.com/)
+- **MariaDB**: MariaDB (https://mariadb.org/)
 
-The `config.json` file will be created in the root directory with the following structure:
+### Database Setup
+**PostgreSQL (Recommended)** - https://www.w3schools.com/postgresql/postgresql_install.php 
+
+
+## ⚙️ Configuration
+
+After the initial setup, your `config.json` file will look like this:
 
 ```json
 {
-    "db_type": "your_database_type",
-    "db_name": "your_database_name",
-    "db_user": "your_database_user",
-    "db_password": "your_database_password",
-    "db_host": "your_database_host",
-    "db_port": "your_database_port",
-    "db_uri": "your_database_uri"
+  "db_type": "your_database_type",
+  "db_name": "your_database_name",
+  "db_user": "your_database_user",
+  "db_password": "your_database_password",
+  "db_host": "your_database_host",
+  "db_port": "your_database_port",
+  "db_uri": "your_database_uri"
 }
-```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
