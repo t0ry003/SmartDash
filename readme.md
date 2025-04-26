@@ -43,7 +43,7 @@ Key Features:
 
 - Python **3.10** or **3.11**
 - `pip` (Python package manager)
-- A supported database (**MSSQL**, **PostgreSQL**, **MySQL**, **MariaDB**, Firebird, Sybase)
+- A supported database (**PostgreSQL**, **MSSQL**, **MySQL**, **MariaDB**, Firebird, Sybase)
 
 ### Setup Instructions
 
