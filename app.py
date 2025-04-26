@@ -3,6 +3,8 @@ import random
 import requests
 import setup
 import base64
+import platform
+import subprocess
 from setup import *
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
@@ -530,6 +532,64 @@ def get_temperature_data():
                 print(f"Error fetching data from ESP32: {e}")
 
     return jsonify(sensor_data)
+
+
+@app.route('/check_device_status', methods=['POST'])
+def check_device_status():
+    data = request.get_json()
+    device_ip = data.get('device_ip')
+    device_type = data.get('device_type')
+
+    if not device_ip or not device_type:
+        return jsonify({'error': 'Missing device_ip or device_type'}), 400
+
+    if device_type == 'fronius':
+        # ➔ Special check for fronius
+        online = check_fronius_device(device_ip)
+    else:
+        # ➔ For all others, call their /status or /state API
+        online = check_normal_device(device_ip)
+
+    return jsonify({'online': online})
+
+
+def check_fronius_device(device_ip):
+    # Custom logic for Fronius devices
+    try:
+        # Example: call their Solar API
+        url = f"http://{device_ip}/solar_api/v1/GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData"
+        response = requests.get(url, timeout=2)
+        if response.status_code == 200:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f"Error checking Fronius device: {e}")
+        return False
+
+
+def check_normal_device(device_ip):
+    # For regular smart plugs, thermostats, etc.
+    try:
+        if ':' in device_ip:
+            ip, port = device_ip.split(':')
+        else:
+            ip = device_ip
+            port = 80  # default
+
+        # Example: assume all devices expose a /status endpoint
+        url = f"http://{ip}:{port}/sensor-data"
+        response = requests.get(url, timeout=2)
+
+        if response.status_code == 200:
+            status_info = response.json()
+            # Expecting JSON: {"state": "on"} or {"state": "off"}
+            return status_info.get('state') == 'on'
+        else:
+            return False
+    except Exception as e:
+        print(f"Error checking normal device: {e}")
+        return False
 
 
 if __name__ == '__main__':

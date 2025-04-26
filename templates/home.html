@@ -54,6 +54,8 @@
                 {% for device in devices %}
                     <div class="col-md-4 device-card"
                          data-device-name="{{ device.name }}"
+                         data-device-ip="{{ device.ip }}"
+                         data-device-type="{{ device.type }}"
                          onclick="toggleOn('{{ device.name }}', '{{ device.ip }}', '{{ device.type }}')"
                          oncontextmenu="showContextMenu(event, '{{ device.name }}')">
                         <div id="device-card" class="card text-light p-3 mb-4 mx-auto">
@@ -322,9 +324,9 @@
             <p>Smart Dash is a simple web application that allows you to manage your smart devices from a single
                 dashboard.</p>
             <p>Developed with&nbsp;&nbsp;<i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;at&nbsp;&nbsp;<i
-                class="fa-brands fa-github"></i> <a id="link"
-                                                    href="https://github.com/t0ry003/SmartDash"
-                                                    target="_blank">SmartDash</a>
+                    class="fa-brands fa-github"></i> <a id="link"
+                                                        href="https://github.com/t0ry003/SmartDash"
+                                                        target="_blank">SmartDash</a>
             </p>
         </div>
 

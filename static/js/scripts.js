@@ -139,6 +139,42 @@ function getPressureColor(e) {
     return e <= 980 ? "#28a745" : e <= 1e3 ? "#f1c40f" : e <= 1200 ? "#e67e22" : "#e74c3c"
 }
 
+function checkDevicesStatus() {
+    console.log("Checking devices...");  // Add this to confirm it's running.
+
+    const deviceCards = document.querySelectorAll('.device-card');
+    deviceCards.forEach(card => {
+        const deviceName = card.getAttribute('data-device-name');
+        const deviceIp = card.getAttribute('data-device-ip');
+        const deviceType = card.getAttribute('data-device-type');
+
+        console.log(`Checking device ${deviceName} at ${deviceIp} with type ${deviceType}`); // Log device info.
+
+        fetch('/check_device_status', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                device_ip: deviceIp,
+                device_type: deviceType
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const icon = document.getElementById('bulb-icon-' + deviceName);
+                if (data.online) {
+                    icon.style.color = "#52887A"; // ON color
+                    icon.style.textShadow = "0 0 10px #52887A";
+                } else {
+                    icon.style.color = "gray"; // OFF color
+                    icon.style.textShadow = "none";
+                }
+            })
+            .catch(error => {
+                console.error('Error checking device:', error);
+            });
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     document.body.style.overflow = "auto"
 }), document.addEventListener("DOMContentLoaded", function () {
@@ -151,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }), window.onload = function () {
     let e = localStorage.getItem("theme"), t = document.getElementById("theme-select");
     e && (changeTheme(e), t.value = e)
-}, setInterval(fetchSolarData, 10000), fetchSolarData(), setInterval(fetchTemperatureData, 1000), fetchTemperatureData(), document.addEventListener("DOMContentLoaded", function () {
+}, setInterval(fetchSolarData, 10000), fetchSolarData(), setInterval(fetchTemperatureData, 1000), fetchTemperatureData(), checkDevicesStatus(), setInterval(checkDevicesStatus, 3000), document.addEventListener("DOMContentLoaded", function () {
     function e() {
         let e = {
             theme: document.getElementById("theme-select").value,
