@@ -1,13 +1,15 @@
-import os
-import requests
-import setup
 import base64
-from setup import *
-from datetime import datetime, timedelta
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
+import os
+from datetime import timedelta
+
+import requests
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
+
+import setup
+from setup import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)

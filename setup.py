@@ -1,4 +1,6 @@
 import json
+import os
+import platform
 import urllib
 
 import sqlalchemy
@@ -10,7 +12,7 @@ DB_TYPES = {
     "4": ("MariaDB", "mariadb+mariadbconnector"),
     "5": ("Firebird", "firebird+fdb"),
     "6": ("Sybase", "sybase+pyodbc"),
-    "7": ("SmartDash", "mssql+pymssql")
+    "7": ("SmartDash", "postgresql+psycopg2")
 }
 
 
@@ -64,11 +66,11 @@ def create_config_file():
         db_host = input("Enter host (e.g., smartdashproject.database.windows.net): ")
         db_port = input("Enter port (e.g., 1433 for MSSQL, 3306 for MySQL, 5432 for PostgreSQL): ")
     else:
-        db_name = "smartdash"
-        db_user = "smartdashadmin"
-        db_password = "a7MgNwjiq_fs6&2"
-        db_host = "smartdashproject.database.windows.net"
-        db_port = "1433"
+        db_name = "neondb"
+        db_user = "neondb_owner"
+        db_password = "npg_94eJtlDyYBEM"
+        db_host = "ep-jolly-bush-a28oyp90-pooler.eu-central-1.aws.neon.tech"
+        db_port = "5432"
 
     db_type_name, db_type_uri = DB_TYPES[choice]
 
@@ -112,20 +114,9 @@ def load_config():
 
 
 def open_config_file_location():
-    import os
-    import platform
     if platform.system() == "Windows":
         os.system("start .")
     elif platform.system() == "Darwin":
         os.system("open .")
     else:
         os.system("xdg-open .")
-
-# Connect to your remote MySQL database
-# server: smartdashproject.database.windows.net
-# port: 1433
-# DB_name: smartdash
-# username: smartdashadmin
-# password: a7MgNwjiq_fs6&2
-
-

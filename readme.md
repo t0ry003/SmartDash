@@ -89,7 +89,7 @@ extensible, allowing you to add your own features and functionality as needed.
 
 ---
 
-## Database Installation
+## ⚙️ Database Installation
 
 ### Tested Databases
 
@@ -112,17 +112,16 @@ extensible, allowing you to add your own features and functionality as needed.
 - **Performance**: PostgreSQL is known for its high performance and scalability, making it suitable for handling large
   datasets and complex queries.
 
-## ⚙️ Configuration
+---
 
-After the initial setup, your `config.json` file will look like this:
+## 🛠️ Hardware Setup
 
-```json
-{
-  "db_type": "your_database_type",
-  "db_name": "your_database_name",
-  "db_user": "your_database_user",
-  "db_password": "your_database_password",
-  "db_host": "your_database_host",
-  "db_port": "your_database_port",
-  "db_uri": "your_database_uri"
-}
+### ESP32
+
+#### Thermostat
+
+<div style="text-align: center;">
+    <img src="/dev/ESP32_THERMOSTAT.png" alt="ESP32 Thermostat" style="max-width: 80%; height: auto;" />
+    <p>ESP32 Thermostat Wiring</p>
+</div>
+[![ESP32 Temperature Code](https://img.shields.io/badge/ESP32_Temperature_Code-View-blue?logo=github)](https://github.com/t0ry003/SmartDash/blob/master/dev/esp32_temperature.ino)
