@@ -124,4 +124,5 @@ extensible, allowing you to add your own features and functionality as needed.
     <img src="/dev/ESP32_THERMOSTAT.png" alt="ESP32 Thermostat" style="max-width: 80%; height: auto;" />
     <p>ESP32 Thermostat Wiring</p>
 </div>
+
 [![ESP32 Temperature Code](https://img.shields.io/badge/ESP32_Temperature_Code-View-blue?logo=github)](https://github.com/t0ry003/SmartDash/blob/master/dev/esp32_temperature.ino)
