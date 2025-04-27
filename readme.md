@@ -35,9 +35,25 @@ Key Features:
 - 🧩 Modular architecture for future expansion
 - 🌐 Built using Flask and modern frontend technologies
 
+To be added:
+
+- ESP32 website flasher;
+- Hardware diagrams for ESP32 (SmartPlug, SmartSwitch, SmartLight, Thermostat, etc.);
+- Larger solar inverters brand support;
+
 ---
 
 ## 🚀 Installation
+
+### Target of this project
+
+The target of this project is to create your own smart home dashboard on your old computer or Raspberry Pi. It is
+designed to be lightweight and easy to set up, making it perfect for those who want to create a smart home system
+without the need for expensive hardware or complex software. Since Home Assistant is a bit heavy for Raspberry Pi, this
+project is designed to be lightweight and easy to set up for those who want to learn about smart home systems and create
+their own dashboard. This project is not intended to be a full-fledged smart home system, but rather a starting point
+for those who want to learn about smart home systems and create their own dashboard. It is designed to be modular and
+extensible, allowing you to add your own features and functionality as needed.
 
 ### Prerequisites
 
@@ -74,15 +90,27 @@ Key Features:
 ---
 
 ## Database Installation
+
 ### Tested Databases
+
 - **PostgreSQL**: PostgreSQL (https://www.postgresql.org/)
 - **MSSQL**: Microsoft SQL Server (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 - **MySQL**: MySQL (https://www.mysql.com/)
 - **MariaDB**: MariaDB (https://mariadb.org/)
 
 ### Database Setup
-**PostgreSQL (Recommended)** - https://www.w3schools.com/postgresql/postgresql_install.php 
 
+**PostgreSQL (Recommended)** - https://www.w3schools.com/postgresql/postgresql_install.php
+
+#### Why we recommend PostgreSQL?
+
+- **[neon.tech](https://neon.tech/)**: Neon is a serverless PostgreSQL database that allows you to create a free
+  database with a single click. It is easy to set up and provides a great user experience.
+- **DIY**: If you prefer to set up your own PostgreSQL database, you can do so by following the instructions on the
+  official PostgreSQL website. It provides detailed documentation on how to install and configure PostgreSQL on various
+  platforms.
+- **Performance**: PostgreSQL is known for its high performance and scalability, making it suitable for handling large
+  datasets and complex queries.
 
 ## ⚙️ Configuration
 

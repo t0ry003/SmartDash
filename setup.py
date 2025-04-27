@@ -127,3 +127,5 @@ def open_config_file_location():
 # DB_name: smartdash
 # username: smartdashadmin
 # password: a7MgNwjiq_fs6&2
+
+
