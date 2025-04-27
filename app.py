@@ -1,10 +1,7 @@
 import os
-import random
 import requests
 import setup
 import base64
-import platform
-import subprocess
 from setup import *
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
@@ -569,7 +566,6 @@ def check_fronius_device(device_ip):
 
 
 def check_normal_device(device_ip):
-    # For regular smart plugs, thermostats, etc.
     try:
         if ':' in device_ip:
             ip, port = device_ip.split(':')
@@ -577,7 +573,6 @@ def check_normal_device(device_ip):
             ip = device_ip
             port = 80  # default
 
-        # Example: assume all devices expose a /status endpoint
         url = f"http://{ip}:{port}/sensor-data"
         response = requests.get(url, timeout=2)
 

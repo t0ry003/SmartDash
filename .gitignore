@@ -5,3 +5,4 @@ venv/
 instance/
 .env
 *.sqlite3
+config.json

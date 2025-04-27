@@ -3,6 +3,19 @@
 {% block content %}
     <div class="container" id="main-content">
 
+        <div class="text-center my-4">
+            <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg shadow-sm">
+                <i class="fa fa-home me-2"></i> Go to Home
+            </a>
+        </div>
+
+        <div class="container text-center my-3 p-3 border rounded" id="theme-container">
+            <p class="mb-0">
+                For the best experience, please use a desktop device. Some data may not display completely on smaller
+                screens.
+            </p>
+        </div>
+
         <!-- Flash messages -->
         {% for message in get_flashed_messages() %}
             <div class="alert alert-danger mt-2 text-center">{{ message }}</div>
