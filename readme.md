@@ -125,7 +125,7 @@ extensible, allowing you to add your own features and functionality as needed.
 <div align="center">
   <img src="/dev/dht_bmp.png" alt="ESP32 Thermostat DHT11 + BMP180" style="max-width: 80%; height: auto;" />
   <p>ESP32 Thermostat DHT11 + BMP180</p>
-  <a href="https://github.com/t0ry003/SmartDash/blob/master/dev//dev/esp32_thermostat_DHT11_BMP180.ino">
+  <a href="https://github.com/t0ry003/SmartDash/blob/master/dev/esp32_thermostat_DHT11_BMP180.ino">
     <img src="https://img.shields.io/badge/ESP32_Thermostat_DHT11_+_BMP180_Code-View-blue?logo=github" alt="ESP32 Thermostat DHT11 + BMP180 Code" />
   </a>
 </div>
