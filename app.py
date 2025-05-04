@@ -1,5 +1,4 @@
 import base64
-import os
 from datetime import timedelta
 
 import requests
@@ -329,7 +328,7 @@ def export_data():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
 
-    if (current_user.role != 'admin'):
+    if current_user.role != 'admin':
         return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
 
     users = User.query.all()
@@ -408,18 +407,6 @@ def get_settings():
     return jsonify(current_user.get_settings())
 
 
-def get_device_icon(device_type):
-    icons = {
-        "light": "fa-lightbulb",
-        "fan": "fa-fan",
-        "thermostat": "fa-thermometer-half",
-        "plug": "fa-plug",
-        "sensor": "fa-rss",
-        "fronius": "fa-solar-panel"
-    }
-    return icons.get(device_type, "fa-question-circle")
-
-
 @app.route('/solar-data')
 def solar_data():
     devices = fetch_fronius_device_data()
@@ -469,30 +456,6 @@ def solar_data():
                 'co2_savings': co2_savings
             })
     return jsonify({'error': 'No data available'})
-
-
-def fetch_fronius_device_data():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    device_data = []
-    for device in current_user.get_devices():
-        if device['type'].lower() == 'fronius':
-            data = fetch_fronius_data(device['ip'])
-            if data:
-                device_data.append({'name': device['name'], 'data': data})
-    return device_data
-
-
-def fetch_fronius_data(ip_address):
-    url = f'http://{ip_address}/solar_api/v1/GetMeterRealtimeData.cgi?Scope=Device&DeviceId=0&DataCollection=CommonInverterData'
-    try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        return response.json()  # Return parsed JSON data
-    except requests.RequestException as e:
-        print(f"Error fetching data from {ip_address}: {e}")
-        return None
 
 
 @app.route('/temperature-data', methods=['GET'])
@@ -587,6 +550,42 @@ def check_normal_device(device_ip):
     except Exception as e:
         print(f"Error checking normal device: {e}")
         return False
+
+
+def fetch_fronius_device_data():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    device_data = []
+    for device in current_user.get_devices():
+        if device['type'].lower() == 'fronius':
+            data = fetch_fronius_data(device['ip'])
+            if data:
+                device_data.append({'name': device['name'], 'data': data})
+    return device_data
+
+
+def fetch_fronius_data(ip_address):
+    url = f'http://{ip_address}/solar_api/v1/GetMeterRealtimeData.cgi?Scope=Device&DeviceId=0&DataCollection=CommonInverterData'
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return response.json()  # Return parsed JSON data
+    except requests.RequestException as e:
+        print(f"Error fetching data from {ip_address}: {e}")
+        return None
+
+
+def get_device_icon(device_type):
+    icons = {
+        "light": "fa-lightbulb",
+        "fan": "fa-fan",
+        "thermostat": "fa-thermometer-half",
+        "plug": "fa-plug",
+        "sensor": "fa-rss",
+        "fronius": "fa-solar-panel"
+    }
+    return icons.get(device_type, "fa-question-circle")
 
 
 if __name__ == '__main__':

@@ -7,8 +7,9 @@
 <div align="center">
   <h3 align="center">📡 A modern web application to monitor and manage your smart devices effortlessly from a centralized dashboard.</h3>
   <p align="center">
-    <a href="#installation">Installation</a> •
-    <a href="#configuration">Configuration</a> •
+    <a href="#-installation">Installation</a> •
+    <a href="#️-database-integration">Database Integration</a> •
+    <a href="#-hardware-setup">Hardware</a> •
     <a href="https://github.com/t0ry003/SmartDash/wiki">Wiki</a>
   </p>
 
@@ -89,7 +90,7 @@ extensible, allowing you to add your own features and functionality as needed.
 
 ---
 
-## ⚙️ Database Installation
+## ⚙️ Database Integration
 
 ### Tested Databases
 
@@ -120,9 +121,33 @@ extensible, allowing you to add your own features and functionality as needed.
 
 #### Thermostat
 
-<div style="text-align: center;">
-    <img src="/dev/ESP32_THERMOSTAT.png" alt="ESP32 Thermostat" style="max-width: 80%; height: auto;" />
-    <p>ESP32 Thermostat Wiring</p>
+<!-- ESP32 Thermostat DHT11 + BMP180 -->
+<div align="center">
+  <img src="/dev/dht_bmp.png" alt="ESP32 Thermostat DHT11 + BMP180" style="max-width: 80%; height: auto;" />
+  <p>ESP32 Thermostat DHT11 + BMP180</p>
+  <a href="https://github.com/t0ry003/SmartDash/blob/master/dev//dev/esp32_thermostat_DHT11_BMP180.ino">
+    <img src="https://img.shields.io/badge/ESP32_Thermostat_DHT11_+_BMP180_Code-View-blue?logo=github" alt="ESP32 Thermostat DHT11 + BMP180 Code" />
+  </a>
 </div>
 
-[![ESP32 Temperature Code](https://img.shields.io/badge/ESP32_Temperature_Code-View-blue?logo=github)](https://github.com/t0ry003/SmartDash/blob/master/dev/esp32_temperature.ino)
+<br>
+
+<!-- ESP32 Thermostat DHT11 -->
+<div align="center">
+  <img src="/dev/dht.png" alt="ESP32 Thermostat DHT11" style="max-width: 80%; height: auto;" />
+  <p>ESP32 Thermostat DHT11</p>
+  <a href="https://github.com/t0ry003/SmartDash/blob/master/dev/esp32_thermostat_DHT11.ino">
+    <img src="https://img.shields.io/badge/ESP32_Thermostat_DHT11_Code-View-blue?logo=github" alt="ESP32 Thermostat DHT11 Code" />
+  </a>
+</div>
+
+<br>
+
+<!-- ESP32 Thermostat BMP180 -->
+<div align="center">
+  <img src="/dev/bmp.png" alt="ESP32 Thermostat BMP180" style="max-width: 80%; height: auto;" />
+  <p>ESP32 Thermostat BMP180</p>
+  <a href="https://github.com/t0ry003/SmartDash/blob/master/dev/esp32_thermostat_BMP180.ino">
+    <img src="https://img.shields.io/badge/ESP32_Thermostat_BMP180-View-blue?logo=github" alt="ESP32 Thermostat BMP180 Code" />
+  </a>
+</div>
