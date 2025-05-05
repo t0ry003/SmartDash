@@ -8,11 +8,14 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from flask_sqlalchemy import SQLAlchemy
 
 import setup
+from device_setup import device_setup_bp
 from setup import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
+
+app.register_blueprint(device_setup_bp, url_prefix='/setup')
 
 if not setup.check_config_file():
     print(f"{BColors.OKCYAN}Config file not found! Creating a new one...{BColors.ENDC}")

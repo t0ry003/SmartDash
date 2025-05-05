@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ project_name.replace('_', ' ').title() }}</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Highlight.js (Dark Theme) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .code-box {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .card {
+            background-color: #1a1a1a !important;
+            border: none !important;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 0.5rem;
+        }
+
+        .hljs {
+            background-color: #1a1a1a !important;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .project-image {
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .prose {
+            color: #d0d0d0;
+        }
+
+        /* Form Inputs */
+        .form-control {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            border: 1px solid #333;
+        }
+
+        .form-control:focus {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-color: #555;
+            box-shadow: none;
+        }
+
+        /* Image Container */
+        .card.bg-dark {
+            background-color: #1a1a1a;
+        }
+
+        pre {
+            margin: 0;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #2fffc4;
+            color: #000;
+            border-color: #2fffc4;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container py-5">
+    <h1 class="text-center mb-5 display-5 fw-bold">{{ project_name.replace('_', ' ').title() }}</h1>
+
+    <!-- Breadboard image -->
+    <div class="card bg-dark border-secondary mb-5 shadow">
+        <img src="{{ image_url }}" class="card-img-top project-image p-3" alt="Breadboard">
+    </div>
+
+    <!-- Guide section -->
+    <div class="card bg-dark border-secondary p-4 shadow mb-5">
+        <div class="prose">
+            {{ guide|safe }}
+        </div>
+    </div>
+
+    <!-- Wi-Fi Credentials Form -->
+    <div class="card bg-dark border-secondary p-4 shadow mb-5">
+        <h2 class="h4 mb-3">Configure Wi-Fi Credentials</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="ssid" class="form-label">Wi-Fi SSID</label>
+                <input type="text" class="form-control" id="ssid" name="ssid" value="{{ ssid or '' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Wi-Fi Password</label>
+                <input type="text" class="form-control" id="password" name="password" value="{{ password or '' }}"
+                       required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Code</button>
+        </form>
+    </div>
+
+    <!-- Code section -->
+    <div class="position-relative mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h4">ESP32 Code</h2>
+            <button onclick="copyCode()" class="btn btn-outline-light d-flex align-items-center gap-2">
+                <i class="fas fa-copy"></i>
+                Copy
+            </button>
+        </div>
+        <div class="code-box">
+            <pre><code id="code-block" class="language-cpp">{{ code }}</code></pre>
+        </div>
+    </div>
+
+    <!-- Generic guide section -->
+    <div class="card bg-dark border-secondary p-4 shadow mb-5">
+        <div class="prose">
+            {{ generic_guide|safe }}
+        </div>
+    </div>
+
+    <a href="{{ url_for('home') }}" class="btn btn-outline-light d-inline-flex align-items-center gap-2">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+    </a>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="copyToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+         aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="fas fa-clipboard-check fa-lg"></i>
+                Code copied to clipboard!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        hljs.highlightAll();
+    });
+
+    function copyCode() {
+        const code = document.getElementById('code-block').innerText;
+
+        const showToast = () => {
+            const toast = new bootstrap.Toast(document.getElementById('copyToast'));
+            toast.show();
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(code).then(showToast).catch(() => {
+            });
+        } else {
+            // Fallback for older browsers
+            const textarea = document.createElement("textarea");
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error("❌ Copy failed", err);
+            }
+            document.body.removeChild(textarea);
+        }
+    }
+</script>
+
+</body>
+</html>
