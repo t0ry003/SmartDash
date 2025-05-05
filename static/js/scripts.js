@@ -70,7 +70,7 @@ function showChangePasswordModal() {
 }
 
 function changeTheme(e) {
-    console.log("Theme selected:", e), "light" === e ? (document.body.classList.add("light-theme"), document.body.style.setProperty("background-color", "white", "important"), document.body.style.setProperty("color", "white", "important")) : (document.body.classList.add("dark-theme"), document.body.style.backgroundColor = "#212529", document.body.style.color = "white"), localStorage.setItem("theme", e)
+    console.log("Theme selected:", e), "light" === e ? (document.body.classList.add("light-theme"), document.body.style.setProperty("background-color", "white", "important"), document.body.style.setProperty("color", "white", "important")) : (document.body.classList.add("dark-theme"), document.body.style.backgroundColor = "#212121", document.body.style.color = "white"), localStorage.setItem("theme", e)
 }
 
 function fetchSolarData() {

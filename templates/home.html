@@ -1,362 +1,368 @@
 {% extends "base.html" %}
 {% block title %}Smart Dashboard{% endblock %}
 {% block content %}
+    <div class="container" id="main-content">
+        <h1 class="text-center text-light">Welcome, {{ username }}!</h1>
+        <p class="text-center text-light">Manage your smart devices with Smart Dash</p>
 
-    <div class="scrollable">
-        <!-- Flash messages -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {% for message in messages %}
-                        <p>{{ message }}</p>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+        <form method="POST" action="{{ url_for('add_device') }}" class="mb-4">
+            <div class="row g-3 justify-content-center text-center">
+                <div class="col-12 col-md-3">
+                    <input id="device-input1" type="text" name="device_name" class="form-control"
+                           placeholder="Device Name"
+                           required>
                 </div>
-            {% endif %}
-        {% endwith %}
-
-        <div class="container" id="main-content">
-            <h1 class="text-center text-light">Welcome, {{ username }}!</h1>
-            <p class="text-center text-light">Manage your smart devices with Smart Dash</p>
-
-
-            <form method="POST" action="{{ url_for('add_device') }}" class="mb-4">
-                <div class="row g-3 justify-content-center text-center">
-                    <div class="col-12 col-md-3">
-                        <input id="device-input1" type="text" name="device_name" class="form-control"
-                               placeholder="Device Name"
-                               required>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <input id="device-input2" type="text" name="device_ip" class="form-control"
-                               placeholder="Device IP"
-                               required>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <select id="device-type" name="device_type" class="form-control" required>
-                            <option value="light">Light</option>
-                            <option value="plug">Plug</option>
-                            <option value="sensor">Sensor</option>
-                            <option value="fan">Fan</option>
-                            <option value="thermostat">Thermostat</option>
-                            <option value="fronius">Fronius</option>
-
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-2">
-                        <button id="btn-add-device" type="submit" class="btn w-100">Add Device</button>
-                    </div>
+                <div class="col-12 col-md-3">
+                    <input id="device-input2" type="text" name="device_ip" class="form-control"
+                           placeholder="Device IP"
+                           required>
                 </div>
-            </form>
+                <div class="col-12 col-md-3">
+                    <select id="device-type" name="device_type" class="form-control" required>
+                        <option value="light">Light</option>
+                        <option value="plug">Plug</option>
+                        <option value="sensor">Sensor</option>
+                        <option value="fan">Fan</option>
+                        <option value="thermostat">Thermostat</option>
+                        <option value="fronius">Fronius</option>
+
+                    </select>
+                </div>
+                <div class="col-12 col-md-2">
+                    <button id="btn-add-device" type="submit" class="btn w-100">Add Device</button>
+                </div>
+            </div>
+        </form>
 
 
-            <div class="row">
-                {% for device in devices %}
-                    <div class="col-md-4 device-card"
-                         data-device-name="{{ device.name }}"
-                         data-device-ip="{{ device.ip }}"
-                         data-device-type="{{ device.type }}"
-                         onclick="toggleOn('{{ device.name }}', '{{ device.ip }}', '{{ device.type }}')"
-                         oncontextmenu="showContextMenu(event, '{{ device.name }}')">
-                        <div id="device-card" class="card text-light p-3 mb-4 mx-auto">
-                            <div class="d-flex flex-column justify-content-center align-items-center text-center">
-                                <h4 class="m-0 w-100 mb-4"
-                                    style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">
-                                    {{ device.name }}</h4>
-                                <i id="bulb-icon-{{ device.name }}"
-                                   class="fa {{ get_device_icon(device.type) }} mb-4"
-                                   style="font-size: 3rem; color: gray; transition: color 0.3s;"></i>
-                            </div>
-                            <div class="justify-content-center text-center">
-                                <p class="device-ip" style="display: block;">IP: {{ device.ip }}</p>
-                            </div>
+        <div class="row">
+            {% for device in devices %}
+                <div class="col-md-4 device-card"
+                     data-device-name="{{ device.name }}"
+                     data-device-ip="{{ device.ip }}"
+                     data-device-type="{{ device.type }}"
+                     onclick="toggleOn('{{ device.name }}', '{{ device.ip }}', '{{ device.type }}')"
+                     oncontextmenu="showContextMenu(event, '{{ device.name }}')">
+                    <div id="device-card" class="card text-light p-3 mb-4 mx-auto">
+                        <div class="d-flex flex-column justify-content-center align-items-center text-center">
+                            <h4 class="m-0 w-100 mb-4"
+                                style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">
+                                {{ device.name }}</h4>
+                            <i id="bulb-icon-{{ device.name }}"
+                               class="fa {{ get_device_icon(device.type) }} mb-4"
+                               style="font-size: 3rem; color: gray; transition: color 0.3s;"></i>
                         </div>
-
-                        <!-- Context Menu -->
-                        <div class="context-menu" id="context-menu-{{ device.name }}">
-                            <form method="POST" action="{{ url_for('remove_device') }}">
-                                <input type="hidden" name="device_name" value="{{ device.name }}">
-                                <button type="submit" class="btn btn-danger w-100">Delete</button>
-                            </form>
+                        <div class="justify-content-center text-center">
+                            <p class="device-ip" style="display: block;">IP: {{ device.ip }}</p>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-        </div>
 
-        <div id="solar-panel-data" class="d-none container-fluid text-center text-light mb-4"
-             style="padding-bottom: 60px;">
-            <h2 class="mb-3">Solar Panel Real-Time Data</h2>
-
-            <div class="row justify-content-center gap-4">
-                <!-- Column 1: Power & Energy Data -->
-                <div id="solar-1" class="col-md-4 text-light p-3 mb-3">
-                    <h4 class="mb-4">Power & Energy</h4>
-                    <p><strong>Power Output:</strong> <span id="solar-power">Fetching data...</span> W</p>
-                    <p><strong>Energy Produced:</strong> <span id="solar-energy">Fetching data...</span> kWh</p>
-                    <p><strong>Energy Consumed:</strong> <span id="solar-energy-consumed">Fetching data...</span>
-                        kWh
-                    </p>
-                    <p><strong>Net Balance:</strong> <span id="solar-net-balance">Fetching data...</span> kWh</p>
-                    <p><strong>Self-Sufficiency:</strong> <span id="solar-self-sufficiency">Fetching data...</span>
-                        %
-                    </p>
-                </div>
-
-                <!-- Column 2: Grid & Voltage Data -->
-                <div id="solar-2" class="col-md-4 text-light p-3 mb-3">
-                    <h4 class="mb-4">Grid & Voltage</h4>
-                    <p><strong>Grid Import:</strong> <span id="solar-grid-import">Fetching data...</span> kWh</p>
-                    <p><strong>Grid Export:</strong> <span id="solar-grid-export">Fetching data...</span> kWh</p>
-                    <p><strong>Voltage:</strong></p>
-                    <p>Phase 1: <span id="solar-voltage-1">Fetching data...</span> V</p>
-                    <p>Phase 2: <span id="solar-voltage-2">Fetching data...</span> V</p>
-                    <p>Phase 3: <span id="solar-voltage-3">Fetching data...</span> V</p>
-                </div>
-
-                <!-- Column 3: Current & Other Metrics -->
-                <div id="solar-3" class="col-md-4 text-light p-3 mb-3">
-                    <h4 class="mb-4">Current & Other Metrics</h4>
-                    <p><strong>Current:</strong></p>
-                    <p>Phase 1: <span id="solar-current-1">Fetching data...</span> A</p>
-                    <p>Phase 2: <span id="solar-current-2">Fetching data...</span> A</p>
-                    <p>Phase 3: <span id="solar-current-3">Fetching data...</span> A</p>
-                    <p><strong>Power Factor:</strong> <span id="solar-power-factor">Fetching data...</span></p>
-                    <p><strong>Reactive Power:</strong> <span id="solar-reactive-power">Fetching data...</span> kVAr
-                    </p>
-                    <p><strong>CO₂ Savings:</strong> <span id="solar-co2">10.82</span> t</p>
-                </div>
-            </div>
-            <!-- Add Charts to Solar Panel Real-Time Data Section -->
-            <div id="solar-charts" class="container-fluid text-center text-light mt-4">
-                <h2 class="mb-3">Solar Energy Graphs</h2>
-
-                <div class="row justify-content-center">
-                    <!-- Power & Energy Chart -->
-                    <div class="col-md-4 mb-4">
-                        <h4>Power & Energy</h4>
-                        <canvas id="powerEnergyChart" style="max-width: 400px; max-height: 400px;"></canvas>
-                    </div>
-
-                    <!-- Grid Import/Export Chart -->
-                    <div class="col-md-4 mb-4">
-                        <h4>Grid Import/Export</h4>
-                        <canvas id="gridImportExportChart" style="max-width: 400px; max-height: 400px;"></canvas>
-                    </div>
-
-                    <!-- Voltage Phase Chart -->
-                    <div class="col-md-4 mb-4">
-                        <h4>Voltage Phase</h4>
-                        <canvas id="voltagePhaseChart" style="max-width: 400px; max-height: 400px;"></canvas>
-                    </div>
-
-                    <!-- Current & Other Metrics Chart -->
-                    <div class="col-md-4 mb-4">
-                        <h4>Current & Other Metrics</h4>
-                        <canvas id="currentMetricsChart" style="max-width: 400px; max-height: 400px;"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="temperature-data" class="d-none text-center text-light">
-            <h2>Temperature Data</h2>
-
-            <div class="container mt-5">
-                <div class="row justify-content-center gap-4">
-                    <div id="block-thermometer"
-                         class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
-                        <div id="thermometer-container" class="mb-3">
-                            <i id="temperature-icon" class="fa-solid fa-thermometer-half"></i>
-                        </div>
-                        <p id="temperature">Fetching data...</p>
-                    </div>
-                    <div id="block-humidity" class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
-                        <div id="droplet-humidity" class="mb-3">
-                            <i id="humidity-icon" class="fa-solid fa-droplet"></i>
-                            <div id="humidity-fill"></div>
-                        </div>
-                        <p id="humidity">Fetching data...</p>
-                    </div>
-                    <div id="block-pressure" class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
-                        <div id="pressure-container" class="mb-3">
-                            <i id="pressure-icon" class="fa-solid fa-gauge"></i>
-
-                        </div>
-                        <p id="pressure">Fetching data...</p>
-                    </div>
-                </div>
-                <div class="row justify-content-center mt-4">
-                    <div class="col-md-6">
-                        <p><strong>Thermostat IP:</strong> <span id="thermostat-ip">Fetching IP...</span></p>
-                        <p><strong>Status:</strong> <span id="thermostat-status">Fetching Status...</span></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="appearance-menu" class="d-none container text-light mb-4">
-            <h2 class="mb-3">Appearance Settings</h2>
-
-            <!-- Theme selection dropdown -->
-            <div class="d-flex justify-content-center align-items-center mb-3">
-                <label for="theme-select" class="me-3">Choose Theme:</label>
-                <select id="theme-select" class="form-control w-25" onchange="changeTheme(this.value)">
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                </select>
-            </div>
-
-            <!-- IP visibility toggle checkbox -->
-            <div class="d-flex justify-content-center align-items-center mb-3">
-                <input type="checkbox" id="show-ip-checkbox" class="form-check-input me-3"
-                       onchange="toggleIPVisibility(this)">
-                <label for="show-ip-checkbox" class="form-check-label">Show IP addresses</label>
-            </div>
-        </div>
-
-        <div id="account-menu" class="d-none container text-light mb-4">
-            <h2 class="mb-3">Account Settings</h2>
-            <div class="d-flex justify-content-center align-items-center mb-3 position-relative">
-                <div class="profile-picture-wrapper">
-                    {% if current_user.profile_picture %}
-                        <img src="data:image/png;base64,{{ current_user.profile_picture }}" alt="Profile Picture"
-                             class="rounded-circle profile-picture"
-                             style="width: 100px; height: 100px; object-fit: cover;">
-                    {% else %}
-                        <i class="fa fa-user-circle profile-picture" style="font-size: 100px;"></i>
-                    {% endif %}
-                    <label for="profile_picture" class="edit-icon">
-                        <i class="fa fa-pencil"></i>
-                    </label>
-                    <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="d-none"
-                           onchange="autoUploadProfilePicture(this)">
-                </div>
-            </div>
-            {% if current_user.profile_picture %}
-                <div class="d-flex justify-content-center align-items-center mb-3">
-                    <form method="POST" action="{{ url_for('remove_profile_picture') }}">
-                        <button type="submit" class="btn btn-danger">Remove Profile Picture</button>
-                    </form>
-                </div>
-            {% endif %}
-            <div class="d-flex justify-content-center align-items-center mb-3">
-                <a id="btn-log-out" href="{{ url_for('logout') }}" class="btn btn-danger me-2">Logout</a>
-                <button id="btn-change-password" class="btn btn-primary" onclick="showChangePasswordModal()">Change
-                    Password
-                </button>
-            </div>
-            {% if current_user.role == 'admin' %}
-                <div class="d-flex justify-content-center align-items-center">
-                    <a id="btn-admin-dashboard" href="{{ url_for('admin_dashboard') }}" class="btn btn-success">Admin
-                        Dashboard</a>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- Change Password Modal -->
-        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="change-password-form" method="POST" action="{{ url_for('change_password') }}">
-                            <div class="mb-3">
-                                <label for="current-password" class="form-label">Current Password</label>
-                                <input type="password" class="form-control" id="current-password"
-                                       name="current_password"
-                                       required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="new-password" class="form-label">New Password</label>
-                                <input type="password" class="form-control" id="new-password" name="new_password"
-                                       required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="confirm-password" class="form-label">Confirm New Password</label>
-                                <input type="password" class="form-control" id="confirm-password"
-                                       name="confirm_password"
-                                       required>
-                            </div>
-                            <div class="modal-footer d-flex justify-content-center align-items-center">
-                                <button type="submit" class="btn btn-primary">Change Password</button>
-                            </div>
+                    <!-- Context Menu -->
+                    <div class="context-menu" id="context-menu-{{ device.name }}">
+                        <form method="POST" action="{{ url_for('remove_device') }}">
+                            <input type="hidden" name="device_name" value="{{ device.name }}">
+                            <button type="submit" class="btn btn-danger w-100">Delete</button>
                         </form>
                     </div>
                 </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="solar-panel-data" class="d-none container-fluid text-center text-light mb-4"
+         style="padding-bottom: 60px;">
+        <h2 class="mb-3">Solar Panel Real-Time Data</h2>
+
+        <div class="row justify-content-center gap-4">
+            <!-- Column 1: Power & Energy Data -->
+            <div id="solar-1" class="col-md-4 text-light p-3 mb-3">
+                <h4 class="mb-4">Power & Energy</h4>
+                <p><strong>Power Output:</strong> <span id="solar-power">Fetching data...</span> W</p>
+                <p><strong>Energy Produced:</strong> <span id="solar-energy">Fetching data...</span> kWh</p>
+                <p><strong>Energy Consumed:</strong> <span id="solar-energy-consumed">Fetching data...</span>
+                    kWh
+                </p>
+                <p><strong>Net Balance:</strong> <span id="solar-net-balance">Fetching data...</span> kWh</p>
+                <p><strong>Self-Sufficiency:</strong> <span id="solar-self-sufficiency">Fetching data...</span>
+                    %
+                </p>
+            </div>
+
+            <!-- Column 2: Grid & Voltage Data -->
+            <div id="solar-2" class="col-md-4 text-light p-3 mb-3">
+                <h4 class="mb-4">Grid & Voltage</h4>
+                <p><strong>Grid Import:</strong> <span id="solar-grid-import">Fetching data...</span> kWh</p>
+                <p><strong>Grid Export:</strong> <span id="solar-grid-export">Fetching data...</span> kWh</p>
+                <p><strong>Voltage:</strong></p>
+                <p>Phase 1: <span id="solar-voltage-1">Fetching data...</span> V</p>
+                <p>Phase 2: <span id="solar-voltage-2">Fetching data...</span> V</p>
+                <p>Phase 3: <span id="solar-voltage-3">Fetching data...</span> V</p>
+            </div>
+
+            <!-- Column 3: Current & Other Metrics -->
+            <div id="solar-3" class="col-md-4 text-light p-3 mb-3">
+                <h4 class="mb-4">Current & Other Metrics</h4>
+                <p><strong>Current:</strong></p>
+                <p>Phase 1: <span id="solar-current-1">Fetching data...</span> A</p>
+                <p>Phase 2: <span id="solar-current-2">Fetching data...</span> A</p>
+                <p>Phase 3: <span id="solar-current-3">Fetching data...</span> A</p>
+                <p><strong>Power Factor:</strong> <span id="solar-power-factor">Fetching data...</span></p>
+                <p><strong>Reactive Power:</strong> <span id="solar-reactive-power">Fetching data...</span> kVAr
+                </p>
+                <p><strong>CO₂ Savings:</strong> <span id="solar-co2">10.82</span> t</p>
             </div>
         </div>
+        <!-- Add Charts to Solar Panel Real-Time Data Section -->
+        <div id="solar-charts" class="container-fluid text-center text-light mt-4">
+            <h2 class="mb-3">Solar Energy Graphs</h2>
 
-        <!-- Help & Support Menu -->
-        <div id="help-menu" class="d-none container text-light mb-4">
-            <h2 class="mb-3">Help & Support</h2>
-            <p class="text-center">Need help or want to give feedback? We're here for you.</p>
+            <div class="row justify-content-center">
+                <!-- Power & Energy Chart -->
+                <div class="col-md-4 mb-4">
+                    <h4>Power & Energy</h4>
+                    <canvas id="powerEnergyChart" style="max-width: 400px; max-height: 400px;"></canvas>
+                </div>
 
-            <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
-                <a href="https://github.com/t0ry003/SmartDash/wiki/FAQ" target="_blank" class="btn">
-                    <i class="fa fa-book" style="font-size: 1.2rem;"></i> View FAQ
-                </a>
-                <a href="mailto:contact.smartdash@gmail.com?subject=SmartDash%20Support&body=Hello%2C%20I%20need%20help%20with..."
-                   class="btn">
-                    <i class="fa fa-envelope" style="font-size: 1.2rem;"></i> Contact Support
-                </a>
+                <!-- Grid Import/Export Chart -->
+                <div class="col-md-4 mb-4">
+                    <h4>Grid Import/Export</h4>
+                    <canvas id="gridImportExportChart" style="max-width: 400px; max-height: 400px;"></canvas>
+                </div>
+
+                <!-- Voltage Phase Chart -->
+                <div class="col-md-4 mb-4">
+                    <h4>Voltage Phase</h4>
+                    <canvas id="voltagePhaseChart" style="max-width: 400px; max-height: 400px;"></canvas>
+                </div>
+
+                <!-- Current & Other Metrics Chart -->
+                <div class="col-md-4 mb-4">
+                    <h4>Current & Other Metrics</h4>
+                    <canvas id="currentMetricsChart" style="max-width: 400px; max-height: 400px;"></canvas>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <form class="text-center" action="https://formsubmit.co/contact.smartdash@gmail.com" method="POST">
-                <div class="mb-3">
+    <div id="temperature-data" class="d-none text-center text-light">
+        <h2>Temperature Data</h2>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center gap-4">
+                <div id="block-thermometer"
+                     class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
+                    <div id="thermometer-container" class="mb-3">
+                        <i id="temperature-icon" class="fa-solid fa-thermometer-half"></i>
+                    </div>
+                    <p id="temperature">Fetching data...</p>
+                </div>
+                <div id="block-humidity" class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
+                    <div id="droplet-humidity" class="mb-3">
+                        <i id="humidity-icon" class="fa-solid fa-droplet"></i>
+                        <div id="humidity-fill"></div>
+                    </div>
+                    <p id="humidity">Fetching data...</p>
+                </div>
+                <div id="block-pressure" class="col-md-6 col-lg-4 mt-4 d-flex flex-column align-items-center">
+                    <div id="pressure-container" class="mb-3">
+                        <i id="pressure-icon" class="fa-solid fa-gauge"></i>
+
+                    </div>
+                    <p id="pressure">Fetching data...</p>
+                </div>
+            </div>
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-6">
+                    <p><strong>Thermostat IP:</strong> <span id="thermostat-ip">Fetching IP...</span></p>
+                    <p><strong>Status:</strong> <span id="thermostat-status">Fetching Status...</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="appearance-menu" class="d-none container text-light mb-4">
+        <h2 class="mb-3">Appearance Settings</h2>
+
+        <!-- Theme selection dropdown -->
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <label for="theme-select" class="me-3">Choose Theme:</label>
+            <select id="theme-select" class="form-control w-25" onchange="changeTheme(this.value)">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>
+        </div>
+
+        <!-- IP visibility toggle checkbox -->
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <input type="checkbox" id="show-ip-checkbox" class="form-check-input me-3"
+                   onchange="toggleIPVisibility(this)">
+            <label for="show-ip-checkbox" class="form-check-label">Show IP addresses</label>
+        </div>
+    </div>
+
+    <div id="account-menu" class="d-none container text-light mb-4">
+        <h2 class="mb-3">Account Settings</h2>
+        <div class="d-flex justify-content-center align-items-center mb-3 position-relative">
+            <div class="profile-picture-wrapper">
+                {% if current_user.profile_picture %}
+                    <img src="data:image/png;base64,{{ current_user.profile_picture }}" alt="Profile Picture"
+                         class="rounded-circle profile-picture"
+                         style="width: 100px; height: 100px; object-fit: cover;">
+                {% else %}
+                    <i class="fa fa-user-circle profile-picture" style="font-size: 100px;"></i>
+                {% endif %}
+                <label for="profile_picture" class="edit-icon">
+                    <i class="fa fa-pencil"></i>
+                </label>
+                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="d-none"
+                       onchange="autoUploadProfilePicture(this)">
+            </div>
+        </div>
+        {% if current_user.profile_picture %}
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <form method="POST" action="{{ url_for('remove_profile_picture') }}">
+                    <button type="submit" class="btn btn-danger">Remove Profile Picture</button>
+                </form>
+            </div>
+        {% endif %}
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <a id="btn-log-out" href="{{ url_for('logout') }}" class="btn btn-danger me-2">Logout</a>
+            <button id="btn-change-password" class="btn btn-primary" onclick="showChangePasswordModal()">Change
+                Password
+            </button>
+        </div>
+        {% if current_user.role == 'admin' %}
+            <div class="d-flex justify-content-center align-items-center">
+                <a id="btn-admin-dashboard" href="{{ url_for('admin_dashboard') }}" class="btn btn-success">Admin
+                    Dashboard</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="change-password-form" method="POST" action="{{ url_for('change_password') }}">
+                        <div class="mb-3">
+                            <label for="current-password" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current-password"
+                                   name="current_password"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new-password" name="new_password"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm-password" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm-password"
+                                   name="confirm_password"
+                                   required>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center align-items-center">
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help & Support Menu -->
+    <div id="help-menu" class="d-none container text-light mb-4">
+        <h2 class="mb-3">Help & Support</h2>
+        <p class="text-center">Need help or want to give feedback? We're here for you.</p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
+            <a href="https://github.com/t0ry003/SmartDash/wiki/FAQ" target="_blank" class="btn">
+                <i class="fa fa-book" style="font-size: 1.2rem;"></i> View FAQ
+            </a>
+            <a href="mailto:contact.smartdash@gmail.com?subject=SmartDash%20Support&body=Hello%2C%20I%20need%20help%20with..."
+               class="btn">
+                <i class="fa fa-envelope" style="font-size: 1.2rem;"></i> Contact Support
+            </a>
+        </div>
+
+        <form class="text-center" action="https://formsubmit.co/contact.smartdash@gmail.com" method="POST">
+            <div class="mb-3">
         <textarea name="message" class="form-control mx-auto"
                   style="width: 80%; height: 80px; resize: vertical"
                   placeholder="Write your question or feedback..." required></textarea>
-                </div>
-                <button type="submit" class="btn">Send Message</button>
-                <input type="hidden" name="_captcha" value="false">
-            </form>
-        </div>
-
-
-        <!-- About Smart Dash -->
-        <div id="about-menu" class="d-none container text-light mb-4">
-            <h2 class="mb-3">About Smart Dash</h2>
-            <p>Smart Dash is a simple web application that allows you to manage your smart devices from a single
-                dashboard.</p>
-            <p>Developed with&nbsp;&nbsp;<i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;at&nbsp;&nbsp;<i
-                    class="fa-brands fa-github"></i> <a id="link"
-                                                        href="https://github.com/t0ry003/SmartDash"
-                                                        target="_blank">SmartDash</a>
-            </p>
-        </div>
-
-
-        <div style="height: 100px;"></div>
-        <footer id="navbar-bg" class="bottom-menu text-center p-3 fixed-bottom">
-            <div id="navbar" class="d-flex justify-content-around align-items-center">
-                <a id="menu-item-1" href="#" class="text-light d-flex flex-column align-items-center"
-                   onclick="showMenu('home')">
-                    <i class="fa fa-home" style="font-size: 1.5rem;"></i>
-                </a>
-                <a id="menu-item-2" href="#" class="text-light d-flex flex-column align-items-center"
-                   onclick="showMenu('solar')">
-                    <i class="fa fa-solar-panel" style="font-size: 1.5rem;"></i>
-                </a>
-                <a id="menu-item-3" href="#" class="text-light d-flex flex-column align-items-center"
-                   onclick="showMenu('temp')">
-                    <i class="fa fa-temperature-three-quarters" style="font-size: 1.5rem;"></i>
-                </a>
-                <a id="menu-item-4" href="#" class="text-light d-flex flex-column align-items-center"
-                   onclick="showMenu('settings')">
-                    {% if current_user.profile_picture %}
-                        <img src="data:image/png;base64,{{ current_user.profile_picture }}" alt="Profile Picture"
-                             class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
-                    {% else %}
-                        <i class="fa fa-user-circle" style="font-size: 1.5rem;"></i>
-                    {% endif %}
-                </a>
             </div>
-        </footer>
+            <button type="submit" class="btn">Send Message</button>
+            <input type="hidden" name="_captcha" value="false">
+        </form>
+    </div>
+
+
+    <!-- About Smart Dash -->
+    <div id="about-menu" class="d-none container text-light mb-4">
+        <h2 class="mb-3">About Smart Dash</h2>
+        <p>Smart Dash is a simple web application that allows you to manage your smart devices from a single
+            dashboard.</p>
+        <p>Developed with&nbsp;&nbsp;<i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;at&nbsp;&nbsp;<i
+                class="fa-brands fa-github"></i> <a id="link"
+                                                    href="https://github.com/t0ry003/SmartDash"
+                                                    target="_blank">SmartDash</a>
+        </p>
+    </div>
+
+
+    <div style="height: 100px;"></div>
+    <footer id="navbar-bg" class="bottom-menu text-center p-3 fixed-bottom">
+        <div id="navbar" class="d-flex justify-content-around align-items-center">
+            <a id="menu-item-1" href="#" class="text-light d-flex flex-column align-items-center"
+               onclick="showMenu('home')">
+                <i class="fa fa-home" style="font-size: 1.5rem;"></i>
+            </a>
+            <a id="menu-item-2" href="#" class="text-light d-flex flex-column align-items-center"
+               onclick="showMenu('solar')">
+                <i class="fa fa-solar-panel" style="font-size: 1.5rem;"></i>
+            </a>
+            <a id="menu-item-3" href="#" class="text-light d-flex flex-column align-items-center"
+               onclick="showMenu('temp')">
+                <i class="fa fa-temperature-three-quarters" style="font-size: 1.5rem;"></i>
+            </a>
+            <a id="menu-item-4" href="#" class="text-light d-flex flex-column align-items-center"
+               onclick="showMenu('settings')">
+                {% if current_user.profile_picture %}
+                    <img src="data:image/png;base64,{{ current_user.profile_picture }}" alt="Profile Picture"
+                         class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                {% else %}
+                    <i class="fa fa-user-circle" style="font-size: 1.5rem;"></i>
+                {% endif %}
+            </a>
+        </div>
+    </footer>
+
+    <!-- Flash Toast Messages -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="toast show align-items-center text-white bg-danger border-0 mb-2" role="alert"
+                         aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body d-flex align-items-center gap-2">
+                                <i class="fas fa-exclamation-circle fa-lg"></i>
+                                {{ message }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
 
 {% endblock %}
