@@ -49,13 +49,35 @@
     </style>
 </head>
 <body>
-<div class="container py-5">
-    <h1 class="text-center mb-5 display-5 fw-bold">📦 Projects</h1>
+<a href="{{ url_for('home') }}"
+   class="btn btn-outline-light d-inline-flex align-items-center gap-2 position-absolute top-0 start-0 m-3 z-3">
+    <i class="fas fa-arrow-left"></i>
+    Back to Dashboard
+</a>
+<div class="container py-5 mt-5">
+    <h1 class="text-center mb-5 display-5 fw-bold"><i class="fas fa-folder-tree fs-2"></i> Projects</h1>
+    <div class="mb-4 text-center">
+    <span class="me-4">
+        <i class="fas fa-star text-warning fs-4"></i>
+        <span class="ms-2">Fully Operational</span>
+    </span>
+        <span>
+        <i class="fas fa-tools text-danger fs-4"></i>
+        <span class="ms-2">Partial Operational</span>
+    </span>
+    </div>
     <div class="row g-4 mb-5">
         {% for project in projects %}
             <div class="col-12 col-md-6 col-lg-4">
                 <a href="{{ url_for('device_setup.project', project_name=project.name) }}" class="text-decoration-none">
-                    <div class="project-card">
+                    <div class="project-card position-relative">
+                        <div class="position-absolute top-0 end-0 p-2">
+                            {% if project.qualified %}
+                                <i class="fas fa-star text-warning fs-2" title="Fully Qualified"></i>
+                            {% else %}
+                                <i class="fas fa-tools text-danger fs-2" title="Not Fully Qualified"></i>
+                            {% endif %}
+                        </div>
                         <img src="{{ project.image_url }}" alt="Breadboard" class="w-100 project-img">
                         <div class="project-title">{{ project.name.replace('_', ' ').title() }}</div>
                     </div>
@@ -63,10 +85,6 @@
             </div>
         {% endfor %}
     </div>
-    <a href="{{ url_for('home') }}" class="btn btn-outline-light d-inline-flex align-items-center gap-2">
-        <i class="fas fa-arrow-left"></i>
-        Back to Dashboard
-    </a>
 </div>
 </body>
 </html>

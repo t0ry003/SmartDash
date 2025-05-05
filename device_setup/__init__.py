@@ -7,6 +7,8 @@ from markupsafe import Markup
 
 device_setup_bp = Blueprint('device_setup', __name__, template_folder='templates', static_folder='static')
 
+qualified_devices = {"ESP32_THERMOSTAT_DHT11_BMP180"}
+
 
 @device_setup_bp.route('/')
 def index():
@@ -23,7 +25,8 @@ def index():
 
         projects.append({
             'name': project,
-            'image_url': image_url
+            'image_url': image_url,
+            'qualified': project in qualified_devices
         })
 
     return render_template('device_setup/index.html', projects=projects)
@@ -75,6 +78,7 @@ def project(project_name):
                                guide=guide_html,
                                generic_guide=generic_html,
                                image_url=image_url,
+                               qualification=project_name in qualified_devices,
                                ssid=ssid,
                                password=password)
 

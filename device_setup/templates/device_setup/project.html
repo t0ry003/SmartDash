@@ -87,12 +87,25 @@
 </head>
 
 <body>
-<div class="container py-5">
+<a href="{{ url_for('device_setup.index') }}"
+   class="btn btn-outline-light d-inline-flex align-items-center gap-2 position-absolute top-0 start-0 m-3 z-3">
+    <i class="fas fa-arrow-left"></i>
+    Back to Projects
+</a>
+
+<div class="container py-5 mt-5">
     <h1 class="text-center mb-5 display-5 fw-bold">{{ project_name.replace('_', ' ').title() }}</h1>
 
     <!-- Breadboard image -->
     <div class="card bg-dark border-secondary mb-5 shadow">
-        <img src="{{ image_url }}" class="card-img-top project-image p-3" alt="Breadboard">
+        <img src="{{ image_url }}" class="card-img-top project-image p-3 mb-3" alt="Breadboard">
+        <div class="position-absolute top-0 end-0 p-2">
+            {% if qualification %}
+                <i class="fas fa-star text-warning fs-1" title="Fully Qualified"></i>
+            {% else %}
+                <i class="fas fa-tools text-danger fs-1" title="Not Fully Qualified"></i>
+            {% endif %}
+        </div>
     </div>
 
     <!-- Guide section -->

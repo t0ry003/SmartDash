@@ -1,7 +1,12 @@
-# 📡 ESP32 with BMP180: Wiring Guide
+# 🌡️ ESP32 Thermostat with BMP180: Wiring Guide
 
-This guide walks you through connecting a **BMP180 barometric pressure sensor** to an **ESP32 development board** on a
-breadboard.
+---
+
+## 🛠️ Not fully qualified for SmartDash:
+
+- 🚫 Humidity sensor (DHT11)
+- ✅ Temperature monitoring
+- ✅ No pressure sensor
 
 ---
 
@@ -14,15 +19,11 @@ breadboard.
 
 ---
 
-## 📷 Wiring Diagram
-
-Here is the wiring diagram showing the connection between ESP32 and BMP180:
-
-![ESP32 BMP180 Wiring](https://randomnerdtutorials.com/wp-content/uploads/2019/05/ESP32-BMP180-Wiring-Diagram.png)
-
----
-
 ## 🔌 Pin Connections
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/t0ry003/SmartDash/refs/heads/master/device_setup/static/ESP32-Pinout.png" alt="ESP32 Pinout" style="max-width: 100%;">
+</div>
 
 | BMP180 Pin | ESP32 Pin | Description         |
 |------------|-----------|---------------------|
@@ -38,7 +39,9 @@ Here is the wiring diagram showing the connection between ESP32 and BMP180:
 
 ## 🖼️ BMP180 Sensor Pinout
 
-![BMP180 Pinout](https://lastminuteengineers.com/wp-content/uploads/arduino/BMP180-Module-Pinout.png)
+<div align="center">
+  <img src="https://lastminuteengineers.com/wp-content/uploads/arduino/BMP180-Module-Pinout.png" alt="BMP180 Pinout" style="max-width: 100%;">
+</div>
 
 ---
 

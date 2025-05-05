@@ -29,53 +29,54 @@
     #postit-note {
         position: fixed;
         top: 20px;
-        left: 20px;
-        width: 120px;
-        height: 120px;
-        background-color: #cb9167;
-        color: #333;
+        left: -85px; /* mostly hidden initially */
+        width: 160px;
+        height: 160px;
+        background-color: #1e1e1e; /* dark background */
+        color: #2fffc4; /* white text */
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-weight: bold;
         text-align: center;
         text-decoration: none;
         border-radius: 8px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        transform: rotate(-5deg);
+        box-shadow: 0px 0px 15px rgb(82, 136, 122);
         padding-top: 20px;
         z-index: 1000;
-        transition: left 0.4s ease-in-out;
-        font-size: 1rem;
-        animation: idleNudge 2s ease-in-out infinite;
+        transition: transform 0.3s ease-out;
+        transform: translateX(0) rotate(-5deg);
+        font-size: 1.7rem;
+        animation: nudge 3s ease-in-out infinite;
+        will-change: transform; /* hardware-accelerated */
     }
 
     #postit-note:hover {
-        left: 0px;
+        transform: translateX(100px) rotate(0deg);
         animation: none;
     }
 
-    @keyframes idleNudge {
+    @keyframes nudge {
         0%, 100% {
-            left: -80px;
+            transform: translateX(0) rotate(-5deg);
         }
         50% {
-            left: -65px;
+            transform: translateX(10px) rotate(-5deg);
         }
     }
 
     .postit-content {
-        line-height: 1.2;
+        line-height: 1.3;
     }
 
     @media (max-width: 600px) {
         #postit-note {
             width: 100px;
             height: 90px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             left: -75px;
         }
 
         #postit-note:hover {
-            left: 0;
+            transform: translateX(75px) rotate(0deg);
         }
     }
 
