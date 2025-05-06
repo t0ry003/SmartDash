@@ -12,6 +12,7 @@ WebServer server(80);
 // DHT11 setup
 #define DHTPIN 5       // DHT11 data pin connected to GPIO5 (D5)
 #define DHTTYPE DHT11
+float DHT11_ERROR = -2; // DHT11 can read with error of -/+ 2 degrees Celsius
 DHT dht(DHTPIN, DHTTYPE);
 
 // Sensor readings
@@ -73,7 +74,11 @@ void loop() {
 
     if (!isnan(newHumidity) && !isnan(newTemperature)) {
       humidity = newHumidity;
-      temperature = newTemperature;
+      if(DHT11_ERROR < 0) {
+        temperature = newTemperature + DHT11_ERROR;
+      } else{
+        temperature = newTemperature - DHT11_ERROR;
+      }
       pressure = 0; // Still no pressure sensor
 
       // Update device state based on temperature

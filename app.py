@@ -367,15 +367,14 @@ def remove_device():
 @app.route('/toggle_device', methods=['POST'])
 def toggle_device():
     data = request.get_json()
-    device_name = data.get('device_name')
     device_ip = data.get('device_ip')
-    device_type = data.get('device_type')
     state = data.get('state')
 
-    print(
-        f"{current_user.username} - Turning {state} the device: {device_name}, IP: {device_ip}, Device Type: {device_type}")
-
-    return jsonify({'message': f'Toggling device: {device_name}, IP: {device_ip}, State: {state}'}), 200
+    try:
+        res = requests.post(f'http://{device_ip}/toggle', json={'state': state}, timeout=3)
+        return jsonify({'message': f'Device {device_ip} toggled to {state}', 'response': res.json()})
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/get_status', methods=['GET'])
@@ -511,11 +510,33 @@ def check_device_status():
     if device_type == 'fronius':
         # ➔ Special check for fronius
         online = check_fronius_device(device_ip)
+    elif device_type == 'thermostat':
+        online = check_thermostat_device(device_ip)
     else:
-        # ➔ For all others, call their /status or /state API
-        online = check_normal_device(device_ip)
+        online = check_relay_device(device_ip)
 
     return jsonify({'online': online})
+
+
+def check_relay_device(device_ip):
+    try:
+        if ':' in device_ip:
+            ip, port = device_ip.split(':')
+        else:
+            ip = device_ip
+            port = 80
+
+        url = f"http://{ip}:{port}/sensor-data"
+        response = requests.get(url, timeout=2)
+
+        if response.status_code == 200:
+            status_info = response.json()
+            return status_info.get('state') == 'on'
+        else:
+            return False
+    except Exception as e:
+        print(f"Error checking relay device: {e}")
+        return False
 
 
 def check_fronius_device(device_ip):
@@ -533,7 +554,7 @@ def check_fronius_device(device_ip):
         return False
 
 
-def check_normal_device(device_ip):
+def check_thermostat_device(device_ip):
     try:
         if ':' in device_ip:
             ip, port = device_ip.split(':')

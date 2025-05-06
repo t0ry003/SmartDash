@@ -49,38 +49,57 @@ def test_connection(db_uri):
         return False
 
 
-def create_config_file():
-    print(f"{BColors.HEADER}Choose a database type: {BColors.ENDC}")
-    for key, (name, _) in DB_TYPES.items():
-        print(f"{BColors.HEADER}{key}. {name}{BColors.ENDC}")
+def clear_screen():
+    os.system("cls" if platform.system() == "Windows" else "clear")
 
-    choice = input("Enter choice (1/2/3/4/5/6/7): ").strip()
+
+def create_config_file():
+    clear_screen()
+    print(f"{BColors.HEADER}=== SmartDash Database Configuration ==={BColors.ENDC}\n")
+
+    print(f"{BColors.UNDERLINE}Choose a database type:{BColors.ENDC}")
+    for key, (name, _) in DB_TYPES.items():
+        print(f"{BColors.OKCYAN}{key}. {name}{BColors.ENDC}")
+
+    print()
+    choice = input(f"{BColors.OKBLUE}Enter choice (1–7): {BColors.ENDC}").strip()
+
     if choice not in DB_TYPES:
-        print(f"{BColors.OKCYAN}Invalid choice, defaulting to SmartDash Azure.{BColors.ENDC}")
+        print(f"{BColors.WARNING}Invalid choice. Defaulting to SmartDash (PostgreSQL on Neon).{BColors.ENDC}")
         choice = "7"
 
+    clear_screen()
+    db_type_name, db_type_uri = DB_TYPES[choice]
+
+    print(f"{BColors.BOLD}Selected database type: {db_type_name}{BColors.ENDC}\n")
+
     if choice != "7":
-        db_name = input("Enter database name: ")
-        db_user = input("Enter username: ")
-        db_password = input("Enter password: ")
-        db_host = input("Enter host (e.g., smartdashproject.database.windows.net): ")
-        db_port = input("Enter port (e.g., 1433 for MSSQL, 3306 for MySQL, 5432 for PostgreSQL): ")
+        db_name = input("Enter database name: ").strip()
+        db_user = input("Enter username: ").strip()
+        db_password = input("Enter password: ").strip()
+        db_host = input("Enter host (e.g., smartdashproject.database.windows.net): ").strip()
+        db_port = input("Enter port (e.g., 1433 for MSSQL, 5432 for PostgreSQL): ").strip()
     else:
+        print(f"{BColors.OKCYAN}Using default credentials for SmartDash on Neon (for testing).{BColors.ENDC}")
         db_name = "neondb"
         db_user = "neondb_owner"
         db_password = "npg_94eJtlDyYBEM"
         db_host = "ep-jolly-bush-a28oyp90-pooler.eu-central-1.aws.neon.tech"
         db_port = "5432"
 
-    db_type_name, db_type_uri = DB_TYPES[choice]
-
     encoded_password = db_password if db_type_uri == "mssql+pymssql" else urllib.parse.quote_plus(db_password)
-
     db_uri = f"{db_type_uri}://{db_user}:{encoded_password}@{db_host}:{db_port}/{db_name}"
 
-    print(f"\nTesting connection to {db_type_name}...")
+    print(f"\n{BColors.BOLD}Testing connection to {db_type_name}...{BColors.ENDC}")
     if not test_connection(db_uri):
-        print(f"{BColors.WARNING}Fix the connection issues before proceeding.{BColors.ENDC}")
+        print(f"{BColors.FAIL}Connection test failed. Fix issues and retry.{BColors.ENDC}")
+        return None
+
+    print(f"\n{BColors.OKGREEN}Connection successful!{BColors.ENDC}")
+
+    confirm = input(f"\n{BColors.OKBLUE}Do you want to save this configuration? (y/n): {BColors.ENDC}").strip().lower()
+    if confirm != 'y':
+        print(f"{BColors.WARNING}Configuration not saved.{BColors.ENDC}")
         return None
 
     config = {
@@ -96,9 +115,9 @@ def create_config_file():
     with open('config.json', "w") as file:
         json.dump(config, file, indent=4)
 
-    print(f"{BColors.OKGREEN}Configuration saved successfully!{BColors.ENDC}")
+    print(f"{BColors.OKGREEN}\nConfiguration saved to config.json successfully!{BColors.ENDC}")
 
-    open_file = input("Would you like to open the config file location? (y/n): ")
+    open_file = input(f"{BColors.OKCYAN}Would you like to open the config file location? (y/n): {BColors.ENDC}")
     if open_file.lower() == "y":
         open_config_file_location()
 

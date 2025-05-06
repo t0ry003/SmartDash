@@ -77,7 +77,11 @@ void loop() {
 
     if (!isnan(newHumidity) && !isnan(newTemperature) && !isnan(newPressure)) {
       humidity = newHumidity;
-      temperature = newTemperature;
+      if(DHT11_ERROR < 0) {
+        temperature = newTemperature + DHT11_ERROR;
+      } else{
+        temperature = newTemperature - DHT11_ERROR;
+      }
       pressure = newPressure/100; // pascal to hPa
 
       deviceState = "on";
