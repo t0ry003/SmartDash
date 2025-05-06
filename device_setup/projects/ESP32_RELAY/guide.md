@@ -40,7 +40,7 @@
 ## 🖼️ Wiring Diagram
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/t0ry003/SmartDash/refs/heads/master/device_setup/static/ESP32-RELAY/breadboard.png" alt="ESP32 Relay Wiring" style="max-width: 80%;">
+  <img src="https://raw.githubusercontent.com/t0ry003/SmartDash/refs/heads/master/device_setup/static/projects/ESP32_RELAY/breadboard.png" alt="ESP32 Relay Wiring" style="max-width: 80%;">
 </div>
 
 ---
