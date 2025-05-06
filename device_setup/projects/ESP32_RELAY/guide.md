@@ -6,7 +6,7 @@
 
 - ✅ Relay control via GPIO
 - ✅ Suitable for 220V AC loads
-- ✅ Compatible with `/toggle` and `/sensor-data` API
+- ✅ Compatible with `/toggle` and `/sensor-data` API which works with SmartDash smart lighting, plugs and more.
 
 ---
 
