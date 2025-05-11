@@ -119,6 +119,17 @@ extensible, allowing you to add your own features and functionality as needed.
 
 ### ESP32
 
+#### SmartPlug, SmartLight
+
+<!-- ESP32 Relay -->
+<div align="center">
+  <img src="/dev/relay.png" alt="ESP32 Relay" style="max-width: 80%; height: auto;" />
+  <p>ESP32 Relay</p>
+  <a href="https://github.com/t0ry003/SmartDash/blob/master/dev/esp32_relay.ino" >
+    <img src="https://img.shields.io/badge/ESP32_Relay_Code-View-blue?logo=github" alt="ESP32 Relay Code" />
+  </a>
+</div>
+
 #### Thermostat
 
 <!-- ESP32 Thermostat DHT11 + BMP180 -->
