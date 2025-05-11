@@ -130,6 +130,8 @@ extensible, allowing you to add your own features and functionality as needed.
   </a>
 </div>
 
+---
+
 #### Thermostat
 
 <!-- ESP32 Thermostat DHT11 + BMP180 -->
