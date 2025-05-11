@@ -41,7 +41,6 @@ def test_connection(db_uri):
         engine = sqlalchemy.create_engine(db_uri)
         with engine.connect() as conn:
             conn.execute(sqlalchemy.sql.text("SELECT 1;"))
-        print(f"{BColors.OKGREEN}Connection successful!{BColors.ENDC}")
         return True
     except Exception as e:
         print(
@@ -61,7 +60,6 @@ def create_config_file():
     for key, (name, _) in DB_TYPES.items():
         print(f"{BColors.OKCYAN}{key}. {name}{BColors.ENDC}")
 
-    print()
     choice = input(f"{BColors.OKBLUE}Enter choice (1–7): {BColors.ENDC}").strip()
 
     if choice not in DB_TYPES:
