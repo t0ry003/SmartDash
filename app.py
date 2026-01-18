@@ -30,6 +30,7 @@ if db_uri:
 else:
     print(f"{BColors.WARNING}No valid database configuration found. Exiting...{BColors.ENDC}")
     exit(1)
+    exit(1)
 
 
 # print(f"{BColors.OKGREEN}DB URI: {db_uri}{BColors.ENDC}")
