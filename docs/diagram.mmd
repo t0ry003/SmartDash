@@ -1,0 +1,62 @@
+classDiagram
+
+    class User {
+        +change_password()
+        +add_device()
+        +remove_device()
+        +get_devices()
+        +save_settings()
+        +get_settings()
+    }
+
+    class BColors {
+    }
+
+    class AppRoutes {
+        <<module>>
+        +load_user()
+        +home()
+        +register()
+        +login()
+        +change_password()
+        +upload_profile_picture()
+        +remove_profile_picture()
+        +logout()
+        +admin_dashboard()
+        +admin_update_settings()
+        +admin_update_devices()
+        +save_devices()
+        +delete_device()
+        +add_device()
+        +export_data()
+        +remove_device()
+        +toggle_device()
+        +get_status()
+        +save_settings()
+        +get_settings()
+        +solar_data()
+        +get_temperature_data()
+        +check_device_status()
+        +check_relay_device()
+        +check_fronius_device()
+        +check_thermostat_device()
+        +fetch_fronius_device_data()
+        +fetch_fronius_data()
+        +get_device_icon()
+    }
+
+    class SetupFunctions {
+        <<module>>
+        +check_config_file()
+        +test_connection()
+        +clear_screen()
+        +create_config_file()
+        +load_config()
+        +open_config_file_location()
+    }
+
+    class DeviceSetupRoutes {
+        <<module>>
+        +index()
+        +project()
+    }
