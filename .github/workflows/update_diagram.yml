@@ -1,0 +1,53 @@
+name: Update Mermaid Diagram
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**.py'
+  workflow_dispatch:
+
+jobs:
+  generate-diagram:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Create docs directory
+        run: |
+          mkdir -p docs
+      
+      - name: Generate Mermaid diagram
+        run: |
+          python scripts/generate_mermaid.py
+      
+      - name: Commit and push diagram
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          if [ -f docs/diagram.mmd ]; then
+            git add docs/diagram.mmd
+            if ! git diff --staged --quiet; then
+              git commit -m "Auto-generate Mermaid class diagram [skip ci]"
+              git push
+            else
+              echo "No changes to commit"
+            fi
+          else
+            echo "No diagram file generated"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
